@@ -5,9 +5,9 @@
    "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
+   "dev": "bun --env-file=../../.env --env-file=.env run --hot src/index.ts",
+    "build": "tsc --noEmit --skipLibCheck",
+    "start": "bun run src/index.ts",
     "lint": "eslint ."
   },
   "dependencies": {
