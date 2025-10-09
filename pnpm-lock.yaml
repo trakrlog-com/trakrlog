@@ -54,6 +54,9 @@ importers:
       '@trakrlog/common':
         specifier: workspace:*
         version: link:../../packages/common
+      '@trakrlog/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
       react:
         specifier: ^19.1.1
         version: 19.2.0
@@ -115,6 +118,8 @@ importers:
       typescript:
         specifier: ^5.3.3
         version: 5.9.3
+
+  packages/tsconfig: {}
 
 packages:
 
