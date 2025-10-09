@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { isValidEmail } from '@trakrlog/common'
+import { isValidEmail } from '@trakrlog/common/index'
 import './App.css'
 
 function App() {

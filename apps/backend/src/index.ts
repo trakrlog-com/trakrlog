@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import { User, isValidEmail } from '@trakrlog/common';
+import { User, isValidEmail } from '@trakrlog/common/index';
 
 const app = express();
 const port = process.env.PORT || 3000;
