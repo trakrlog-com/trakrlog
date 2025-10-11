@@ -3,7 +3,7 @@ import * as userService from "./auth.service";
 import * as dateUtils from '@trakrlog/common/dateUtils';
 import { ApiResponseCodes, setErrorResponse,  setSuccessResponse} from "@trakrlog/common/httpResponse";
 import { NextFunction, Request, Response } from "express";
-import * as keys from '@trakrlog/common/keys';
+import * as keys from '@trakrlog/common/keys-node';
 import { randomUUID } from "crypto";
 
 export const createUser = async (email?: string, name?: string, picture?: string, is_email_verified?: boolean): Promise<UserModel | null> => {

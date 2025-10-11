@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import * as keys from '@trakrlog/common/keys';
+import * as keys from '@trakrlog/common/keys-node';
 
 dotenv.config();
 

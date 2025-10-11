@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Request, Response, NextFunction, Express } from "express";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import * as keys from '@trakrlog/common/keys';
+import * as keys from '@trakrlog/common/keys-node';
 import * as userService from "./auth.service";
 import * as authController from "./auth.controller";
 import { Profile } from "passport-google-oauth20";

@@ -9,7 +9,7 @@ import * as passportAuth from "./features/auth/auth.passport";
 import path from "path";
 import cookieParser from "cookie-parser";
 import { connectDB } from './config/database';
-import * as keys from '@trakrlog/common/keys';
+import * as keys from '@trakrlog/common/keys-node';
 import { Request, Response } from "express"; 
 import { authRoutes } from './features/auth/auth.routes';
 import { projectsRoutes } from './features/projects';
