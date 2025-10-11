@@ -1,34 +1,49 @@
-import { useState } from 'react'
-import { isValidEmail } from '@trakrlog/common/index'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+
 import './App.css'
+import { Dashboard } from './pages/app/Dashboard.tsx'
+import { NotificationProvider } from './context/NotificationContext'
+import { MainPage } from './pages/public/MainPage.tsx';
+import PrivateRoute from './components/app/auth/PrivateRoute.tsx';
+import { AuthContextProvider } from './context/AuthContext.tsx';
+import Unauthorized from './pages/public/Unauthorized.tsx';
+import NotFound from './pages/public/NotFound.tsx';
+import Login from './pages/public/Login.tsx';
+import "@fontsource/plus-jakarta-sans/400.css"; 
 
-function App() {
-  const [email, setEmail] = useState('')
-  const [isValid, setIsValid] = useState(false)
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <AuthContextProvider>
+      <NotificationProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
+            <Route path="/not-found" element={<NotFound />} />
+            <Route path="/login" element={<Login />} />
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newEmail = e.target.value
-    setEmail(newEmail)
-    setIsValid(isValidEmail(newEmail))
-  }
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            
+            {/* Redirect all unmatched routes to /not-found */}
+            <Route 
+              path="*" 
+              element={
+                <Navigate to="/not-found" replace />
+              } 
+            />
+          </Routes>
+        </BrowserRouter>
 
-  return (
-    <div className="card">
-      <h1>Email Validation Test</h1>
-      <div>
-        <input
-          type="email"
-          value={email}
-          onChange={handleEmailChange}
-          placeholder="Enter email to validate"
-          style={{ padding: '8px', margin: '10px 0' }}
-        />
-        <p style={{ color: isValid ? 'green' : 'red' }}>
-          Email is {isValid ? 'valid' : 'invalid'}
-        </p>
-      </div>
-    </div>
-  )
-}
-
-export default App
+      </NotificationProvider>
+    </AuthContextProvider>
+  </StrictMode>,
+)
