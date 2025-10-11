@@ -1,5 +1,6 @@
 import React from 'react';
 import HttpExample from './HttpExample';
+import JoinWaitlist from './JoinWaitlist';
 
 interface GetStartedNowProps {
 }
@@ -17,6 +18,7 @@ const GetStartedNow: React.FC<GetStartedNowProps> = () => {
                             Ready to get started?
                         </h2>
 
+                        {!import.meta.env.VITE_WaitlistEnabled ? (
                         <div className="mt-10 flex items-center justify-center gap-x-6">
                             <a
                                 href="/login"
@@ -24,8 +26,10 @@ const GetStartedNow: React.FC<GetStartedNowProps> = () => {
                             >
                                 Get Started for free
                             </a>
-
-                        </div>
+                        </div>) : (
+                        <div className="mt-10 flex items-center justify-center gap-x-6">
+                            <JoinWaitlist />
+                        </div>)}
                     </div>
                 </div>
             </div>

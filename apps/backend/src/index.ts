@@ -15,6 +15,7 @@ import { authRoutes } from './features/auth/auth.routes';
 import { projectsRoutes } from './features/projects';
 import { channelRoutes } from './features/channels';
 import { eventRoutes } from './features/events';
+import { waitlistRoutes } from './features/waitlist';
 
 // Load environment variables
 dotenv.config();
@@ -79,6 +80,7 @@ app.use('/auth', authRoutes);
 app.use('/projects', projectsRoutes);
 app.use('/channels', channelRoutes);
 app.use('/events', eventRoutes);
+app.use('/waitlist', waitlistRoutes);
 
 // Catch-all route to serve the frontend application for any route
 app.use((req: Request, res: Response) => {

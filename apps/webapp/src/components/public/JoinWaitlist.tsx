@@ -3,12 +3,35 @@ import React, { useState } from 'react';
 const JoinWaitlist: React.FC = () => {
     const [email, setEmail] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: Add your waitlist submission logic here
-        setIsSubmitted(true);
-        setEmail('');
+        setIsLoading(true);
+        setError('');
+
+        try {
+            const response = await fetch('/waitlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            });
+
+            if (response.ok) {
+                setIsSubmitted(true);
+                setEmail('');
+            } else {
+                const errorData = await response.json();
+                setError(errorData?.error?.message || 'Failed to join waitlist');
+            }
+        } catch (err) {
+            setError('Something went wrong. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     if (!import.meta.env.VITE_WaitlistEnabled) {
@@ -49,30 +72,37 @@ const JoinWaitlist: React.FC = () => {
 
                         <button
                             type="submit"
+                            disabled={isLoading}
                             className="flex items-center justify-center rounded-lg sm:rounded-l-none 
                                     bg-gradient-to-r from-neutral-600 via-neutral-700 to-neutral-800 px-6 py-4 text-sm
                                     font-semibold text-white transition-all duration-300
                                     ring-1 ring-inset ring-white/30 hover:ring-white/50
                                     hover:from-neutral-700 hover:via-neutral-800 hover:to-neutral-900
                                     focus:ring-2 focus:ring-inset focus:ring-white
-                                    active:scale-[0.98]"
+                                    active:scale-[0.98]
+                                    disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Join Now
+                            {isLoading ? 'Joining...' : 'Join Now'}
                         </button>
                     </div>
                 </form>
 
-                {/* Success message */}
+                {/* Success/Error messages */}
                 <div
                     className={`mt-4 text-center transition-all duration-300 ${
-                        isSubmitted
+                        isSubmitted || error
                             ? 'opacity-100 translate-y-0'
                             : 'opacity-0 -translate-y-4'
                     }`}
                 >
                     {isSubmitted && (
-                        <p className="text-sm text-green-400">
-                            Thanks for joining! We'll be in touch soon.
+                        <p className="text-md text-green-400">
+                            Thanks for joining!✨ We'll be in touch soon when we launch!
+                        </p>
+                    )}
+                    {error && (
+                        <p className="text-md text-red-400">
+                            {error}
                         </p>
                     )}
                 </div>
