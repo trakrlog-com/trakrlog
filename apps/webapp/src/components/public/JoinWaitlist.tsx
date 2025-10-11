@@ -11,6 +11,10 @@ const JoinWaitlist: React.FC = () => {
         setEmail('');
     };
 
+    if (!import.meta.env.VITE_WaitlistEnabled) {
+        return null;
+    }
+
     return (
         <div className="relative isolate overflow-hidden bg-[var(--dark-bg)]">
 
