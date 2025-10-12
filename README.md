@@ -1,5 +1,5 @@
 <div align="center">
-     <img src="https://github.com/switchfeat-com/switchfeat/assets/905984/bed8cfa8-0242-4156-b6e5-80240ae400fe" width=100 />
+     <img src="https://github.com/user-attachments/assets/5c272eb3-8305-4735-b875-f95a74619fed" width=100 />
 </div>
 <div align="center">
     <h1 align="center">TrakrLog</h1>
