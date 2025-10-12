@@ -53,6 +53,7 @@ export const Navbar = () => {
             <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
         </div>
+        {!import.meta.env.VITE_WaitlistEnabled && (
         <div className="hidden lg:flex lg:gap-x-12 ">
           {navigation.map((item) => (
             <a
@@ -63,7 +64,7 @@ export const Navbar = () => {
               {item.name}
             </a>
           ))}
-        </div>
+        </div>)}
         {!import.meta.env.VITE_WaitlistEnabled ? (
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
             <Button
@@ -84,7 +85,7 @@ export const Navbar = () => {
         <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gray-900 p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-100/10">
           <div className="flex items-center justify-between">
             <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
+              <span className="sr-only">TrakrLog</span>
               <img alt="TrakrLog logo" src="/logo.png" className="h-8 w-auto" />
             </a>
             <button
@@ -114,7 +115,7 @@ export const Navbar = () => {
                   onClick={() => navigate("/login")}
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-white hover:bg-white/5"
                 >
-                  Log in
+                  Login
                 </button>
               </div>
             </div>
