@@ -12,7 +12,7 @@
       <img src="https://img.shields.io/badge/PR-welcome-brightgreen.svg?style=flat" alt="PR welcome on @trakrlog" />
 </div>
 <br/>
- <img src="https://github.com/switchfeat-com/switchfeat/assets/905984/3e0bbfe1-72f8-4cdc-95e9-3002d9058789" width=1000 />
+ <img src="https://github.com/user-attachments/assets/f36a2e93-e5e6-4d36-9a98-7980775eb3f7" width=1000 />
 
 
 
