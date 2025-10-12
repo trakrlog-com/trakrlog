@@ -19,3 +19,6 @@
 <br/>
 
 ## What is TrakrLog
+Trakrlog is an open-source, self-hosted platform built for game developers and SaaS creators who need a simple, flexible way to track and react to events in real time. Whether you’re monitoring in-game actions, API usage, or user behavior, Trakrlog makes it effortless to collect structured event data, organize it into meaningful streams, and stay instantly informed as things happen.
+
+Unlike traditional analytics tools, Trakrlog focuses on event visibility and instant feedback. When a new event is logged, such as a player crafting an item, a new user signing up, or a system error occurring, Trakrlog can automatically send push notifications to your devices or workspace, ensuring you never miss important moments in your app’s lifecycle.
