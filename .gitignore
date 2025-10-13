@@ -44,3 +44,4 @@ coverage
 .temp
 *.log
 .vscode
+apps/backend/backend-app

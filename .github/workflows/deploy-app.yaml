@@ -1,0 +1,65 @@
+name: Deploy Combined Bun/pnpm App to Azure
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/backend/**'
+      - 'apps/webapp/**'
+      - 'packages/**'
+      - '.github/workflows/deploy-app.yml'
+
+env:
+  AZURE_WEBAPP_NAME: 'your-single-app-service-name'
+  NODE_VERSION: '18.x'
+
+jobs:
+  build-and-deploy:
+    runs-on: 'ubuntu-latest'
+    steps:
+    - uses: actions/checkout@v4
+
+    # --- Setup pnpm and Node.js with hoisting ---
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        version: 8
+        run_install: false
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'pnpm'
+    - name: Install dependencies with hoisting
+      run: |
+        echo "node-linker=hoisted" >> .npmrc
+        pnpm install --frozen-lockfile
+
+    # --- Setup Bun ---
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
+
+    # --- Build the projects with Turbo ---
+    - name: Build with Turbo
+      run: npx turbo run build
+
+    # --- Prepare for Deployment ---
+    - name: Copy React build to backend folder
+      run: cp -r apps/frontend/build apps/backend/frontend/build
+
+    # Archive the backend directory, including the compiled Bun executable and copied React build
+    - name: Archive production build for deployment
+      run: |
+        cd apps/backend
+        # Ensure the backend executable is created and executable
+        chmod +x backend-app
+        zip -r release.zip ./*
+
+    # - name: Deploy to Azure Web App
+    #   id: deploy-to-webapp
+    #   uses: azure/webapps-deploy@v2
+    #   with:
+    #     app-name: ${{ env.AZURE_WEBAPP_NAME }}
+    #     publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+    #     package: 'apps/backend/release.zip'

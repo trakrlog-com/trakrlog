@@ -6,8 +6,8 @@
   "main": "dist/index.js",
   "scripts": {
    "dev": "bun --env-file=../../.env --env-file=.env run --hot src/index.ts",
-    "build": "tsc --noEmit --skipLibCheck",
-    "start": "bun run src/index.ts",
+    "build": "bun build src/index.ts --compile --outfile backend-app",
+    "start": "./backend-app",
     "lint": "eslint ."
   },
   "dependencies": {
