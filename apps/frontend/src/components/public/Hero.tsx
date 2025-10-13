@@ -61,7 +61,7 @@ export const Hero = () => {
               <b className="font-semibold text-white">TrakrLog</b> captures
               every detail around your product.
             </p>
-            {!import.meta.env.VITE_WaitlistEnabled && (
+            {!import.meta.env.VITE_WAITLISTENABLED && (
               <div className="mt-10 flex items-center justify-center gap-x-6">
                 <a href="/login" className="main-button p-3">
                   Get Started for free

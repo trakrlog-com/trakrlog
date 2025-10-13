@@ -34,7 +34,7 @@ const JoinWaitlist: React.FC = () => {
         }
     };
 
-    if (!import.meta.env.VITE_WaitlistEnabled) {
+    if (!import.meta.env.VITE_WAITLISTENABLED) {
         return null;
     }
 

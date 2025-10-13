@@ -18,7 +18,7 @@ const GetStartedNow: React.FC<GetStartedNowProps> = () => {
                             Ready to get started?
                         </h2>
 
-                        {!import.meta.env.VITE_WaitlistEnabled ? (
+                        {!import.meta.env.VITE_WAITLISTENABLED ? (
                         <div className="mt-10 flex items-center justify-center gap-x-6">
                             <a
                                 href="/login"
