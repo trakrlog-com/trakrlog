@@ -56,7 +56,7 @@ jobs:
         mkdir -p apps/backend/webapp/dist
 
     - name: Copy React build to backend folder
-      run: cp -r apps/webapp/dist apps/backend/webapp/dist
+      run: cp -r apps/webapp/dist apps/backend/webapp
 
     # Archive the backend directory, including the compiled Bun executable and copied React build
     - name: Archive production build for deployment
