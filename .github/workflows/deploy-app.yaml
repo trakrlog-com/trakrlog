@@ -9,12 +9,11 @@ on:
       - 'apps/backend/**'
       - 'apps/frontend/**'
       - 'packages/**'
-      - '.github/workflows/deploy-app.yml'
+      - '.github/workflows/deploy-app.yaml'
 
 env:
   AZURE_WEBAPP_NAME: 'trakrlog-app-web'
   NODE_VERSION: '22.x'
-  NODE_ENV: production
 
 jobs:
   build-and-deploy:
@@ -33,9 +32,9 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'pnpm'
-    - name: Install dependencies
+    - name: Install dependencies (including dev dependencies for build)
       run: 
-        pnpm install
+        pnpm install --include=dev
 
     # --- Setup Bun ---
     - name: Setup Bun
@@ -44,6 +43,8 @@ jobs:
     # --- Build the projects with Turbo ---
     - name: Build with Turbo
       run: npx turbo run build
+      env:
+        NODE_ENV: production  # Production build with devDependencies available via --include=dev
 
     # --- Prepare for Deployment ---
     - name: Prepare backend directory for React build
@@ -65,11 +66,6 @@ jobs:
         # Now chmod can find the executable
         chmod +x backend-app
         
-        # Verify the structure
-        echo "Contents of backend directory:"
-        ls -la
-        echo "Contents of frontend/build directory:"
-        ls -la frontend/build/
         
         # Then, create the zip file from the backend folder
         zip -r release.zip ./*
