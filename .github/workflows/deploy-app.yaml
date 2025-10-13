@@ -11,7 +11,7 @@ on:
       - '.github/workflows/deploy-app.yml'
 
 env:
-  AZURE_WEBAPP_NAME: 'your-single-app-service-name'
+  AZURE_WEBAPP_NAME: 'trakrlog-app-web'
   NODE_VERSION: '22.x'
 
 jobs:
@@ -31,10 +31,9 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'pnpm'
-    - name: Install dependencies with hoisting
-      run: |
-        echo "node-linker=hoisted" >> .npmrc
-        pnpm install --frozen-lockfile
+    - name: Install dependencies
+      run: 
+        pnpm install
 
     # --- Setup Bun ---
     - name: Setup Bun
