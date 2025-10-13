@@ -26,10 +26,7 @@ const app: Express = express();
 const port = parseInt(process.env.PORT || '4000', 10);
 
 // Connect to MongoDB
-connectDB().catch(err => {
-  console.error('Failed to connect to MongoDB:', err);
-  process.exit(1);
-});
+connectDB();
 
 // Middleware
 app.use(helmet()); // Security headers
