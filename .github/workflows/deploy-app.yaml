@@ -1,4 +1,4 @@
-name: Deploy Combined Bun/pnpm App to Azure
+name: Deploy App to Azure
 
 on:
   push:
