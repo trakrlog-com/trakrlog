@@ -1,4 +1,4 @@
-mentname: Deploy App to Azure
+name: Deploy App to Azure
 
 on:
   workflow_dispatch:
