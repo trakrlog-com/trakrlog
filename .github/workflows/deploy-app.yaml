@@ -45,17 +45,26 @@ jobs:
       run: npx turbo run build
 
     # --- Prepare for Deployment ---
-    - name: Copy React build to backend folder
+    - name: Prepare backend directory for React build
       run: |
-        mkdir -p apps/backend/webapp/build
-        cp -r apps/webapp/dist apps/backend/webapp/dist
+        mkdir -p apps/backend/webapp/dist
 
-    # Zip the backend directory, including the compiled Bun executable and copied React build
-    - name: Zip production build for deployment
+    - name: Copy React build to backend folder
+      run: cp -r apps/webapp/dist apps/backend/webapp/dist
+
+    # Archive the backend directory, including the compiled Bun executable and copied React build
+    - name: Archive production build for deployment
       run: |
+        # Change directory to the backend folder before running Bun build and other commands
+        cd apps/backend
         
-        # Ensure the backend executable is created and executable
+        # Build the Bun backend inside its own directory
+        bun build src/index.ts --compile --outfile backend-app
+        
+        # Now chmod can find the executable
         chmod +x backend-app
+        
+        # Then, create the zip file from the backend folder
         zip -r release.zip ./*
 
     - name: Deploy to Azure Web App
