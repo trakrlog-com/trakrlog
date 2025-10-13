@@ -16,6 +16,7 @@ import { projectsRoutes } from './features/projects';
 import { channelRoutes } from './features/channels';
 import { eventRoutes } from './features/events';
 import { waitlistRoutes } from './features/waitlist';
+import { fileURLToPath } from 'url';
 
 // Load environment variables
 dotenv.config();
@@ -68,6 +69,8 @@ app.use(
   }),
 );
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 
