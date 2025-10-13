@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
 import './App.css'
 import { Dashboard } from './pages/app/Dashboard.tsx'
-import { NotificationProvider } from './context/NotificationContext'
+import { NotificationProvider } from './context/NotificationContext.tsx'
 import { MainPage } from './pages/public/MainPage.tsx';
 import PrivateRoute from './components/app/auth/PrivateRoute.tsx';
 import { AuthContextProvider } from './context/AuthContext.tsx';

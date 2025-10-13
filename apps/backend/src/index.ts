@@ -65,24 +65,22 @@ app.use(
   cors({
     origin: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true, // allow session cookie from browser to pass through
+    credentials: true,
   }),
 );
 
 // Handle static file serving for both development and compiled environments
-// const getStaticPath = () => {
-//   if (process.env.NODE_ENV === 'production') {
-//     // In production (compiled with Bun), look for static files relative to the executable
-//     return path.join(process.cwd(), 'frontend/build');
-//   } else {
-//     // In development, use the relative path
-//     const __filename = fileURLToPath(import.meta.url);
-//     const __dirname = path.dirname(__filename);
-//     return path.join(__dirname, 'frontend/build');
-//   }
-// };
+const getStaticPath = () => {
+  if (process.env.NODE_ENV === 'production') {
+    // In production (compiled with Bun), look for static files relative to the executable
+    return path.join(process.cwd(), 'frontend/build');
+  } else {
+    // In development, use the relative path
+    return path.join(__dirname, '../../frontend/dist');
+  }
+};
 
-const staticPath = path.join(process.cwd(), 'frontend/build');
+const staticPath = getStaticPath();
 console.log(`Serving static files from: ${staticPath}`);
 
 // Serve static files
