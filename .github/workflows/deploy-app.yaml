@@ -7,7 +7,7 @@ on:
       - main
     paths:
       - 'apps/backend/**'
-      - 'apps/webapp/**'
+      - 'apps/frontend/**'
       - 'packages/**'
       - '.github/workflows/deploy-app.yml'
 
