@@ -14,6 +14,7 @@ on:
 env:
   AZURE_WEBAPP_NAME: 'trakrlog-app-web'
   NODE_VERSION: '22.x'
+  NODE_ENV: production
 
 jobs:
   build-and-deploy:
