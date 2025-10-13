@@ -14,12 +14,12 @@ on:
 env:
   AZURE_WEBAPP_NAME: 'trakrlog-app-web'
   NODE_VERSION: '22.x'        
-  VITE_WaitlistEnabled: ${{ secrets.WAITLIST_ENABLED }}
-  VITE_AuthProvider: ${{ secrets.AUTH_PROVIDER }}
-  VITE_GoogleClientId: ${{ secrets.GOOGLE_CLIENT_ID }}
-  VITE_GoogleClientSecret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-  SessionSecret: ${{ secrets.SESSION_SECRET }}
-  DbUri: ${{ secrets.MONGO_DB_URI }}
+  VITE_WaitlistEnabled: ${{ secrets.VITE_WAITLISTENABLED }}
+  VITE_AuthProvider: ${{ secrets.VITE_AUTHPROVIDER }}
+  VITE_GoogleClientId: ${{ secrets.VITE_GOOGLECLIENTID }}
+  VITE_GoogleClientSecret: ${{ secrets.VITE_GOOGLECLIENTSECRET }}
+  SessionSecret: ${{ secrets.SESSIONSECRET }}
+  DbUri: ${{ secrets.DBURI }}
 
 jobs:
   build-and-deploy:
