@@ -48,7 +48,9 @@ jobs:
     - name: Copy React build to backend folder
       run: |
         cd apps/backend
-        mkdir webapp/dist
+        mkdir webapp
+        cd webapp 
+        mkdir dist
         cp -r apps/webapp/dist apps/backend/webapp/dist
 
     # Zip the backend directory, including the compiled Bun executable and copied React build
