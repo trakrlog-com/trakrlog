@@ -80,4 +80,5 @@ jobs:
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        app-settings:   VITE_WaitlistEnabled=${{ secrets.VITE_WAITLISTENABLED }} VITE_AuthProvider=${{ secrets.VITE_AUTHPROVIDER }} VITE_GoogleClientId=${{ secrets.VITE_GOOGLECLIENTID }} VITE_GoogleClientSecret=${{ secrets.VITE_GOOGLECLIENTSECRET }} SessionSecret=${{ secrets.SESSIONSECRET }} DbUri=${{ secrets.DBURI }} NODE_ENV=production
         package: 'apps/backend/release.zip'
