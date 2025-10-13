@@ -46,12 +46,15 @@ jobs:
 
     # --- Prepare for Deployment ---
     - name: Copy React build to backend folder
-      run: cp -r apps/webapp/dist apps/backend/webapp/dist
+      run: |
+        cd apps/backend
+        mkdir webapp/dist
+        cp -r apps/webapp/dist apps/backend/webapp/dist
 
     # Zip the backend directory, including the compiled Bun executable and copied React build
     - name: Zip production build for deployment
       run: |
-        cd apps/backend
+        
         # Ensure the backend executable is created and executable
         chmod +x backend-app
         zip -r release.zip ./*
