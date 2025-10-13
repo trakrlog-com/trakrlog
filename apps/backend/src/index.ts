@@ -69,7 +69,11 @@ app.use(
 );
 
 
-app.use(express.static(path.resolve(__dirname, "../../webapp/dist")));
+
+
+// app.use(express.static(path.resolve(__dirname, "../../webapp/dist")));
+app.use(express.static(path.join(__dirname, 'frontend/build')));
+
  
 
 // API Routes - these need to be before the catch-all route
@@ -81,7 +85,8 @@ app.use('/waitlist', waitlistRoutes);
 
 // Catch-all route to serve the frontend application for any route
 app.use((req: Request, res: Response) => {
-    res.sendFile(path.resolve(__dirname, "../../webapp/dist/", "index.html"));
+    // res.sendFile(path.resolve(__dirname, "../../webapp/dist/", "index.html"));
+    res.sendFile(path.join(__dirname, 'frontend/build/index.html'));
 });
 
 

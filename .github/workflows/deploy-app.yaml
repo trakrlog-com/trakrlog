@@ -47,10 +47,10 @@ jobs:
     # --- Prepare for Deployment ---
     - name: Prepare backend directory for React build
       run: |
-        mkdir -p apps/backend/webapp/dist
+        mkdir -p apps/backend/frontend/build
 
     - name: Copy React build to backend folder
-      run: cp -r apps/webapp/dist apps/backend/webapp
+      run: cp -r apps/webapp/dist apps/backend/frontend/build
 
     # Archive the backend directory, including the compiled Bun executable and copied React build
     - name: Archive production build for deployment
