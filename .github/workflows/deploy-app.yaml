@@ -50,7 +50,7 @@ jobs:
         mkdir -p apps/backend/frontend/build
 
     - name: Copy React build to backend folder
-      run: cp -a apps/webapp/dist/. apps/backend/frontend/build
+      run: cp -r apps/webapp/dist/* apps/backend/frontend/build/
 
     # Archive the backend directory, including the compiled Bun executable and copied React build
     - name: Archive production build for deployment
@@ -63,6 +63,12 @@ jobs:
         
         # Now chmod can find the executable
         chmod +x backend-app
+        
+        # Verify the structure
+        echo "Contents of backend directory:"
+        ls -la
+        echo "Contents of frontend/build directory:"
+        ls -la frontend/build/
         
         # Then, create the zip file from the backend folder
         zip -r release.zip ./*

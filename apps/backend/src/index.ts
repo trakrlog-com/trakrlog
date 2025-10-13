@@ -69,15 +69,24 @@ app.use(
   }),
 );
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Handle static file serving for both development and compiled environments
+// const getStaticPath = () => {
+//   if (process.env.NODE_ENV === 'production') {
+//     // In production (compiled with Bun), look for static files relative to the executable
+//     return path.join(process.cwd(), 'frontend/build');
+//   } else {
+//     // In development, use the relative path
+//     const __filename = fileURLToPath(import.meta.url);
+//     const __dirname = path.dirname(__filename);
+//     return path.join(__dirname, 'frontend/build');
+//   }
+// };
 
+const staticPath = path.join(process.cwd(), 'frontend/build');
+console.log(`Serving static files from: ${staticPath}`);
 
-
-// app.use(express.static(path.resolve(__dirname, "../../webapp/dist")));
-app.use(express.static(path.join(__dirname, 'frontend/build')));
-
- 
+// Serve static files
+app.use(express.static(staticPath));
 
 // API Routes - these need to be before the catch-all route
 app.use('/auth', authRoutes);
@@ -88,8 +97,14 @@ app.use('/waitlist', waitlistRoutes);
 
 // Catch-all route to serve the frontend application for any route
 app.use((req: Request, res: Response) => {
-    // res.sendFile(path.resolve(__dirname, "../../webapp/dist/", "index.html"));
-    res.sendFile(path.join(__dirname, 'frontend/build/index.html'));
+    const indexPath = path.join(staticPath, 'index.html');
+    console.log(`Attempting to serve index.html from: ${indexPath}`);
+    res.sendFile(indexPath, (err) => {
+        if (err) {
+            console.error('Error serving index.html:', err);
+            res.status(500).send('Error loading application');
+        }
+    });
 });
 
 
