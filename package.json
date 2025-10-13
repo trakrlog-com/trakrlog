@@ -2,7 +2,7 @@
   "name": "trakrlog",
   "version": "1.0.0",
   "private": true,
-  "description": "",
+  "description": "Simple and flexible events tracking and logging system",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.18.1",
-  "devDependencies": {
+  "dependencies": {
     "turbo": "^2.5.8"
   }
 }
