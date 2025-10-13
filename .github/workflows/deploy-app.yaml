@@ -34,7 +34,7 @@ jobs:
         cache: 'pnpm'
     - name: Install dependencies (including dev dependencies for build)
       run: 
-        pnpm install --include=dev
+        pnpm install --prod=false
 
     # --- Setup Bun ---
     - name: Setup Bun
