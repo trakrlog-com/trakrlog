@@ -21,7 +21,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    # --- Setup pnpm and Node.js with hoisting ---
+    # --- Setup pnpm and Node.js ---
     - name: Setup pnpm
       uses: pnpm/action-setup@v3
       with:
@@ -45,21 +45,21 @@ jobs:
       run: npx turbo run build
 
     # --- Prepare for Deployment ---
-    # - name: Copy React build to backend folder
-    #   run: cp -r apps/frontend/build apps/backend/frontend/build
+    - name: Copy React build to backend folder
+      run: cp -r apps/webapp/dist apps/backend/webapp/dist
 
-    # Archive the backend directory, including the compiled Bun executable and copied React build
-    - name: Archive production build for deployment
+    # Zip the backend directory, including the compiled Bun executable and copied React build
+    - name: Zip production build for deployment
       run: |
         cd apps/backend
         # Ensure the backend executable is created and executable
         chmod +x backend-app
         zip -r release.zip ./*
 
-    # - name: Deploy to Azure Web App
-    #   id: deploy-to-webapp
-    #   uses: azure/webapps-deploy@v2
-    #   with:
-    #     app-name: ${{ env.AZURE_WEBAPP_NAME }}
-    #     publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-    #     package: 'apps/backend/release.zip'
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: 'apps/backend/release.zip'
