@@ -45,8 +45,8 @@ jobs:
       run: npx turbo run build
 
     # --- Prepare for Deployment ---
-    - name: Copy React build to backend folder
-      run: cp -r apps/frontend/build apps/backend/frontend/build
+    # - name: Copy React build to backend folder
+    #   run: cp -r apps/frontend/build apps/backend/frontend/build
 
     # Archive the backend directory, including the compiled Bun executable and copied React build
     - name: Archive production build for deployment
