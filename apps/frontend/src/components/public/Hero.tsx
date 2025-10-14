@@ -66,7 +66,7 @@ export const Hero = () => {
                 <a href="/login" className="main-button p-3">
                   Get Started for free
                 </a>
-                <a href="/docs" className="font-semibold leading-6 text-white">
+                <a href="https://github.com/trakrlog-com" className="font-semibold leading-6 text-white">
                   Documentation <span aria-hidden="true">→</span>
                 </a>
               </div>
