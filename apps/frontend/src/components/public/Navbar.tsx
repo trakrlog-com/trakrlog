@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 const navigation = [
   { name: "App", href: "/dashboard" },
-  { name: "Docs", href: "/docs" },
-  { name: "Get Started", href: "/get-started" },
+  { name: "Docs", href: "https://github.com/trakrlog-com" },
+  { name: "Get Started", href: "https://github.com/trakrlog-com" },
 ];
 
 export const Navbar = () => {
