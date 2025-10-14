@@ -16,6 +16,7 @@ env:
   NODE_VERSION: '22.x'
   NODE_ENV: production
   VITE_WAITLISTENABLED: true
+  VITE_BACKEND_URL: 'https://trakrlog.com'
 
 jobs:
   build-and-deploy:

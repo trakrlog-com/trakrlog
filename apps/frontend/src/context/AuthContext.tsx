@@ -7,9 +7,7 @@ import {
 } from "react";
  
 import { useFetch } from "../hooks/useFetch";
-
-
-const CLIENT_HOME_PAGE_URL = "http://localhost:4000";
+import { BACKEND_URL } from "@trakrlog/common/keys-node";
 
 
 export interface AppContext {
@@ -53,11 +51,11 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = (
     const { doFetch } = useFetch();
 
     const handleLoginClick = (provider: string): void => {
-        window.open(`${CLIENT_HOME_PAGE_URL}/auth/${provider}`, "_self");
+        window.open(`${BACKEND_URL}/auth/${provider}`, "_self");
     };
 
     const handleLogoutClick = (): void => {
-        window.open(`${CLIENT_HOME_PAGE_URL}/auth/logout`, "_self");
+        window.open(`${BACKEND_URL}/auth/logout`, "_self");
     };
 
     useEffect(() => {
@@ -74,7 +72,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = (
                 });
             },
             onFinally: () => setLoadingInitial(false),
-            url: `${CLIENT_HOME_PAGE_URL}/auth/is-auth/`,
+            url: `${BACKEND_URL}/auth/is-auth/`,
             method: "GET",
         });
     }, [doFetch]);

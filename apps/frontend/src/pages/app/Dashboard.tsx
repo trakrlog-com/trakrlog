@@ -45,10 +45,10 @@ export const Dashboard: React.FC = () => {
 
                 const channelId = selectedChannel?._id ?? '';
                 const projectId = selectedProject._id;
-                let url = `http://localhost:4000/events/project/${projectId}/channel/${channelId}`;
+                let url = `${import.meta.env.VITE_BACKEND_URL}/events/project/${projectId}/channel/${channelId}`;
                 if (channelId === '') {
-                    url = `http://localhost:4000/events/project/${projectId}`;
-                }   
+                    url = `${import.meta.env.VITE_BACKEND_URL}/events/project/${projectId}`;
+                }
 
                 const response = await fetch(url);
                 if (!response.ok) {
@@ -77,8 +77,8 @@ export const Dashboard: React.FC = () => {
     useEffect(() => {
         const fetchProjectsAndChannels = async () => {
             try {
-                const response = await fetch('http://localhost:4000/projects');
-                const responseChannels = await fetch('http://localhost:4000/channels');
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/projects`);
+                const responseChannels = await fetch(`${import.meta.env.VITE_BACKEND_URL}/channels`);
 
                 if (!response.ok || !responseChannels.ok) {
                     setLoadingProjectsChannels(false);

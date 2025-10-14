@@ -66,12 +66,12 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
         if (err) {
             return next(err);
         }
-        res.redirect(keys.CLIENT_HOME_PAGE_URL);
+        res.redirect(keys.BACKEND_URL);
     });
 }
 
 export const loginFailed = (req: Request, res: Response) => {
-    res.redirect(keys.CLIENT_HOME_PAGE_URL + "/unauthorized");
+    res.redirect(keys.BACKEND_URL + "/unauthorized");
 }
 
 export const setApiKey = async (req: Request, res: Response) => {

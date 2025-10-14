@@ -5,7 +5,8 @@ interface ViteTypeOptions {
 }
 
 interface ImportMetaEnv {
-    readonly VITE_WAITLISTENABLED: string
+    readonly VITE_WAITLISTENABLED: string,
+    readonly VITE_BACKEND_URL: string
 }
 
 interface ImportMeta {
