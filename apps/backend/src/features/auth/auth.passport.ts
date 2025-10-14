@@ -36,7 +36,7 @@ export const initialise = (app: Express) => {
         clientID: keys.GOOGLE_CLIENT_ID,
         clientSecret: keys.GOOGLE_CLIENT_SECRET,
         callbackURL:
-          (env !== "dev" ? keys.BACKEND_URL : "") + "/auth/google/callback",
+          (env !== "development" ? keys.BACKEND_URL : "") + "/auth/google/callback",
         scope: ["profile", "email"],
         state: true,
       },
