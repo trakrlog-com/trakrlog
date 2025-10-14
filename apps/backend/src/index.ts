@@ -96,7 +96,6 @@ app.use('/waitlist', waitlistRoutes);
 // Catch-all route to serve the frontend application for any route
 app.use((req: Request, res: Response) => {
     const indexPath = path.join(staticPath, 'index.html');
-    console.log(`Attempting to serve index.html from: ${indexPath}`);
     res.sendFile(indexPath, (err) => {
         if (err) {
             console.error('Error serving index.html:', err);
