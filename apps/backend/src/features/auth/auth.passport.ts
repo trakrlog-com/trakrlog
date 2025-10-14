@@ -105,7 +105,7 @@ export const isApiKeyAuthenticated = async (
     apiKeyFound !== null &&
     DateTime.fromJSDate(apiKeyFound.apiKeyExpiresOn!) > DateTime.now();
 
-  if (!keys.AUTH_PROVIDER || isValid) {
+  if (isValid) {
     return next();
   }
 
