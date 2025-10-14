@@ -61,7 +61,7 @@ export const Hero = () => {
               <b className="font-semibold text-white">TrakrLog</b> captures
               every detail around your game or saas.
             </p>
-            {!import.meta.env.VITE_WAITLISTENABLED && (
+            {import.meta.env.VITE_WAITLISTENABLED === "false" && (
               <div className="mt-10 flex items-center justify-center gap-x-6">
                 <a href="/login" className="main-button p-3">
                   Get Started for free

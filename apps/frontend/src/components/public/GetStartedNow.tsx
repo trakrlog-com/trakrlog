@@ -18,18 +18,18 @@ const GetStartedNow: React.FC<GetStartedNowProps> = () => {
                             Ready to get started?
                         </h2>
 
-                        {!import.meta.env.VITE_WAITLISTENABLED ? (
-                        <div className="mt-10 flex items-center justify-center gap-x-6">
-                            <a
-                                href="/login"
-                                className="main-button p-3"
-                            >
-                                Get Started for free
-                            </a>
-                        </div>) : (
-                        <div className="mt-10 flex items-center justify-center gap-x-6">
-                            <JoinWaitlist />
-                        </div>)}
+                        {import.meta.env.VITE_WAITLISTENABLED === "false" ? (
+                            <div className="mt-10 flex items-center justify-center gap-x-6">
+                                <a
+                                    href="/login"
+                                    className="main-button p-3"
+                                >
+                                    Get Started for free
+                                </a>
+                            </div>) : (
+                            <div className="mt-10 flex items-center justify-center gap-x-6">
+                                <JoinWaitlist />
+                            </div>)}
                     </div>
                 </div>
             </div>
