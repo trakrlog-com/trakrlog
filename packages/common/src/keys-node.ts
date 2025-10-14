@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export const BACKEND_URL = "http://localhost:3000";
+export const BACKEND_URL = process.env.BACKEND_URL as string;
 
 export const GOOGLE_CLIENT_ID = process.env.VITE_GOOGLECLIENTID as string;
 export const GOOGLE_CLIENT_SECRET = process.env.VITE_GOOGLECLIENTSECRET as string;

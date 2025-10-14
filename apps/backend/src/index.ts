@@ -108,7 +108,7 @@ app.use((req: Request, res: Response) => {
 
 app.listen(port, () => {
   console.log(
-    `⚡️[server]: Server is running at http://localhost:${port} , env: ${env}`,
+    `⚡️[server]: Server is running at ${keys.BACKEND_URL}:${port} , env: ${env}`,
   );
 }).on('error', (err) => {
   console.error('⚡️[server]: Failed to start server:', err);
