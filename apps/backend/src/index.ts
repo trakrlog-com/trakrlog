@@ -53,17 +53,28 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use(
-  session({
-    secret: keys.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
-    }
-  }),
-);
+// Session configuration for Azure deployment
+const isProduction = process.env.NODE_ENV === 'production';
+const sessionConfig = {
+  secret: keys.SESSION_SECRET,
+  resave: false, // Don't save session if unmodified
+  saveUninitialized: false, // Don't create session until something stored
+  cookie: {
+    secure: isProduction, // HTTPS only in production
+    httpOnly: true, // Prevent XSS attacks
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: isProduction ? 'none' as const : 'lax' as const // Azure requires 'none' for cross-site cookies
+  },
+  name: 'trakrlog.sid' // Custom session name
+};
+
+console.log("=== Session Configuration ===");
+console.log("Environment:", process.env.NODE_ENV);
+console.log("Secure cookies:", sessionConfig.cookie.secure);
+console.log("SameSite:", sessionConfig.cookie.sameSite);
+console.log("Session secret:", keys.SESSION_SECRET ? 'SET' : 'NOT SET');
+
+app.use(session(sessionConfig));
 
 passportAuth.initialise(app);
 app.use(passport.session());

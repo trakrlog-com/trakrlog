@@ -17,26 +17,53 @@ export const initialise = (app: Express) => {
   // so the browser will remember the user when login
   passport.serializeUser(
     (_req: any, user: any, done: (arg0: null, arg1: any) => void) => {
+      console.log("=== Serialize User ===");
+      console.log("User to serialize:", user ? {
+        id: user._id || user.id,
+        email: user.email
+      } : null);
       done(null, user);
     }
   );
 
   // deserialize the cookieUserId to user in the database
   passport.deserializeUser(async (id: string, done) => {
-    const currentUser = await userService.getUser({ userId: id });
-    done(currentUser === null ? "user not found." : null, {
-      user: currentUser,
-    });
+    console.log("=== Deserialize User ===");
+    console.log("Deserializing user ID:", id);
+    
+    try {
+      const currentUser = await userService.getUser({ userId: id });
+      console.log("Found user:", currentUser ? {
+        id: currentUser._id,
+        email: currentUser.email
+      } : null);
+      
+      done(currentUser === null ? "user not found." : null, {
+        user: currentUser,
+      });
+    } catch (error) {
+      console.error("Deserialize error:", error);
+      done(error, null);
+    }
   });
 
   console.log(" -> Google auth active");
+  
+  // Debug OAuth configuration
+  const callbackURL = (env !== "development" ? keys.BACKEND_URL : "") + "/auth/google/callback";
+  console.log("=== OAuth Configuration Debug ===");
+  console.log("Environment:", env);
+  console.log("Backend URL:", keys.BACKEND_URL);
+  console.log("Callback URL:", callbackURL);
+  console.log("Client ID:", keys.GOOGLE_CLIENT_ID ? `${keys.GOOGLE_CLIENT_ID.substring(0, 20)}...` : 'NOT SET');
+  console.log("Client Secret:", keys.GOOGLE_CLIENT_SECRET ? 'SET' : 'NOT SET');
+  
   passport.use(
     new GoogleStrategy(
       {
         clientID: keys.GOOGLE_CLIENT_ID,
         clientSecret: keys.GOOGLE_CLIENT_SECRET,
-        callbackURL:
-          (env !== "development" ? keys.BACKEND_URL : "") + "/auth/google/callback",
+        callbackURL: callbackURL,
         scope: ["profile", "email"],
         state: true,
       },
@@ -47,6 +74,16 @@ export const initialise = (app: Express) => {
         done: (error: any, user?: UserModel) => void
       ) => {
         try {
+          console.log("=== Google Strategy Callback ===");
+          console.log("Access Token length:", accessToken?.length || 0);
+          console.log("Profile ID:", profile.id);
+          console.log("Profile JSON:", {
+            email: profile._json.email,
+            name: profile._json.name,
+            email_verified: profile._json.email_verified,
+            picture: profile._json.picture
+          });
+          
           // Use the service layer to handle business logic
           const userData = await authController.createUser(
             profile._json.email,
@@ -54,8 +91,22 @@ export const initialise = (app: Express) => {
             profile._json.picture,
             profile._json.email_verified
           );
-          return done(null, userData!);
+          
+          console.log("User creation result:", userData ? 'Success' : 'Failed');
+          console.log("User data:", userData ? {
+            id: userData._id,
+            email: userData.email,
+            name: userData.name
+          } : null);
+          
+          if (!userData) {
+            console.error("User creation failed - email not verified or other issue");
+            return done(new Error("User creation failed"));
+          }
+          
+          return done(null, userData);
         } catch (error) {
+          console.error("Google Strategy error:", error);
           return done(error);
         }
       }
