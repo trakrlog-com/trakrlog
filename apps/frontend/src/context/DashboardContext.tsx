@@ -15,6 +15,8 @@ type DashboardContextType = {
     setEvents: (events: Event[]) => void;
     setProjects: (projects: Project[]) => void;
     setChannels: (channels: Channel[]) => void;
+    channelsOrProjectsUpdateToggle: boolean;
+    setChannelOrProjectUpdateToggle: (updated: boolean) => void;
 }
 
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
@@ -26,7 +28,8 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
     const [projects, setProjects] = useState<Project[]>([]);
     const [channels, setChannels] = useState<Channel[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-
+    const [channelsOrProjectsUpdateToggle, setChannelOrProjectUpdateToggle] = useState(false);
+    
     const clearSelections = () => {
         setSelectedProject(null);
         setSelectedChannel(null);
@@ -46,7 +49,9 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
         channels,
         setEvents,
         setProjects,
-        setChannels
+        setChannels,
+        setChannelOrProjectUpdateToggle,
+        channelsOrProjectsUpdateToggle
     };
 
     return (

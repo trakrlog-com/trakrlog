@@ -7,7 +7,7 @@ export const CreateChannelDialog: React.FC<{
     open: boolean,
     setOpen: (open: boolean) => void
 }> = ({ open, setOpen }) => {
-    const { selectedProject } = useDashboard();
+    const { selectedProject, setChannelOrProjectUpdateToggle, channelsOrProjectsUpdateToggle } = useDashboard();
     const [channelName, setChannelName] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -29,6 +29,7 @@ export const CreateChannelDialog: React.FC<{
             }
 
             showNotification(`Channel ${name} added successfully!`, 'success');
+            setChannelOrProjectUpdateToggle(!channelsOrProjectsUpdateToggle);
             return true;
         } catch (err) {
             showNotification('Failed to add channel', 'error');
