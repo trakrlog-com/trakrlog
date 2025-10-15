@@ -71,23 +71,7 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
 }
 
 export const loginFailed = (req: Request, res: Response) => {
-    console.log("=== Login Failed Debug ===");
-    console.log("Query params:", req.query);
-    console.log("Session:", req.session);
-    console.log("User:", req.user);
-    console.log("Is authenticated:", req.isAuthenticated());
-    
-    const errorType = req.query.error as string || 'unknown';
-    console.log("Error type:", errorType);
-    
-    // In production, you might want to redirect to a proper error page
-    // For now, let's show the error information
-    res.status(401).json({
-        error: 'Authentication failed',
-        type: errorType,
-        timestamp: new Date().toISOString(),
-        sessionId: req.sessionID
-    });
+    res.redirect(keys.BACKEND_URL + "/unauthorized");
 }
 
 export const setApiKey = async (req: Request, res: Response) => {
