@@ -19,12 +19,12 @@
   .sidebar-icon {
     @apply  flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto
        bg-[var(--dark-element)] hover:bg-gray-900
-        text-[var(--text-light)] hover:text-white hover:rounded-xl rounded-lg
+        text-white hover:text-white hover:rounded-xl rounded-lg
         transition-all duration-300 ease-linear cursor-pointer shadow-lg;
   }
 
   .sidebar-icon-selected {
-    @apply bg-green-700/85 text-white hover:text-white rounded-xl cursor-pointer shadow-lg;
+    @apply bg-[var(--dark-orange-accent)] text-white hover:text-white rounded-xl cursor-pointer shadow-lg;
   }
 
   .sidebar-tooltip {

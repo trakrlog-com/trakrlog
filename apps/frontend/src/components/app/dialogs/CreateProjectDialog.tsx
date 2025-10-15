@@ -145,10 +145,11 @@ export const CreateProjectDialog: React.FC<{
                                                 focus-within:outline-offset-2 focus-within:outline-[var(--dark-orange-accent)]
                                                 hover:text-[var(--dark-orange-accent)]/40"
                                             >
-                                                <span>Upload a file</span>
+                                                 <span >Click to </span>
+                                                <span className="pl-1">upload a file</span>
                                                 <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleFileChange} />
                                             </label>
-                                            <p className="pl-1">or drag and drop</p>
+                                           
                                         </div>
                                         <p className="text-xs/5 text-gray-400">PNG, JPG up to 2MB</p>
                                     </div>

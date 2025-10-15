@@ -10,8 +10,8 @@ const EmptyState: React.FC<{ message: string, subMessage: string, cta: string }>
     const [openCreateChannel, setOpenCreateChannel] = useState(false);
 
     return (
-        <div className="h-full w-full flex items-center justify-center overflow-hidden">
-            <div className="text-center max-w-sm mx-auto px-4">
+        <div className="w-full    overflow-hidden">
+            <div className="text-center mt-7   mx-7 px-4 border border-white/25 rounded-2xl border-dashed py-10">
                 <BsLightbulb className="mx-auto size-12 text-[var(--dark-orange-accent)]" />
                 <h2 className="mt-2 text-lg font-semibold text-white">{message}</h2>
                 <p className="mt-1 text-gray-400">{subMessage}</p>

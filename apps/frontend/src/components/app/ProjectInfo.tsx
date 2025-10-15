@@ -9,7 +9,7 @@ export const ProjectInfo: React.FC = () => {
 
     return (
         <>
-            <h3 className="text-lg text-center font-semibold text-white my-5" >{selectedProject?.name}</h3>
+            <h3 className="text-lg px-4 ml-4 font-semibold text-white my-5" >{selectedProject?.name}</h3>
         </>
     );
 };
