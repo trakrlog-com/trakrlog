@@ -53,6 +53,8 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+app.set('trust proxy', 1); 
+
 // Session configuration for Azure deployment
 const isProduction = process.env.NODE_ENV === 'production';
 const sessionConfig = {
