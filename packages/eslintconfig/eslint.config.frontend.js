@@ -1,6 +1,7 @@
 import js from "@eslint/js";
 import globals from "globals";
 import pluginReact from "eslint-plugin-react";
+import pluginReactHooks from 'eslint-plugin-react-hooks';
 import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
 import { defineConfig, globalIgnores } from "eslint/config";
@@ -11,11 +12,12 @@ export default defineConfig([
   tseslint.configs.recommended,
   {
     files: ["**/*.{ts,tsx}"],
-    plugins: { react: pluginReact },
+    plugins: { react: pluginReact,  'react-hooks': pluginReactHooks },
     languageOptions: {
-      ecmaVersion: 2020,
+      ...pluginReact.configs.flat.recommended.languageOptions,
       globals: globals.browser,
     },
+    settings: { react: { version: 'detect' } },
     rules: {
       ...pluginReact.configs.recommended.rules,
       "react/react-in-jsx-scope": "off",
