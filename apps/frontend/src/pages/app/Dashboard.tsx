@@ -29,7 +29,7 @@ export type Event = {
 }
 
 export const Dashboard: React.FC = () => {
-    const { events, projects, channels, setEvents, setProjects, setChannels, selectedChannel, selectedProject } = useDashboard();
+    const { events, projects, channels, setEvents, setProjects, setChannels, selectedChannel, selectedProject, channelsOrProjectsUpdateToggle } = useDashboard();
     const [loadingEvents, setLoadingEvents] = useState(true);
     const [loadingProjectsAndChannels, setLoadingProjectsChannels] = useState(true);
     const [,setError] = useState<string | null>(null);
@@ -96,9 +96,8 @@ export const Dashboard: React.FC = () => {
                 console.error('Error fetching projects or channels:', err);
             }
         };
-       
-        fetchProjectsAndChannels();
-    }, []);
+       fetchProjectsAndChannels();
+    }, [channelsOrProjectsUpdateToggle]);
 
     if (loadingEvents || loadingProjectsAndChannels) {
         return (
