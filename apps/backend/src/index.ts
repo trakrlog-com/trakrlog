@@ -16,7 +16,6 @@ import { projectsRoutes } from './features/projects';
 import { channelRoutes } from './features/channels';
 import { eventRoutes } from './features/events';
 import { waitlistRoutes } from './features/waitlist';
-import { fileURLToPath } from 'url';
 
 // Load environment variables
 dotenv.config();
@@ -30,7 +29,7 @@ const port = parseInt(process.env.PORT || '4000', 10);
 connectDB();
 
 // Middleware
-// app.use(helmet()); // Security headers
+app.use(helmet()); // Security headers
 
 // // Simple helmet configuration with relaxed CSP for React/Vite
 // app.use(helmet({

@@ -97,7 +97,7 @@ const JoinWaitlist: React.FC = () => {
                 >
                     {isSubmitted && (
                         <p className="text-md text-green-400">
-                            Thanks for joining!✨ We'll be in touch soon when we launch!
+                            {'Thanks for joining!✨ We\'ll be in touch soon when we launch!'}
                         </p>
                     )}
                     {error && (

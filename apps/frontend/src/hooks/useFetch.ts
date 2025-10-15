@@ -39,7 +39,7 @@ export const useFetch = () => {
                 console.log(ex);
                 params.onError({} as E);
             } finally {
-                params.onFinally ? params.onFinally() : () => {};
+                if (params.onFinally) params.onFinally();
             }
         })();
     }, []);

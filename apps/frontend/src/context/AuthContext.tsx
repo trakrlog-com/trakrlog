@@ -42,9 +42,7 @@ export const initialState: AppContext = {
 
 const appContext = createContext<AppContext>(initialState);
 
-export const AuthContextProvider: React.FC<{ children: ReactNode }> = (
-    props,
-) => {
+export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [userData, setUserData] = useState<UserState>();
     const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
     const { doFetch } = useFetch();
@@ -86,7 +84,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = (
                 },
             }}
         >
-            {!loadingInitial && props.children}
+            {!loadingInitial && children}
         </appContext.Provider>
     );
 };
