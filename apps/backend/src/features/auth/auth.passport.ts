@@ -22,8 +22,8 @@ export const initialise = (app: Express) => {
   );
 
   // deserialize the cookieUserId to user in the database
-  passport.deserializeUser(async (id: string, done) => {
-    const currentUser = await userService.getUser({ userId: id });
+  passport.deserializeUser(async (user: any, done) => {
+    const currentUser = await userService.getUser({ email: user.email });
     done(currentUser === null ? "user not found." : null, {
       user: currentUser,
     });
