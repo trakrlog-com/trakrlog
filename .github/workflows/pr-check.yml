@@ -34,6 +34,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
       - name: Build with Turbo
         run: npx turbo run build
 
