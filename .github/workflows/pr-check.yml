@@ -40,5 +40,5 @@ jobs:
       - name: Build with Turbo
         run: npx turbo run build
 
-      - name: Run tests
-        run: turbo test
+      - name: Run tests with Turbo
+        run: npx turbo run test
