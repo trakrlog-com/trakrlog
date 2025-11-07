@@ -7,7 +7,8 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "start": "turbo start"
+    "start": "turbo start",
+    "test": "turbo test"
   },
   "keywords": [],
   "author": "",

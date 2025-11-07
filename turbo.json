@@ -16,6 +16,10 @@
     "start": {
       "cache": true,
       "persistent": true
+    },
+    "test": {
+      "dependsOn": ["^test"],
+      "outputs": []
     }
   }
 }
