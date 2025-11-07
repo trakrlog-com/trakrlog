@@ -40,5 +40,5 @@ jobs:
       - name: Build with Turbo
         run: npx turbo run build
 
-      - name: Run tests
-        run: pnpm test || echo "No tests found or test script not defined."
+      - name: Run tests with Turbo
+        run: npx turbo run test
