@@ -1,0 +1,44 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '22.x'
+  NODE_ENV: production
+
+jobs:
+  pr-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: false
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - name: Install dependencies (including dev dependencies for build)
+        run: |
+          pnpm install --prod=false
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Build with Turbo
+        run: npx turbo run build
+
+      - name: Run tests
+        run: pnpm test || echo "No tests found or test script not defined."

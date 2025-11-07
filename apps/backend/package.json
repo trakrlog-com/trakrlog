@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@trakrlog/common": "workspace:*",
+    "@trakrlog/eslintconfig": "workspace:*",
     "@types/luxon": "^3.7.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

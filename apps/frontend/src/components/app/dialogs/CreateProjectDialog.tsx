@@ -27,7 +27,7 @@ export const CreateProjectDialog: React.FC<{
     file: File,
     cb: (base64: string | ArrayBuffer | null) => void
   ) => {
-    let reader = new FileReader();
+    const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = function () {
       cb(reader.result);
@@ -39,7 +39,7 @@ export const CreateProjectDialog: React.FC<{
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      var file = e.target.files[0];
+      const file = e.target.files[0];
       if (file.size > 2 * 1024 * 1024) {
         // 2MB
         setError("File size exceeds 2MB limit");

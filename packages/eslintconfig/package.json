@@ -1,0 +1,24 @@
+{
+  "name": "@trakrlog/eslintconfig",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Centralized ESLint config for TrakrLog monorepo projects.",
+  "exports": {
+    "./backend": "./eslint.config.backend.js",
+    "./frontend": "./eslint.config.frontend.js",
+    "./common": "./eslint.config.common.js"
+  },
+  "keywords": ["eslint", "config", "monorepo", "trakrlog"],
+  "author": "TrakrLog Contributors",
+  "license": "MIT",
+  "peerDependencies": {
+    "eslint": ">=9",
+    "@eslint/js": ">=9",
+    "typescript-eslint": ">=8",
+    "eslint-plugin-react-hooks": ">=5",
+    "eslint-plugin-react-refresh": ">=0.4",
+    "globals": ">=16",
+    "eslint-config-prettier": ">=9",
+    "eslint-plugin-react": "^7.37.5"
+  }
+}
