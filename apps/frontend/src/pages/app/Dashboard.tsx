@@ -115,7 +115,6 @@ export const Dashboard: React.FC = () => {
                 <div className="flex h-full">
                     <ProjectsBar projects={projects} />
                     <ChannelBar channels={channels} />
-
                     {projects.length === 0 ? 
                         <EmptyState cta="project" message="No projects found" subMessage="Add a project to get started." /> : 
                     selectedProject == null ? (

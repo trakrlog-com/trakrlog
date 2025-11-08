@@ -2,7 +2,7 @@ import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { useAppContext } from "../../context/AuthContext";
 import React from "react";
 
-export const AuthenticatedUser: React.FC = () => {
+export const AuthenticatedUser: React.FC<{ setOpenSettings: (open: boolean) => void }> = ({ setOpenSettings }) => {
   const { authContext } = useAppContext();
   const { userData, logoutClick } = authContext;
 
@@ -11,7 +11,7 @@ export const AuthenticatedUser: React.FC = () => {
   }
 
   const userNavigation = [
-    { name: "Settings", href: "/settings" },
+    { name: "Settings", action: () => setOpenSettings(true) },
     { name: "Sign out", action: logoutClick },
   ];
 
@@ -43,7 +43,6 @@ export const AuthenticatedUser: React.FC = () => {
             <MenuItem key={item.name}>
               <a
                 onClick={item.action ?? (() => {})}
-                href={item.href ?? "#"}
                 className="block px-4 py-2 
                   text-sm text-gray-700 data-focus:bg-gray-100 
                   data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5"
