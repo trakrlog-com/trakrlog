@@ -5,7 +5,8 @@ export const Hero = () => {
       <div className="relative isolate px-6 pt-14 lg:px-8">
         <svg
           aria-hidden="true"
-          className="absolute inset-0 -z-10 size-full mask-[radial-gradient(100%_100%_at_top_right,white,transparent)] stroke-white/10"
+          className="absolute inset-0 -z-10 size-full 
+              mask-[radial-gradient(100%_100%_at_top_right,white,transparent)] stroke-white/10"
         >
           <defs>
             <pattern
@@ -33,7 +34,7 @@ export const Hero = () => {
           />
         </svg>
         <div className="mx-auto max-w-4xl py-32 sm:py-48 lg:py-56">
-          <div className="text-center">
+          <div className="">
             <h1 className="text-5xl font-bold tracking-tight text-balance text-white sm:text-8xl">
               Events tracking
               <br />
@@ -56,13 +57,13 @@ export const Hero = () => {
                 </span>
               </span>{" "}
             </h1>
-            <p className="mt-8 font-medium text-pretty text-gray-400 sm:text-xl/8 max-w-xl mx-auto">
+            <p className="mt-8 font-medium text-pretty text-gray-400 sm:text-xl/8 max-w-xl  ">
               From critical bugs to users behavior,{" "}
               <b className="font-semibold text-white">TrakrLog</b> captures
               every detail around your game or saas.
             </p>
             {import.meta.env.VITE_WAITLISTENABLED === "false" && (
-              <div className="mt-10 flex items-center justify-center gap-x-6">
+              <div className="mt-10 flex items-center   gap-x-6">
                 <a href="/login" className="main-button p-3">
                   Get Started for free
                 </a>

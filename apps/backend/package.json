@@ -2,10 +2,10 @@
   "name": "@trakrlog/backend",
   "version": "0.0.1",
   "private": true,
-   "type": "module",
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
-   "dev": "bun --inspect-brk=127.0.0.1:6499 --env-file=../../.env --env-file=.env run --hot src/index.ts",
+    "dev": "bun --inspect-brk=127.0.0.1:6499 --env-file=../../.env --env-file=.env run --hot src/index.ts",
     "build": "bun build src/index.ts --compile --outfile backend-app",
     "start": "./backend-app",
     "lint": "eslint ."
@@ -24,6 +24,7 @@
     "luxon": "^3.7.2",
     "mongoose": "^8.19.0",
     "passport": "^0.7.0",
+    "passport-github2": "^0.1.12",
     "passport-google-oauth20": "^2.0.0"
   },
   "devDependencies": {
@@ -35,6 +36,7 @@
     "@types/mongoose": "^5.11.97",
     "@types/node": "^24.6.2",
     "@types/passport": "^1.0.17",
+    "@types/passport-github2": "^1.2.9",
     "@types/passport-google-oauth20": "^2.0.16",
     "jest": "^30.2.0",
     "nodemon": "^3.1.10",

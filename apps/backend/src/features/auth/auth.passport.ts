@@ -1,6 +1,7 @@
 import passport from "passport";
 import { Request, Response, NextFunction, Express } from "express";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { Strategy as GithubStrategy } from 'passport-github2';
 import * as keys from "@trakrlog/common/keys-node";
 import * as userService from "./auth.service";
 import * as authController from "./auth.controller";
@@ -29,7 +30,7 @@ export const initialise = (app: Express) => {
     });
   });
 
-  // Debug OAuth configuration
+  // Google auth
   const callbackURL = (env !== "development" ? keys.BACKEND_URL : "") + "/auth/google/callback";
   passport.use(
     new GoogleStrategy(
@@ -64,7 +65,44 @@ export const initialise = (app: Express) => {
       }
     )
   );
+
+  // Github auth
+  const callbackGithubURL = (env !== "development" ? keys.BACKEND_URL : "") + "/auth/github/callback";
+  passport.use(
+    new GithubStrategy(
+      {
+        clientID: keys.GITHUB_CLIENT_ID,
+        clientSecret: keys.GITHUB_CLIENT_SECRET,
+        callbackURL: callbackGithubURL,
+        scope: ['user:email'],
+      },
+      async (
+        accessToken: string,
+        refreshToken: string,
+        profile: Profile,
+        done: (error: any, user?: UserModel) => void
+      ) => {
+        try {
+          console.log(profile);
+          // Use the service layer to handle business logic
+          const userData = await authController.createUser(
+            profile._json.email,
+            profile._json.name,
+            profile._json.picture,
+            profile._json.email_verified
+          );
+          if (!userData) {
+            return done(new Error("User creation failed"));
+          }
+          return done(null, userData);
+        } catch (error) {
+          return done(error);
+        }
+      }
+    )
+  );
 };
+ 
 
 export const isAuthenticated = (
   req: Request,
