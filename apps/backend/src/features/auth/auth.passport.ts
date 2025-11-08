@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Request, Response, NextFunction, Express } from "express";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { Strategy as GithubStrategy } from 'passport-github2';
+import { Strategy as GithubStrategy, Profile as GithubProfile } from 'passport-github2';
 import * as keys from "@trakrlog/common/keys-node";
 import * as userService from "./auth.service";
 import * as authController from "./auth.controller";
@@ -79,23 +79,24 @@ export const initialise = (app: Express) => {
       async (
         accessToken: string,
         refreshToken: string,
-        profile: Profile,
+        profile: GithubProfile,
         done: (error: any, user?: UserModel) => void
       ) => {
         try {
-          console.log(profile);
           // Use the service layer to handle business logic
           const userData = await authController.createUser(
-            profile._json.email,
-            profile._json.name,
-            profile._json.picture,
-            profile._json.email_verified
+            profile!.emails?.[0].value,
+            profile!.displayName || profile!.username,
+            profile!.photos?.[0].value,
+            true // Github does not provide email verified status
           );
           if (!userData) {
+            console.error("User creation failed");
             return done(new Error("User creation failed"));
           }
           return done(null, userData);
         } catch (error) {
+          console.error(error);
           return done(error);
         }
       }
