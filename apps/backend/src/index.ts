@@ -29,22 +29,26 @@ const port = parseInt(process.env.PORT || '4000', 10);
 connectDB();
 
 // Middleware
-app.use(helmet()); // Security headers
-
-// // Simple helmet configuration with relaxed CSP for React/Vite
-// app.use(helmet({
-//   contentSecurityPolicy: {
-//     useDefaults: true,
-//     directives: {
-//       "script-src": ["'self'", "'unsafe-inline'", "https:"],
-//       "script-src-elem": ["'self'", "'unsafe-inline'", "https:"],
-//       "style-src": ["'self'", "'unsafe-inline'", "https:"],
-//       "img-src": ["'self'", "https:", "data:", "blob:"],
-//       "font-src": ["'self'", "https:", "data:"],
-//       "connect-src": ["'self'", "https:", "ws:", "wss:"]
-//     }
-//   }
-// }));
+app.use(helmet({
+  contentSecurityPolicy: {
+    useDefaults: true,
+    directives: {
+      "default-src": ["'self'"],
+      "script-src": ["'self'", "'unsafe-inline'", "https:"],
+      "script-src-elem": ["'self'", "'unsafe-inline'", "https:"],
+      "style-src": ["'self'", "'unsafe-inline'", "https:"],
+      "img-src": [
+        "'self'",
+        "data:",
+        "blob:",
+        "https:",
+        "https://avatars.githubusercontent.com",
+      ],
+      "font-src": ["'self'", "https:", "data:"],
+      "connect-src": ["'self'", "https:", "ws:", "wss:"],
+    },
+  },
+}));
 
 app.use(cookieParser());
 

@@ -1,8 +1,9 @@
-import { BsGearFill, BsFillSquareFill, BsFillPlusCircleFill } from 'react-icons/bs';
+import { BsFillSquareFill, BsFillPlusCircleFill } from 'react-icons/bs';
 import { useDashboard } from '../../context/DashboardContext';
 import type { Project } from '../../pages/app/Dashboard';
 import { useState } from 'react';
 import {CreateProjectDialog} from './dialogs/CreateProjectDialog';
+import { AuthenticatedUser } from './AuthenticatedUser';
 
 
 export const ProjectsBar = ({ projects }: { projects: Project[] }) => {
@@ -29,8 +30,10 @@ export const ProjectsBar = ({ projects }: { projects: Project[] }) => {
         <Divider />
         <SideBarIcon key={"add-project"} icon={<BsFillPlusCircleFill size="24" />} text={"Add Project"}
           onClick={() => { setOpen(true); }} />
-        <SideBarIcon icon={<BsGearFill size="22" />} text={"Settings"} />
+        <AuthenticatedUser/>
       </div>
+
+
       <CreateProjectDialog open={open} setOpen={setOpen} />
     </>
   );

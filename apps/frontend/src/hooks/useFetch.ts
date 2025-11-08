@@ -29,7 +29,7 @@ export const useFetch = () => {
                 });
                 const respJson = await resp.json();
                 if (respJson.success as boolean) {
-                    const respData = respJson.data as T;
+                    const respData = respJson as T;
                     params.onSuccess(respData);
                 } else {
                     const respData = respJson.error as E;
