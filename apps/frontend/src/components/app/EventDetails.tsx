@@ -27,7 +27,7 @@ export const EventDetails: React.FC = () => {
                 <div className=" px-6 space-y-6">
                     <button
                         onClick={handleBack}
-                        className="text-white/80 hover:text-white transition-colors font-bold"
+                        className="text-white/80 hover:text-white transition-colors font-bold cursor-pointer"
                     >
                         <BsArrowLeft size="25" />
                     </button>

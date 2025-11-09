@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNotification } from "../../context/NotificationContext";
+import { BsArrowLeft } from "react-icons/bs";
 
 export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const [apiKey, setApiKey] = useState("");
@@ -53,32 +54,32 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   };
 
   return (
-    <div className="flex h-full w-full flex-1 flex-col overflow-y-auto bg-[var(--dark-bg)] px-8 py-10">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-white">Settings</h1>
-          <p className="mt-1 text-sm text-gray-400">
-            Manage your workspace configuration and API access.
-          </p>
-        </div>
-        {onBack && (
-          <button
-            type="button"
-            onClick={onBack}
-            className="rounded-2xl px-3 py-2 text-sm font-medium text-gray-300 transition-colors hover:text-white"
-          >
-            Back to dashboard
-          </button>
-        )}
+    <div className="flex h-full w-full flex-1 flex-col overflow-y-auto bg-[var(--dark-bg)] p-5">
+      <button
+        onClick={onBack}
+        className="text-white/80 hover:text-white transition-colors font-bold cursor-pointer"
+      >
+        <BsArrowLeft size="25" />
+      </button>
+
+      <div className="mt-4">
+        <h1 className="text-2xl font-semibold text-white">Settings</h1>
+        <p className="mt-1 text-sm text-gray-400">
+          Manage your settings and API access.
+        </p>
       </div>
 
       <div className="mt-10 max-w-xl rounded-3xl border border-white/10 bg-white/5 px-8 py-10">
         <h2 className="text-lg font-semibold text-white">API Access</h2>
         <p className="mt-1 text-sm text-gray-400">
-          Secure your integrations by updating the API key used by your channels.
+          Secure your integrations by updating the API key used by your
+          channels.
         </p>
 
-        <label className="mt-6 block text-sm font-medium text-gray-200" htmlFor="api-key">
+        <label
+          className="mt-6 block text-sm font-medium text-gray-200"
+          htmlFor="api-key"
+        >
           API key
         </label>
         <input
@@ -94,15 +95,7 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
 
         <div className="mt-8 flex items-center gap-3">
-          {onBack && (
-            <button
-              type="button"
-              onClick={onBack}
-              className="rounded-2xl px-4 py-2 text-sm font-semibold text-gray-300 transition-colors hover:text-white"
-            >
-              Cancel
-            </button>
-          )}
+          
           <button
             type="button"
             onClick={handleSaveApiKey}
