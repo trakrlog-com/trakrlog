@@ -9,12 +9,16 @@ type ProjectsBarProps = {
   projects: Project[];
   onOpenSettings: () => void;
   onProjectSelected?: () => void;
+  onOpenOverview?: () => void;
+  isOverviewActive?: boolean;
 };
 
 export const ProjectsBar = ({
   projects,
   onOpenSettings,
   onProjectSelected,
+  onOpenOverview,
+  isOverviewActive,
 }: ProjectsBarProps) => {
   const { setSelectedProject, setSelectedChannel, selectedProject } =
     useDashboard();
@@ -35,6 +39,10 @@ export const ProjectsBar = ({
             />
           }
           text={"Dashboard"}
+          onClick={() => {
+            onOpenOverview?.();
+          }}
+          isSelected={isOverviewActive}
         />
         <Divider />
         {projects.map((project) => (

@@ -5,6 +5,9 @@ import { ChannelEventsList } from '../../components/app/ChannelEventsList';
 import { useDashboard } from '../../context/DashboardContext';
 import EmptyState from '../../components/app/EmptyState';
 import { Settings } from '../../components/app/Settings';
+import { AtGlance } from '../../components/app/AtGlance';
+
+type DashboardView = 'default' | 'settings' | 'glance';
 
 export type Project = {
     _id: string;
@@ -34,7 +37,7 @@ export const Dashboard: React.FC = () => {
     const [loadingEvents, setLoadingEvents] = useState(true);
     const [loadingProjectsAndChannels, setLoadingProjectsChannels] = useState(true);
     const [,setError] = useState<string | null>(null);
-    const [showSettings, setShowSettings] = useState(false);
+    const [activeView, setActiveView] = useState<DashboardView>('default');
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -111,30 +114,46 @@ export const Dashboard: React.FC = () => {
 
 
 
+    const renderMainContent = () => {
+        if (activeView === 'glance') {
+            return (
+                <div className="flex-1 overflow-y-auto">
+                    <AtGlance />
+                </div>
+            );
+        }
+
+        if (activeView === 'settings') {
+            return <Settings onBack={() => setActiveView('default')} />;
+        }
+
+        return (
+            <>
+                <ChannelBar channels={channels} />
+                {projects.length === 0 ? (
+                    <EmptyState cta="project" message="No projects found" subMessage="Add a project to get started." />
+                ) : selectedProject == null ? (
+                    <EmptyState cta="" message="No project selected" subMessage="Select a project to view events." />
+                ) : (
+                    <ChannelEventsList events={events} />
+                )}
+            </>
+        );
+    };
+
     return (
         <div className="fixed inset-0 min-h-screen w-full bg-[var(--dark-bg)]">
             <div className="h-full mx-auto max-w-4xl  bg-[var(--dark-bg)]">
                 <div className="flex h-full">
                     <ProjectsBar
                         projects={projects}
-                        onOpenSettings={() => setShowSettings(true)}
-                        onProjectSelected={() => setShowSettings(false)}
+                        onOpenSettings={() => setActiveView('settings')}
+                        onProjectSelected={() => setActiveView('default')}
+                        onOpenOverview={() => setActiveView('glance')}
+                        isOverviewActive={activeView === 'glance'}
                     />
 
-                    {showSettings ? (
-                        <Settings onBack={() => setShowSettings(false)} />
-                    ) : (
-                        <>
-                            <ChannelBar channels={channels} />
-                            {projects.length === 0 ? (
-                                <EmptyState cta="project" message="No projects found" subMessage="Add a project to get started." />
-                            ) : selectedProject == null ? (
-                                <EmptyState cta="" message="No project selected" subMessage="Select a project to view events." />
-                            ) : (
-                                <ChannelEventsList events={events} />
-                            )}
-                        </>
-                    )}
+                    {renderMainContent()}
                 </div>
             </div>
         </div>
