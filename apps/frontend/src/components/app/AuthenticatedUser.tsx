@@ -2,18 +2,13 @@ import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { useAppContext } from "../../context/AuthContext";
 import React from "react";
 
-export const AuthenticatedUser: React.FC<{ setOpenSettings: (open: boolean) => void }> = ({ setOpenSettings }) => {
+export const AuthenticatedUser: React.FC<{ onOpenSettings: () => void }> = ({ onOpenSettings }) => {
   const { authContext } = useAppContext();
   const { userData, logoutClick } = authContext;
 
   if (!userData?.authenticated || !userData.userData) {
     return null; // or render a fallback
   }
-
-  const userNavigation = [
-    { name: "Settings", action: () => setOpenSettings(true) },
-    { name: "Sign out", action: logoutClick },
-  ];
 
   return (
     <>
@@ -39,18 +34,34 @@ export const AuthenticatedUser: React.FC<{ setOpenSettings: (open: boolean) => v
           data-enter:ease-out data-leave:duration-75 
           data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
         >
-          {userNavigation.map((item) => (
-            <MenuItem key={item.name}>
-              <a
-                onClick={item.action ?? (() => {})}
-                className="block px-4 py-2 
+          <MenuItem>
+            <a
+              href="#"
+              onClick={(event) => {
+                event.preventDefault();
+                onOpenSettings();
+              }}
+              className="block px-4 py-2 
                   text-sm text-gray-700 data-focus:bg-gray-100 
                   data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5"
-              >
-                {item.name}
-              </a>
-            </MenuItem>
-          ))}
+            >
+              Settings
+            </a>
+          </MenuItem>
+          <MenuItem>
+            <a
+              href="#"
+              onClick={(event) => {
+                event.preventDefault();
+                logoutClick();
+              }}
+              className="block px-4 py-2 
+                  text-sm text-gray-700 data-focus:bg-gray-100 
+                  data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5"
+            >
+              Sign out
+            </a>
+          </MenuItem>
         </MenuItems>
       </Menu>
     </>

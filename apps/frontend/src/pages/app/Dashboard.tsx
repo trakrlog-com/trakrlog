@@ -4,6 +4,7 @@ import { ChannelBar } from '../../components/app/ChannelBar';
 import { ChannelEventsList } from '../../components/app/ChannelEventsList';
 import { useDashboard } from '../../context/DashboardContext';
 import EmptyState from '../../components/app/EmptyState';
+import { Settings } from '../../components/app/Settings';
 
 export type Project = {
     _id: string;
@@ -33,6 +34,7 @@ export const Dashboard: React.FC = () => {
     const [loadingEvents, setLoadingEvents] = useState(true);
     const [loadingProjectsAndChannels, setLoadingProjectsChannels] = useState(true);
     const [,setError] = useState<string | null>(null);
+    const [showSettings, setShowSettings] = useState(false);
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -113,17 +115,29 @@ export const Dashboard: React.FC = () => {
         <div className="fixed inset-0 min-h-screen w-full bg-[var(--dark-bg)]">
             <div className="h-full mx-auto max-w-4xl  bg-[var(--dark-bg)]">
                 <div className="flex h-full">
-                    <ProjectsBar projects={projects} />
-                    <ChannelBar channels={channels} />
-                    {projects.length === 0 ? 
-                        <EmptyState cta="project" message="No projects found" subMessage="Add a project to get started." /> : 
-                    selectedProject == null ? (
-                            <EmptyState cta="" message="No project selected" subMessage="Select a project to view events." />
+                    <ProjectsBar
+                        projects={projects}
+                        onOpenSettings={() => setShowSettings(true)}
+                        onProjectSelected={() => setShowSettings(false)}
+                    />
+
+                    {showSettings ? (
+                        <Settings onBack={() => setShowSettings(false)} />
                     ) : (
-                        <ChannelEventsList events={events} />
+                        <>
+                            <ChannelBar channels={channels} />
+                            {projects.length === 0 ? (
+                                <EmptyState cta="project" message="No projects found" subMessage="Add a project to get started." />
+                            ) : selectedProject == null ? (
+                                <EmptyState cta="" message="No project selected" subMessage="Select a project to view events." />
+                            ) : (
+                                <ChannelEventsList events={events} />
+                            )}
+                        </>
                     )}
                 </div>
             </div>
         </div>
     );
 };
+

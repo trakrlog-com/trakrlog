@@ -66,7 +66,6 @@ export type ResponseModel<T extends object | null> = {
 };
 
 export const setErrorResponse = (resp: Response, error: ApiResponseCode) => {
-    console.log(error);
     resp.status(error.statusCode).json({
         success: false,
         error: error,
@@ -80,8 +79,6 @@ export const setSuccessResponse = <T extends object | null>(
     data: T,
     req?: Request,
 ) => {
-    console.log(code);
-
     const response = {
         success: true,
         data,

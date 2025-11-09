@@ -4,13 +4,21 @@ import type { Project } from "../../pages/app/Dashboard";
 import { useState } from "react";
 import { CreateProjectDialog } from "./dialogs/CreateProjectDialog";
 import { AuthenticatedUser } from "./AuthenticatedUser";
-import { SettingsDialog } from "./dialogs/SettingsDialog";
 
-export const ProjectsBar = ({ projects }: { projects: Project[] }) => {
+type ProjectsBarProps = {
+  projects: Project[];
+  onOpenSettings: () => void;
+  onProjectSelected?: () => void;
+};
+
+export const ProjectsBar = ({
+  projects,
+  onOpenSettings,
+  onProjectSelected,
+}: ProjectsBarProps) => {
   const { setSelectedProject, setSelectedChannel, selectedProject } =
     useDashboard();
   const [open, setOpen] = useState(false);
-  const [openSettings, setOpenSettings] = useState(false);
 
   return (
     <>
@@ -46,6 +54,7 @@ export const ProjectsBar = ({ projects }: { projects: Project[] }) => {
             isSelected={selectedProject?._id === project._id}
             text={project.name}
             onClick={() => {
+              onProjectSelected?.();
               setSelectedChannel(null);
               setSelectedProject(project);
             }}
@@ -60,11 +69,10 @@ export const ProjectsBar = ({ projects }: { projects: Project[] }) => {
             setOpen(true);
           }}
         />
-        <AuthenticatedUser setOpenSettings={setOpenSettings} />
+        <AuthenticatedUser onOpenSettings={onOpenSettings} />
       </div>
 
       <CreateProjectDialog open={open} setOpen={setOpen} />
-      <SettingsDialog open={openSettings} setOpen={setOpenSettings} />
     </>
   );
 };

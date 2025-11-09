@@ -38,7 +38,6 @@ export const createUser = async (email?: string, name?: string, picture?: string
         }
 
     } else {
-        console.log(`user ${currentUser.name} already registered.`);
         currentUser.imageUrl = picture;
         await userService.updateUser(currentUser);
         return currentUser;
