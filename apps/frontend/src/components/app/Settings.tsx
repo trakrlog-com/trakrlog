@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNotification } from "../../context/NotificationContext";
 import { BsArrowLeft } from "react-icons/bs";
-import { HiKey } from "react-icons/hi2";
-import { ShowApiKeyDialog } from "./dialogs/ShowApiKey";
+import { ConfirmApiKeyUpdate } from "./dialogs/ConfirmApiKeyUpdate";
 
 export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
-  const [apiKey, setApiKey] = useState("");  
-  const { showNotification } = useNotification();
+  const [apiKey, setApiKey] = useState("");
   const [open, setOpen] = useState(false);
 
   // create a effect to get the user settings
@@ -22,37 +19,6 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
     };
     fetchSettings();
   }, []);
-
-  const generateApiKey = async () => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/settings/apikey`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        showNotification("Failed to save API key", "error", "Unable to generate new API Key");
-        setApiKey("");
-        return false;
-      }
-
-      const { data } = await response.json();
-      console.log("New API Key:", data.settings.apiKey);
-      setApiKey(data.settings.apiKey);
-      setOpen(true);
-
-      return true;
-    } catch (err) {
-      showNotification("Failed to save API key", "error", "Unable to generate new API Key");
-      setApiKey("");
-      return false;
-    }
-  };
 
   return (
     <div className="flex h-full w-full flex-1 flex-col overflow-y-auto bg-[var(--dark-bg)] p-5">
@@ -83,7 +49,7 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         >
           API key
         </label>
-        <div className="flex mt-2 gap-3">
+        <div className="flex mt-2">
           <input
             autoComplete="off"
             id="api-key"
@@ -91,21 +57,29 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
             type="text"
             value={apiKey}
             readOnly
-            className=" block w-full rounded-2xl bg-white/5 px-3 py-3 text-sm text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[var(--dark-orange-accent)]"
+            className=" block w-full rounded-2xl bg-white/5 
+                px-3 py-3 text-md text-white outline-1 -outline-offset-1
+                 outline-white/10 placeholder:text-gray-500 focus:outline-2 
+                 focus:-outline-offset-2 focus:outline-[var(--dark-orange-accent)]"
             placeholder="Generate new API Key"
           />
-
+        </div>
+        <div className="mt-4 flex justify-end">
           <button
             type="button"
-            onClick={generateApiKey}
+            onClick={() => setOpen(true)}
             className="main-button inline-flex items-center justify-center px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-70"
           >
-            <HiKey size="20" className="mr-2"/><span>Generate</span>
+            <span>Regenerate</span>
           </button>
         </div>
       </div>
 
-      <ShowApiKeyDialog open={open} setOpen={setOpen} apiKey={apiKey} />
+      <ConfirmApiKeyUpdate
+        open={open}
+        setOpen={setOpen}
+        onSuccessfulUpdate={setApiKey}
+      />
     </div>
   );
 };
