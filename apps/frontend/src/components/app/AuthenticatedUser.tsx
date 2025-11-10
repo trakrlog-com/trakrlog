@@ -28,19 +28,19 @@ export const AuthenticatedUser: React.FC<{ onOpenSettings: () => void }> = ({ on
         <MenuItems
           transition
           className="absolute   z-10 mt-2 w-48 origin-top-right 
-          rounded-md bg-white py-1 shadow-lg outline outline-black/5 
+          rounded-md   py-1   outline   
           transition data-closed:scale-95 data-closed:transform 
           data-closed:opacity-0 data-enter:duration-200 
           data-enter:ease-out data-leave:duration-75 
-          data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+          data-leave:ease-in bg-gray-800 shadow-none outline-offset-1 outline-white/10"
         >
           <MenuItem>
             <a
               href="#"
               onClick={onOpenSettings} 
               className="block px-4 py-2 
-                  text-sm text-gray-700 data-focus:bg-gray-100 
-                  data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5"
+                  text-sm     
+                  data-focus:outline-hidden text-gray-300 data-focus:bg-white/5"
             >
               Settings
             </a>
@@ -50,8 +50,8 @@ export const AuthenticatedUser: React.FC<{ onOpenSettings: () => void }> = ({ on
               href="#"
               onClick={logoutClick}  
               className="block px-4 py-2 
-                  text-sm text-gray-700 data-focus:bg-gray-100 
-                  data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5"
+                  text-sm     
+                  data-focus:outline-hidden text-gray-300 data-focus:bg-white/5"
             >
               Sign out
             </a>

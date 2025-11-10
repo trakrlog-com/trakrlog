@@ -68,7 +68,7 @@ export const Features = () => {
             <div className="flex items-baseline   text-5xl font-bold 
                     tracking-tight text-pretty text-white sm:text-5xl lg:text-6xl lg:text-balance">
               
-              <span className="inline-block lg:min-w-[310px] text-left ml-4">
+              <span className="inline-block lg:min-w-[310px] text-left">
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={dynamicWords[currentIndex]}

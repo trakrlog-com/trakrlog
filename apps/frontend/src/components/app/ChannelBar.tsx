@@ -69,7 +69,7 @@ const ChannelItem = ({ channel, isSelected, onSelect }:
 
 const ChannelBlock = ({ setOpen }: { setOpen: (open: boolean) => void }) => (
     <div className='channel-block px-4 py-3 flex items-center justify-between'>
-        <div className='text-md  dark:text-gray-400 mr-auto my-auto align-middle text-gray-400'>Channels</div>
+        <div className='text-md  text-gray-400 mr-auto my-auto align-middle  '>Channels</div>
         <button
             className='p-1 hover:bg-gray-700 rounded transition-colors duration-200 cursor-pointer'
             onClick={() => { setOpen(true); }}

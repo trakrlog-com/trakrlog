@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import { useNotification } from "../../context/NotificationContext";
 import { BsArrowLeft } from "react-icons/bs";
+import { HiKey } from "react-icons/hi2";
+import { useAppContext } from "../../context/AuthContext";
+import { ShowApiKeyDialog } from "./dialogs/ShowApiKey";
 
 export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const [apiKey, setApiKey] = useState("");
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const { showNotification } = useNotification();
+  const { authContext } = useAppContext();
+  const [open, setOpen] = useState(false);
 
-  const saveApiKey = async (key: string) => {
+  const generateApiKey = async () => {
     try {
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/settings/api-key`,
@@ -17,7 +22,6 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ apiKey: key }),
         }
       );
 
@@ -27,6 +31,9 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
       }
 
       showNotification("API key saved successfully!", "success");
+      const { data } = await response.json();
+      setApiKey(data.apiKey);
+      setOpen(true);
       return true;
     } catch (err) {
       showNotification("Failed to save API key", "error");
@@ -34,24 +41,7 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
     }
   };
 
-  const handleSaveApiKey = async () => {
-    if (!apiKey.trim()) {
-      setError("API key is required");
-      return;
-    }
-
-    setIsSaving(true);
-    setError("");
-
-    try {
-      await saveApiKey(apiKey.trim());
-      setApiKey("");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save API key");
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  
 
   return (
     <div className="flex h-full w-full flex-1 flex-col overflow-y-auto bg-[var(--dark-bg)] p-5">
@@ -82,30 +72,31 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         >
           API key
         </label>
-        <input
-          autoComplete="off"
-          id="api-key"
-          name="api-key"
-          type="text"
-          value={apiKey}
-          onChange={(event) => setApiKey(event.target.value)}
-          className="mt-2 block w-full rounded-2xl bg-white/5 px-3 py-3 text-sm text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[var(--dark-orange-accent)]"
-          placeholder="Enter your new API key"
-        />
-        {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
+        <div className="flex mt-2 gap-3">
+          <input
+            autoComplete="off"
+            id="api-key"
+            name="api-key"
+            type="text"
+            value={authContext.userData?.userData.apiKey}
+            className=" block w-full rounded-2xl bg-white/5 px-3 py-3 text-sm text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[var(--dark-orange-accent)]"
+            placeholder="Generate new API Key"
+          />
 
-        <div className="mt-8 flex items-center gap-3">
-          
           <button
             type="button"
-            onClick={handleSaveApiKey}
+            onClick={generateApiKey}
             disabled={isSaving}
             className="main-button inline-flex items-center justify-center px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {isSaving ? "Saving..." : "Save API key"}
+            <HiKey size='20' />
           </button>
         </div>
+
+        {error && <p className="mt-2 text-sm text-red-500">{error}</p>} 
       </div>
+
+      <ShowApiKeyDialog open={open} setOpen={setOpen} apiKey={apiKey} />
     </div>
   );
 };
