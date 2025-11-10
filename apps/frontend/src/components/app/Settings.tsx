@@ -1,15 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNotification } from "../../context/NotificationContext";
 import { BsArrowLeft } from "react-icons/bs";
 import { HiKey } from "react-icons/hi2";
-import { useAppContext } from "../../context/AuthContext";
 import { ShowApiKeyDialog } from "./dialogs/ShowApiKey";
 
 export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const [apiKey, setApiKey] = useState("");  
   const { showNotification } = useNotification();
-  const { authContext } = useAppContext();
   const [open, setOpen] = useState(false);
+
+  // create a effect to get the user settings
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/settings`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setApiKey(data.data.settings.apiKey);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const generateApiKey = async () => {
     try {
@@ -77,7 +89,8 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
             id="api-key"
             name="api-key"
             type="text"
-            value={authContext.userData?.userData.apiKey}
+            value={apiKey}
+            readOnly
             className=" block w-full rounded-2xl bg-white/5 px-3 py-3 text-sm text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[var(--dark-orange-accent)]"
             placeholder="Generate new API Key"
           />
