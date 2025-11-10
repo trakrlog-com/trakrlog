@@ -4,7 +4,7 @@ import { ChannelBar } from '../../components/app/ChannelBar';
 import { ChannelEventsList } from '../../components/app/ChannelEventsList';
 import { useDashboard } from '../../context/DashboardContext';
 import EmptyState from '../../components/app/EmptyState';
-import { Settings } from '../../components/app/Settings';
+import { Settings } from '../../components/app/Settings/Settings';
 import { AtGlance } from '../../components/app/AtGlance';
 
 type DashboardView = 'default' | 'settings' | 'glance';

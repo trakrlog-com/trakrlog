@@ -78,10 +78,10 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
         if (err) {
             return next(err);
         }
-        res.redirect(keys.BACKEND_URL);
+        res.redirect(keys.BACKEND_URL + (process.env.NODE_ENV === 'development' ? ':' + process.env.PORT : ''));
     });
 }
 
 export const loginFailed = (req: Request, res: Response) => {
-    res.redirect(keys.BACKEND_URL + "/unauthorized");
+    res.redirect(keys.BACKEND_URL  + (process.env.NODE_ENV === 'development' ? ':' + process.env.PORT : '') + "/unauthorized");
 }

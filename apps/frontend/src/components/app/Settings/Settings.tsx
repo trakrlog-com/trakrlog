@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BsArrowLeft } from "react-icons/bs";
-import { ConfirmApiKeyUpdate } from "./dialogs/ConfirmApiKeyUpdate";
+import { ConfirmApiKeyUpdate } from "../dialogs/ConfirmApiKeyUpdate";
+import { UserProfile } from "./UserProfile";
 
 export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const [apiKey, setApiKey] = useState("");
@@ -36,19 +37,25 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         </p>
       </div>
 
+      <UserProfile />
+
       <div className="mt-10 max-w-xl rounded-3xl border border-white/10 bg-white/5 px-8 py-10">
         <h2 className="text-lg font-semibold text-white">API Access</h2>
-        <p className="mt-1 text-sm text-gray-400">
-          Secure your integrations by updating the API key used by your
-          channels.
+        <p className="mt-1 text-md text-gray-400">
+          <span>Use this API Key in the</span>
+          <span
+            className="mx-2   inline-flex items-center rounded-md
+                               px-2   text-md font-medium 
+                               inset-ring bg-gray-400/10
+                               text-gray-400 inset-ring-gray-400/20"
+          >
+            <code>tl-api-key</code>
+          </span>
+          header in your requests. Keep it secure and do not share it publicly.
+          If you believe your API key has been compromised, regenerate it
+          immediately.
         </p>
 
-        <label
-          className="mt-6 block text-sm font-medium text-gray-200"
-          htmlFor="api-key"
-        >
-          API key
-        </label>
         <div className="flex mt-2">
           <input
             autoComplete="off"
