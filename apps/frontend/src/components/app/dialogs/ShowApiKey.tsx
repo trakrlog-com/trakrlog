@@ -4,16 +4,14 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import React, { useState } from "react";
-import { useNotification } from "../../../context/NotificationContext";
-import { useAppContext } from "../../../context/AuthContext";
+import React from "react";
+ 
 
 export const ShowApiKeyDialog: React.FC<{
   open: boolean;
   setOpen: (open: boolean) => void;
   apiKey: string;
-}> = ({ open, setOpen, apiKey }) => { 
-
+}> = ({ open, setOpen, apiKey }) => {
   return (
     <Dialog open={open} onClose={setOpen} className="relative z-10">
       <DialogBackdrop
@@ -44,18 +42,19 @@ export const ShowApiKeyDialog: React.FC<{
                   htmlFor="email"
                   className="block text-sm/6 font-medium text-gray-100"
                 >
-                  API Key Name
+                  API Key
                 </label>
                 <div className="mt-2">
                   <input
                     autoComplete="off"
-                    id="game-name"
-                    name="game-name"
+                    id="apikey"
+                    name="apikey"
                     type="text"
-                    required
+                    readOnly
                     value={apiKey}
-                    className="block w-full rounded-2xl bg-white/5 px-3 py-3 text-md text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[var(--dark-orange-accent)] sm:text-sm/6"
-                    placeholder="Enter channel name"
+                    className="block w-full rounded-2xl bg-white/5 px-3 py-3 text-md text-white outline-1 -outline-offset-1 outline-white/10
+                               placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2
+                                focus:outline-[var(--dark-orange-accent)] sm:text-sm/6"
                   />
                 </div>
               </div>
