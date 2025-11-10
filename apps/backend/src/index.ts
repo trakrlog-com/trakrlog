@@ -16,6 +16,7 @@ import { projectsRoutes } from './features/projects';
 import { channelRoutes } from './features/channels';
 import { eventRoutes } from './features/events';
 import { waitlistRoutes } from './features/waitlist';
+import { settingsRoutes } from './features/settings/settings.routes';
 
 // Load environment variables
 dotenv.config();
@@ -108,16 +109,6 @@ console.log(`Serving static files from: ${staticPath}`);
 
 // Serve static files with relaxed CSP
 app.use(express.static(staticPath));
-// app.use(express.static(staticPath, {
-//   setHeaders: (res, path) => {
-//     // Relax CSP for HTML files
-//     if (path.endsWith('.html')) {
-//       res.setHeader('Content-Security-Policy', 
-//         "default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https: ws: wss:;"
-//       );
-//     }
-//   }
-// }));
 
 // API Routes - these need to be before the catch-all route
 app.use('/auth', authRoutes);
@@ -125,6 +116,7 @@ app.use('/projects', projectsRoutes);
 app.use('/channels', channelRoutes);
 app.use('/events', eventRoutes);
 app.use('/waitlist', waitlistRoutes);
+app.use('/settings', settingsRoutes);
 
 // Catch-all route to serve the frontend application for any route
 app.use((req: Request, res: Response) => {

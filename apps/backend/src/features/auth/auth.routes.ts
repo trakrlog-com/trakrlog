@@ -56,6 +56,4 @@ authRoutes.get("/login/failed", authController.loginFailed);
 // When logout, redirect to client
 authRoutes.get("/logout", authController.logout);
 
-// set apikey for sdk usage
-authRoutes.post("/set-apikey", authController.setApiKey);
 

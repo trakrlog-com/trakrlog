@@ -1,13 +1,16 @@
+import { NotificationType } from '@/context/NotificationContext';
 import { Transition } from '@headlessui/react';
 import React, { useState } from 'react';
 import { BsX, BsFillArrowRightCircleFill } from 'react-icons/bs';
 
 type NotificationProps = {
+    title: string;
     message: string;
+    type: NotificationType;
 }
 
-const Notification: React.FC<NotificationProps> = ({
-    message }) => {
+const Notification: React.FC<NotificationProps> = ({title,
+    message , type}) => {
 
     const [show, setShow] = useState(true)
     return (
@@ -21,10 +24,10 @@ const Notification: React.FC<NotificationProps> = ({
                         <div className="p-4">
                             <div className="flex items-start">
                                 <div className="shrink-0">
-                                    <BsFillArrowRightCircleFill aria-hidden="true" className="size-6 text-green-400" />
+                                    <BsFillArrowRightCircleFill aria-hidden="true" className={`size-6 ${type === 'success' ? 'text-green-400' : 'text-red-400'}`} />
                                 </div>
                                 <div className="ml-3 w-0 flex-1 pt-0.5">
-                                    <p className="text-sm font-medium text-white">Successfully saved!</p>
+                                    <p className="text-sm font-medium text-white">{title}</p>
                                     <p className="mt-1 text-sm text-gray-400">
                                         {message}
                                     </p>

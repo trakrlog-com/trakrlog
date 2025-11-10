@@ -12,37 +12,7 @@ export const ShowApiKeyDialog: React.FC<{
   open: boolean;
   setOpen: (open: boolean) => void;
   apiKey: string;
-}> = ({ open, setOpen, apiKey }) => {
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { showNotification } = useNotification();
-
-  const { authContext } = useAppContext();
-
-  const addApiKey = async () => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api-keys`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        showNotification("Failed to add API key", "error");
-        return false;
-      }
-
-      showNotification(`API key generated successfully!`, "success");
-      return true;
-    } catch (err) {
-      showNotification("Failed to add API key", "error");
-      return false;
-    }
-  };
+}> = ({ open, setOpen, apiKey }) => { 
 
   return (
     <Dialog open={open} onClose={setOpen} className="relative z-10">
@@ -87,9 +57,6 @@ export const ShowApiKeyDialog: React.FC<{
                     className="block w-full rounded-2xl bg-white/5 px-3 py-3 text-md text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[var(--dark-orange-accent)] sm:text-sm/6"
                     placeholder="Enter channel name"
                   />
-                  {error && (
-                    <p className="mt-2 text-sm text-red-500">{error}</p>
-                  )}
                 </div>
               </div>
 

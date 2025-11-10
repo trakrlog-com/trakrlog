@@ -6,9 +6,7 @@ import { useAppContext } from "../../context/AuthContext";
 import { ShowApiKeyDialog } from "./dialogs/ShowApiKey";
 
 export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
-  const [apiKey, setApiKey] = useState("");
-  const [error, setError] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
+  const [apiKey, setApiKey] = useState("");  
   const { showNotification } = useNotification();
   const { authContext } = useAppContext();
   const [open, setOpen] = useState(false);
@@ -16,9 +14,9 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const generateApiKey = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/settings/api-key`,
+        `${import.meta.env.VITE_BACKEND_URL}/settings/apikey`,
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
@@ -26,22 +24,23 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
       );
 
       if (!response.ok) {
-        showNotification("Failed to save API key", "error");
+        showNotification("Failed to save API key", "error", "Unable to generate new API Key");
+        setApiKey("");
         return false;
       }
 
-      showNotification("API key saved successfully!", "success");
       const { data } = await response.json();
-      setApiKey(data.apiKey);
+      console.log("New API Key:", data.settings.apiKey);
+      setApiKey(data.settings.apiKey);
       setOpen(true);
+
       return true;
     } catch (err) {
-      showNotification("Failed to save API key", "error");
+      showNotification("Failed to save API key", "error", "Unable to generate new API Key");
+      setApiKey("");
       return false;
     }
   };
-
-  
 
   return (
     <div className="flex h-full w-full flex-1 flex-col overflow-y-auto bg-[var(--dark-bg)] p-5">
@@ -86,14 +85,11 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
           <button
             type="button"
             onClick={generateApiKey}
-            disabled={isSaving}
             className="main-button inline-flex items-center justify-center px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-70"
           >
-            <HiKey size='20' />
+            <HiKey size="20" className="mr-2"/><span>Generate</span>
           </button>
         </div>
-
-        {error && <p className="mt-2 text-sm text-red-500">{error}</p>} 
       </div>
 
       <ShowApiKeyDialog open={open} setOpen={setOpen} apiKey={apiKey} />

@@ -9,6 +9,7 @@ import { Profile } from "passport-google-oauth20";
 import { UserModel } from "./auth.model";
 import { ApiResponseCodes } from "@trakrlog/common/httpResponse";
 import { DateTime } from "luxon";
+import { settingsService } from "../settings";
 
 export const initialise = (app: Express) => {
   const env = process.env.NODE_ENV;
@@ -134,11 +135,19 @@ export const isApiKeyAuthenticated = async (
 
     return;
   }
-  const apiKeyFound = await userService.getApiKey({ apiKey: apiKey });
+  const apiKeyFound = await settingsService.getSettingsByApiKey(apiKey);
 
   if (!apiKeyFound) {
     res.status(401).json({
       error: ApiResponseCodes.ApiKeyNotFound,
+    });
+    return;
+  }
+
+  var user = await userService.getUser({ userId: apiKeyFound.userId!.toString() });
+  if (!user) {
+    res.status(401).json({
+      error: ApiResponseCodes.ApiKeyNotValid,
     });
     return;
   }

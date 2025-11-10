@@ -65,15 +65,15 @@ export const CreateProjectDialog: React.FC<{
       );
 
       if (!response.ok) {
-        showNotification("Failed to add project", "error");
+        showNotification("Failed to add project", "error", "Unable to create new project");
         return false;
       }
 
-      showNotification(`${name} added successfully!`, "success");
+      showNotification(`${name} added successfully!`, "success", "Project created");
       setChannelOrProjectUpdateToggle(!channelsOrProjectsUpdateToggle);
       return true;
     } catch (err) {
-      showNotification("Failed to add project", "error");
+      showNotification("Failed to add project", "error", "Unable to create new project");
       return false;
     }
   };

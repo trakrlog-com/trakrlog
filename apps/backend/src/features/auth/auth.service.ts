@@ -3,7 +3,6 @@ import { User, UserModel} from './auth.model';
 export const getUser = async (search: {
     userId?: string;
     email?: string;
-    apiKey?: string;
 }): Promise<UserModel | null> => {
     try {
         if (search.userId) {
@@ -13,11 +12,6 @@ export const getUser = async (search: {
 
         if (search.email) {
             const user = await User.findOne({ email: search.email }).lean();
-            return user as UserModel | null;
-        }
-
-        if (search.apiKey) {
-            const user = await User.findOne({ apiKey: search.apiKey }).lean();
             return user as UserModel | null;
         }
 
@@ -64,33 +58,4 @@ export const updateUser = async (user: UserModel): Promise<boolean> => {
     }
 };
 
-export const getApiKey = async (search: {
-    apiKey: string;
-}): Promise<UserModel | null> => {
-    try {
-        const user = await User.findOne({ apiKey: search.apiKey }).lean();
-        return user as UserModel | null;
-    } catch (error) {
-        console.error('Error in getApiKey:', error);
-        return null;
-    }
-};
-
-export const setApiKey = async (userId: string, apiKey: string, apiKeyExpiresOn: Date): Promise<boolean> => {
-    try {
-        const existingUser = await getUser({ userId });
-        if (existingUser) {
-            await User.findByIdAndUpdate(existingUser._id, {
-                $set: {
-                    apiKey: apiKey,
-                    apiKeyExpiresOn: apiKeyExpiresOn
-                }
-            });
-            return true;
-        }
-        return false;
-    } catch (error) {
-        console.error('Error in setApiKey:', error);
-        return false;
-    }
-}
+ 
