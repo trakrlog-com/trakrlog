@@ -24,8 +24,49 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/not-found" element={<NotFound />} />
             <Route path="/login" element={<Login />} />
 
+            {/* Dashboard routes - nested structure */}
             <Route
               path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dashboard/overview"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dashboard/settings"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dashboard/projects/:projectId"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dashboard/projects/:projectId/channels/:channelId"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dashboard/projects/:projectId/channels/:channelId/events/:eventId"
               element={
                 <PrivateRoute>
                   <Dashboard />

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ProjectsBar } from '../../components/app/ProjectsBar';
 import { ChannelBar } from '../../components/app/ChannelBar';
 import { ChannelEventsList } from '../../components/app/ChannelEventsList';
@@ -33,11 +34,81 @@ export type Event = {
 }
 
 export const Dashboard: React.FC = () => {
-    const { events, projects, channels, setEvents, setProjects, setChannels, selectedChannel, selectedProject, channelsOrProjectsUpdateToggle } = useDashboard();
+    const { events, projects, channels, setEvents, setProjects, setChannels, selectedChannel, selectedProject, setSelectedProject, setSelectedChannel, setSelectedEvent, channelsOrProjectsUpdateToggle } = useDashboard();
     const [loadingEvents, setLoadingEvents] = useState(true);
     const [loadingProjectsAndChannels, setLoadingProjectsChannels] = useState(true);
     const [,setError] = useState<string | null>(null);
     const [activeView, setActiveView] = useState<DashboardView>('default');
+    
+    const { projectId, channelId, eventId } = useParams<{ projectId?: string; channelId?: string; eventId?: string }>();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Sync URL params to context state when data is loaded
+    useEffect(() => {
+        if (loadingProjectsAndChannels) return;
+
+        // Determine active view from URL
+        if (location.pathname === '/dashboard/overview') {
+            setActiveView('glance');
+            return;
+        }
+        if (location.pathname === '/dashboard/settings') {
+            setActiveView('settings');
+            return;
+        }
+        setActiveView('default');
+
+        // Handle project selection from URL
+        if (projectId) {
+            const project = projects.find(p => p._id === projectId);
+            if (project) {
+                setSelectedProject(project);
+            } else if (projects.length > 0) {
+                // Project not found, redirect to base dashboard
+                console.warn(`Project ${projectId} not found`);
+                navigate('/dashboard', { replace: true });
+                return;
+            }
+        } else {
+            setSelectedProject(null);
+        }
+
+        // Handle channel selection from URL
+        if (channelId && projectId) {
+            if (channelId === 'all') {
+                setSelectedChannel({ _id: '', name: 'all-channels', projectId } as Channel);
+            } else {
+                const channel = channels.find(c => c._id === channelId);
+                if (channel) {
+                    setSelectedChannel(channel);
+                } else if (channels.length > 0) {
+                    console.warn(`Channel ${channelId} not found`);
+                    navigate(`/dashboard/projects/${projectId}`, { replace: true });
+                    return;
+                }
+            }
+        } else {
+            setSelectedChannel(null);
+        }
+    }, [projectId, channelId, location.pathname, projects, channels, loadingProjectsAndChannels]);
+
+    // Sync event selection from URL
+    useEffect(() => {
+        if (loadingEvents) return;
+
+        if (eventId && projectId && channelId) {
+            const event = events.find(e => e._id === eventId);
+            if (event) {
+                setSelectedEvent(event);
+            } else if (events.length > 0) {
+                console.warn(`Event ${eventId} not found`);
+                navigate(`/dashboard/projects/${projectId}/channels/${channelId}`, { replace: true });
+            }
+        } else {
+            setSelectedEvent(null);
+        }
+    }, [eventId, events, loadingEvents, projectId, channelId]);
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -124,7 +195,7 @@ export const Dashboard: React.FC = () => {
         }
 
         if (activeView === 'settings') {
-            return <Settings onBack={() => setActiveView('default')} />;
+            return <Settings onBack={() => navigate('/dashboard')} />;
         }
 
         return (
@@ -147,9 +218,9 @@ export const Dashboard: React.FC = () => {
                 <div className="flex h-full">
                     <ProjectsBar
                         projects={projects}
-                        onOpenSettings={() => setActiveView('settings')}
-                        onProjectSelected={() => setActiveView('default')}
-                        onOpenOverview={() => setActiveView('glance')}
+                        onOpenSettings={() => navigate('/dashboard/settings')}
+                        onProjectSelected={() => { /* Navigation handled in ProjectsBar */ }}
+                        onOpenOverview={() => navigate('/dashboard/overview')}
                         isOverviewActive={activeView === 'glance'}
                     />
 
