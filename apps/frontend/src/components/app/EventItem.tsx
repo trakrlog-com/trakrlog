@@ -15,7 +15,7 @@ export const EventItem: React.FC<{ eventData: Event }> = ({ eventData }) => {
     const channelName = channels.find(channel => channel._id === eventData.channelId)?.name || 'Unknown Channel';
     return (
         <>
-            <div className="transition flex space-x-4 rounded-3xl dark:bg-[var(--dark-secondary)] shadow-none 
+            <div className="transition flex space-x-4 rounded-3xl bg-[var(--dark-secondary)] shadow-none 
                                    p-4  w-full"
                 onClick={() => setSelectedEvent(eventData)}>
                 <span>
@@ -46,10 +46,10 @@ export const EventItem: React.FC<{ eventData: Event }> = ({ eventData }) => {
                         <p className='mt-4'>
                             {eventData.tags && Object.entries(eventData.tags).slice(0, 1).map(([key, value]) => (
                                 <span key={key} className="mr-2 mb-2 inline-flex items-center rounded-md
-                             bg-gray-50 px-2 py-1 text-md font-medium 
-                             text-gray-600 inset-ring inset-ring-gray-500/10 dark:bg-gray-400/10
-                              dark:text-gray-400 dark:inset-ring-gray-400/20">
-                                    <span className='mr-2'>{key}: </span><span className=" text-gray-900 dark:text-white">{value}</span>
+                               px-2 py-1 text-md font-medium 
+                               inset-ring   bg-gray-400/10
+                              text-gray-400 inset-ring-gray-400/20">
+                                    <span className='mr-2'>{key}: </span><span className=" text-white">{value}</span>
                                 </span>
                             ))}
                         </p>

@@ -4,16 +4,20 @@ import * as authService from '../auth/auth.service';
 import * as projectsService from '../projects/projects.service';
 import * as channelsService from '../channels/channel.service';
 import { ApiResponseCodes, setErrorResponse,  setSuccessResponse} from "@trakrlog/common/httpResponse";
+import { settingsService } from '../settings';
 
 
 export const createEvent = async (req: Request, res: Response) => {
     try {
         const { project_id, channel_id, title, description, icon, tags } = req.body;
         const apiKey = req.headers["tl-api-key"] as string;
-        const user = await authService.getUser({ apiKey });
-        const userId = user!._id;
+        const userSettings = await settingsService.getSettingsByApiKey(apiKey);
 
+        if (!userSettings) {
+            return setErrorResponse(res, ApiResponseCodes.UserAuthFailed);
+        }
 
+        const userId = userSettings.userId;
         if (!userId || !title || !project_id || !channel_id) {
             return setErrorResponse(res, ApiResponseCodes.InputMissing);
         }

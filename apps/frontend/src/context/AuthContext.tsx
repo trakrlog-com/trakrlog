@@ -60,8 +60,8 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({ childre
         doFetch<any, unknown>({
             onSuccess: (fetchResp: any) => {
                 setUserData({
-                    authenticated: true,
-                    userData: fetchResp,
+                    authenticated: fetchResp.success,
+                    userData: fetchResp.user.user,
                 });
             },
             onError: () => {

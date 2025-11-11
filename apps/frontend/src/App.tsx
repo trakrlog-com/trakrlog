@@ -32,7 +32,7 @@ createRoot(document.getElementById('root')!).render(
                 </PrivateRoute>
               }
             />
-            
+
             {/* Redirect all unmatched routes to /not-found */}
             <Route 
               path="*" 

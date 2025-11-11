@@ -13,3 +13,6 @@ export const WAITLIST_ENABLED = process.env.VITE_WAITLISTENABLED === 'true' || f
 
 export const MONGODB_URI = process.env.DBURI as string;
 
+export const GITHUB_CLIENT_ID = process.env.VITE_GITHUBCLIENTID as string;
+export const GITHUB_CLIENT_SECRET = process.env.VITE_GITHUBCLIENTSECRET as string;
+

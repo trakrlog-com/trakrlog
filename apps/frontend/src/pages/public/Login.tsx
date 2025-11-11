@@ -8,7 +8,7 @@ const Login: React.FC = () => {
     const { authContext } = useAppContext();
 
     return (
-        <div className="min-h-screen flex flex-col bg-gray-900">
+        <div className="min-h-screen flex flex-col bg-[var(--dark-bg)]">
             <main className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                 <div className="w-full max-w-md space-y-8">
 
@@ -26,7 +26,7 @@ const Login: React.FC = () => {
                     </div>
 
                     {/* Login Buttons */}
-                    <div className="bg-gray-800/50 px-6 py-12 rounded-lg sm:px-12 outline -outline-offset-1 outline-white/10">
+                    <div className="bg-[#1a1919] px-6 py-12 rounded-lg sm:px-12 outline -outline-offset-1 outline-white/10">
                         <div className="grid grid-cols-1 gap-4">
                             <Button
                                 className="flex w-full items-center justify-center gap-3 rounded-md bg-white/10 px-3 py-2 text-sm 

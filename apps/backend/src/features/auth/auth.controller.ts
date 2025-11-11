@@ -5,6 +5,7 @@ import { ApiResponseCodes, setErrorResponse,  setSuccessResponse} from "@trakrlo
 import { NextFunction, Request, Response } from "express";
 import * as keys from '@trakrlog/common/keys-node';
 import { randomUUID } from "crypto";
+import { settingsService } from "../settings";
 
 export const createUser = async (email?: string, name?: string, picture?: string, is_email_verified?: boolean): Promise<UserModel | null> => {
     // find current user
@@ -28,6 +29,18 @@ export const createUser = async (email?: string, name?: string, picture?: string
         } as UserModel;
 
         if (await userService.addUser(newUser)) {
+
+            const userData = await userService.getUser({ email: email });
+            if (!userData) {
+                return null;
+            }
+
+            // create settings for the new user
+            await settingsService.updateSettingsForUser(userData._id!.toString(), {
+                apiKey: "pk-" + randomUUID(),
+                apiKeyExpiresOn: dateUtils.utcNow().plus({ days: 30 }).toJSDate(),
+            });
+
             console.log(`new user ${newUser.name} created.`);
 
             // send email to me and the user
@@ -38,7 +51,6 @@ export const createUser = async (email?: string, name?: string, picture?: string
         }
 
     } else {
-        console.log(`user ${currentUser.name} already registered.`);
         currentUser.imageUrl = picture;
         await userService.updateUser(currentUser);
         return currentUser;
@@ -66,32 +78,10 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
         if (err) {
             return next(err);
         }
-        res.redirect(keys.BACKEND_URL);
+        res.redirect(keys.BACKEND_URL + (process.env.NODE_ENV === 'development' ? ':' + process.env.PORT : ''));
     });
 }
 
 export const loginFailed = (req: Request, res: Response) => {
-    res.redirect(keys.BACKEND_URL + "/unauthorized");
-}
-
-export const setApiKey = async (req: Request, res: Response) => {
-    try {
-        const userId = ((req.user as any).user as UserModel)._id;
-        if (!userId) {
-            return setErrorResponse(res, ApiResponseCodes.UserAuthFailed);
-        }
-
-        // generate a new api key and set expiry date (30 days from now)
-        const apiKey = randomUUID();
-        const apiKeyExpiresOn = dateUtils.utcNow().plus({ days: 30 }).toJSDate();
-
-        const success = await userService.setApiKey(userId.toString(), apiKey, apiKeyExpiresOn);
-        if (!success) {
-            return setErrorResponse(res, ApiResponseCodes.GenericError);
-        }
-
-        setSuccessResponse(res, ApiResponseCodes.Success, { apiKey, apiKeyExpiresOn }, req);
-    } catch (error) {
-        setErrorResponse(res, ApiResponseCodes.GenericError);
-    }
+    res.redirect(keys.BACKEND_URL  + (process.env.NODE_ENV === 'development' ? ':' + process.env.PORT : '') + "/unauthorized");
 }

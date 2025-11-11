@@ -24,15 +24,15 @@ export const CreateChannelDialog: React.FC<{
             });
 
             if (!response.ok) {
-                showNotification('Failed to add channel', 'error');
+                showNotification('Failed to add channel', 'error', 'Unable to create new channel');
                 return false;
             }
 
-            showNotification(`Channel ${name} added successfully!`, 'success');
+            showNotification(`Channel ${name} added successfully!`, 'success', 'Channel created');
             setChannelOrProjectUpdateToggle(!channelsOrProjectsUpdateToggle);
             return true;
         } catch (err) {
-            showNotification('Failed to add channel', 'error');
+            showNotification('Failed to add channel', 'error', 'Unable to create new channel');
             return false;
         }
     };

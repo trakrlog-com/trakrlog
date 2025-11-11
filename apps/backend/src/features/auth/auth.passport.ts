@@ -1,6 +1,10 @@
 import passport from "passport";
 import { Request, Response, NextFunction, Express } from "express";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import {
+  Strategy as GithubStrategy,
+  Profile as GithubProfile,
+} from "passport-github2";
 import * as keys from "@trakrlog/common/keys-node";
 import * as userService from "./auth.service";
 import * as authController from "./auth.controller";
@@ -8,6 +12,7 @@ import { Profile } from "passport-google-oauth20";
 import { UserModel } from "./auth.model";
 import { ApiResponseCodes } from "@trakrlog/common/httpResponse";
 import { DateTime } from "luxon";
+import { settingsService } from "../settings";
 
 export const initialise = (app: Express) => {
   const env = process.env.NODE_ENV;
@@ -29,8 +34,9 @@ export const initialise = (app: Express) => {
     });
   });
 
-  // Debug OAuth configuration
-  const callbackURL = (env !== "development" ? keys.BACKEND_URL : "") + "/auth/google/callback";
+  // Google auth
+  const callbackURL =
+    (env !== "development" ? keys.BACKEND_URL : "") + "/auth/google/callback";
   passport.use(
     new GoogleStrategy(
       {
@@ -59,6 +65,44 @@ export const initialise = (app: Express) => {
           }
           return done(null, userData);
         } catch (error) {
+          return done(error);
+        }
+      }
+    )
+  );
+
+  // Github auth
+  const callbackGithubURL =
+    (env !== "development" ? keys.BACKEND_URL : "") + "/auth/github/callback";
+  passport.use(
+    new GithubStrategy(
+      {
+        clientID: keys.GITHUB_CLIENT_ID,
+        clientSecret: keys.GITHUB_CLIENT_SECRET,
+        callbackURL: callbackGithubURL,
+        scope: ["user:email"],
+      },
+      async (
+        accessToken: string,
+        refreshToken: string,
+        profile: GithubProfile,
+        done: (error: any, user?: UserModel) => void
+      ) => {
+        try {
+          // Use the service layer to handle business logic
+          const userData = await authController.createUser(
+            profile!.emails?.[0].value,
+            profile!.displayName || profile!.username,
+            profile!.photos?.[0].value,
+            true // Github does not provide email verified status
+          );
+          if (!userData) {
+            console.error("User creation failed");
+            return done(new Error("User creation failed"));
+          }
+          return done(null, userData);
+        } catch (error) {
+          console.error(error);
           return done(error);
         }
       }
@@ -95,11 +139,21 @@ export const isApiKeyAuthenticated = async (
 
     return;
   }
-  const apiKeyFound = await userService.getApiKey({ apiKey: apiKey });
+  const apiKeyFound = await settingsService.getSettingsByApiKey(apiKey);
 
   if (!apiKeyFound) {
     res.status(401).json({
       error: ApiResponseCodes.ApiKeyNotFound,
+    });
+    return;
+  }
+
+  const user = await userService.getUser({
+    userId: apiKeyFound.userId!.toString(),
+  });
+  if (!user) {
+    res.status(401).json({
+      error: ApiResponseCodes.ApiKeyNotValid,
     });
     return;
   }

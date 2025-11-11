@@ -57,7 +57,7 @@ export const Features = () => {
   return (
    <div className="bg-[var(--dark-bg)] py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 mt-10">
-        <div className="mx-auto max-w-5xl items-center text-center">
+        <div className="mx-auto  max-w-4xl ">
           <span className="text-2xl/7 font-semibold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             Built for developers, powered by data
           </span>
@@ -65,10 +65,10 @@ export const Features = () => {
             Know everything around
           </p>
           <div className="mt-4 h-24 sm:h-32">
-            <div className="flex items-baseline justify-center text-5xl font-bold 
+            <div className="flex items-baseline   text-5xl font-bold 
                     tracking-tight text-pretty text-white sm:text-5xl lg:text-6xl lg:text-balance">
               
-              <span className="inline-block lg:min-w-[310px] text-left ml-4">
+              <span className="inline-block lg:min-w-[310px] text-left">
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={dynamicWords[currentIndex]}
