@@ -4,6 +4,7 @@ import { ProjectsBar } from '../../components/app/ProjectsBar';
 import { ChannelBar } from '../../components/app/ChannelBar';
 import { ChannelEventsList } from '../../components/app/ChannelEventsList';
 import { useDashboard } from '../../context/DashboardContext';
+import { useNotification } from '../../context/NotificationContext';
 import EmptyState from '../../components/app/EmptyState';
 import { Settings } from '../../components/app/Settings/Settings';
 import { AtGlance } from '../../components/app/AtGlance';
@@ -39,6 +40,7 @@ export const Dashboard: React.FC = () => {
     const [loadingProjectsAndChannels, setLoadingProjectsChannels] = useState(true);
     const [,setError] = useState<string | null>(null);
     const [activeView, setActiveView] = useState<DashboardView>('default');
+    const { showNotification } = useNotification();
     
     const { projectId, channelId, eventId } = useParams<{ projectId?: string; channelId?: string; eventId?: string }>();
     const navigate = useNavigate();
@@ -67,6 +69,7 @@ export const Dashboard: React.FC = () => {
             } else if (projects.length > 0) {
                 // Project not found, redirect to base dashboard
                 console.warn(`Project ${projectId} not found`);
+                showNotification('Project not found', 'error', 'Navigation Error');
                 navigate('/dashboard', { replace: true });
                 return;
             }
@@ -84,6 +87,7 @@ export const Dashboard: React.FC = () => {
                     setSelectedChannel(channel);
                 } else if (channels.length > 0) {
                     console.warn(`Channel ${channelId} not found`);
+                    showNotification('Channel not found', 'error', 'Navigation Error');
                     navigate(`/dashboard/projects/${projectId}`, { replace: true });
                     return;
                 }
@@ -103,6 +107,7 @@ export const Dashboard: React.FC = () => {
                 setSelectedEvent(event);
             } else if (events.length > 0) {
                 console.warn(`Event ${eventId} not found`);
+                showNotification('Event not found', 'error', 'Navigation Error');
                 navigate(`/dashboard/projects/${projectId}/channels/${channelId}`, { replace: true });
             }
         } else {
