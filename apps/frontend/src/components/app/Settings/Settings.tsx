@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { BsArrowLeft } from "react-icons/bs";
+import { BsArrowLeft, BsClipboard } from "react-icons/bs";
 import { ConfirmApiKeyUpdate } from "../dialogs/ConfirmApiKeyUpdate";
 import { UserProfile } from "./UserProfile";
+import { useNotification } from "../../../context/NotificationContext";
 
 export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const [apiKey, setApiKey] = useState("");
   const [open, setOpen] = useState(false);
+  const { showNotification } = useNotification();
 
   // create a effect to get the user settings
   useEffect(() => {
@@ -51,12 +53,15 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
           >
             <code>tl-api-key</code>
           </span>
-          header in your requests. Keep it secure and do not share it publicly.
-          If you believe your API key has been compromised, regenerate it
-          immediately.
+
+          <span>
+            {" "}
+            header in your requests. If you believe your API key has been
+            compromised, regenerate it immediately.
+          </span>
         </p>
 
-        <div className="flex mt-2">
+        <div className="relative mt-2">
           <input
             autoComplete="off"
             id="api-key"
@@ -64,12 +69,21 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
             type="text"
             value={apiKey}
             readOnly
-            className=" block w-full rounded-2xl bg-white/5 
-                px-3 py-3 text-md text-white outline-1 -outline-offset-1
-                 outline-white/10 placeholder:text-gray-500 focus:outline-2 
-                 focus:-outline-offset-2 focus:outline-[var(--dark-orange-accent)]"
+            className="block w-full rounded-2xl bg-white/5 px-3 py-3 pr-12 text-md text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[var(--dark-orange-accent)]"
             placeholder="Generate new API Key"
           />
+
+          <button
+            type="button"
+            aria-label="Copy API key"
+            onClick={() => {
+              navigator.clipboard.writeText(apiKey);
+              showNotification("API Key copied to clipboard", "success", "Success");
+            }}
+            className="absolute inset-y-0 right-0 flex items-center rounded-2xl rounded-l-none bg-white/5 px-3 text-white transition-colors hover:bg-white/10"
+          >
+            <BsClipboard size="18" />
+          </button>
         </div>
         <div className="mt-4 flex justify-end">
           <button
