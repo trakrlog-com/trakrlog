@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { Event } from '../../pages/app/Dashboard';
+import type { Event } from '../../types/dashboard';
 import Twemoji from 'react-twemoji';
 import { useDashboard } from '../../context/DashboardContext';
 import { DateTime } from 'luxon';

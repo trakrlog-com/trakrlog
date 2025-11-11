@@ -1,7 +1,7 @@
 import { BsFillSquareFill, BsFillPlusCircleFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { useDashboard } from "../../context/DashboardContext";
-import type { Project } from "../../pages/app/Dashboard";
+import type { Project } from "../../types/dashboard";
 import { useState } from "react";
 import { CreateProjectDialog } from "./dialogs/CreateProjectDialog";
 import { AuthenticatedUser } from "./AuthenticatedUser";

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import type { Channel, Project, Event } from '../pages/app/Dashboard';
+import type { Channel, Project, Event } from '../types/dashboard';
 
 type DashboardContextType = {
     selectedProject: Project | null;

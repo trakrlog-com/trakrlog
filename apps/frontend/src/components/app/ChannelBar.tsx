@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { Channel } from '../../pages/app/Dashboard';
+import type { Channel } from '../../types/dashboard';
 import { useDashboard } from '../../context/DashboardContext';
 import { BsHash, BsPlus } from 'react-icons/bs';
 import { CreateChannelDialog } from './dialogs/CreateChannelDialog';
