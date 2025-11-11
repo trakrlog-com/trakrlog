@@ -195,7 +195,7 @@ export const Dashboard: React.FC = () => {
         }
 
         if (activeView === 'settings') {
-            return <Settings onBack={() => navigate('/dashboard')} />;
+            return <Settings onBack={() => navigate('/dashboard/overview')} />;
         }
 
         return (

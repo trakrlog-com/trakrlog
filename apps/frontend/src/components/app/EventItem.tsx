@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Event } from '../../pages/app/Dashboard';
 import Twemoji from 'react-twemoji';
 import { useDashboard } from '../../context/DashboardContext';
@@ -6,8 +7,9 @@ import { DateTime } from 'luxon';
 
 
 export const EventItem: React.FC<{ eventData: Event }> = ({ eventData }) => {
-    const { channels, setSelectedEvent } = useDashboard();
+    const { channels, selectedProject } = useDashboard();
     const [showInlineDetails,  ] = React.useState(false);
+    const navigate = useNavigate();
 
     const dateTime = DateTime.fromISO(eventData.createdAt);
     const formattedDate = `${dateTime.toRelativeCalendar()} at ${dateTime.toLocaleString(DateTime.TIME_SIMPLE)}`;
@@ -17,7 +19,11 @@ export const EventItem: React.FC<{ eventData: Event }> = ({ eventData }) => {
         <>
             <div className="transition flex space-x-4 rounded-3xl bg-[var(--dark-secondary)] shadow-none 
                                    p-4  w-full"
-                onClick={() => setSelectedEvent(eventData)}>
+                onClick={() => {
+                    if (selectedProject) {
+                        navigate(`/dashboard/projects/${selectedProject._id}/channels/${eventData.channelId}/events/${eventData._id}`);
+                    }
+                }}>
                 <span>
                     {eventData.icon && (
                         <div className='flex items-center justify-center h-6 w-6 rounded-xl  
