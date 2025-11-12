@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import type { Channel } from '../../pages/app/Dashboard';
+import { useNavigate } from 'react-router-dom';
+import type { Channel } from '../../types/dashboard';
 import { useDashboard } from '../../context/DashboardContext';
 import { BsHash, BsPlus } from 'react-icons/bs';
 import { CreateChannelDialog } from './dialogs/CreateChannelDialog';
@@ -10,8 +11,9 @@ type ChannelBarProps = {
 }
 
 export const ChannelBar: React.FC<ChannelBarProps> = ({ channels }) => {
-    const { selectedProject, selectedChannel, setSelectedChannel, projects } = useDashboard();
+    const { selectedProject, selectedChannel, projects } = useDashboard();
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
 
     if (projects.length === 0 || selectedProject == null) {
         return null;
@@ -27,7 +29,11 @@ export const ChannelBar: React.FC<ChannelBarProps> = ({ channels }) => {
                     key={"all-channels"}
                     channel={{ _id: "", name: "all-channels", projectId: selectedProject?._id } as Channel}
                     isSelected={selectedChannel?._id === ""}
-                    onSelect={setSelectedChannel}
+                    onSelect={() => {
+                        if (selectedProject) {
+                            navigate(`/dashboard/projects/${selectedProject._id}/channels/all`);
+                        }
+                    }}
                 />
             </div>
             
@@ -40,7 +46,11 @@ export const ChannelBar: React.FC<ChannelBarProps> = ({ channels }) => {
                             key={channel._id}
                             channel={channel}
                             isSelected={selectedChannel?._id === channel._id}
-                            onSelect={setSelectedChannel}
+                            onSelect={(channel) => {
+                                if (selectedProject) {
+                                    navigate(`/dashboard/projects/${selectedProject._id}/channels/${channel._id}`);
+                                }
+                            }}
                         />
                     ))}
             </div>

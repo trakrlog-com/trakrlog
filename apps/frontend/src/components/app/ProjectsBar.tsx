@@ -1,6 +1,7 @@
 import { BsFillSquareFill, BsFillPlusCircleFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 import { useDashboard } from "../../context/DashboardContext";
-import type { Project } from "../../pages/app/Dashboard";
+import type { Project } from "../../types/dashboard";
 import { useState } from "react";
 import { CreateProjectDialog } from "./dialogs/CreateProjectDialog";
 import { AuthenticatedUser } from "./AuthenticatedUser";
@@ -20,9 +21,9 @@ export const ProjectsBar = ({
   onOpenOverview,
   isOverviewActive,
 }: ProjectsBarProps) => {
-  const { setSelectedProject, setSelectedChannel, selectedProject } =
-    useDashboard();
+  const { selectedProject } = useDashboard();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -63,8 +64,7 @@ export const ProjectsBar = ({
             text={project.name}
             onClick={() => {
               onProjectSelected?.();
-              setSelectedChannel(null);
-              setSelectedProject(project);
+              navigate(`/dashboard/projects/${project._id}`);
             }}
           />
         ))}

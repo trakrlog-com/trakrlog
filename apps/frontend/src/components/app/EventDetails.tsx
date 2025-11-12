@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useDashboard } from "../../context/DashboardContext";
 import { BsArrowLeft } from "react-icons/bs";
 
@@ -6,15 +7,15 @@ import Twemoji from "react-twemoji";
 import { DateTime } from "luxon";
 
 export const EventDetails: React.FC = () => {
-  const { selectedEvent, setSelectedEvent, projects, channels } =
-    useDashboard();
+  const { selectedEvent, projects, channels } = useDashboard();
+  const navigate = useNavigate();
 
   if (selectedEvent === null) {
     return null;
   }
 
   const handleBack = () => {
-    setSelectedEvent(null);
+    navigate(-1);
   };
 
   const dateTime = DateTime.fromISO(selectedEvent.createdAt);

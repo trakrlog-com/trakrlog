@@ -1,5 +1,5 @@
 import React from "react";
-import type { Event } from "../../pages/app/Dashboard";
+import type { Event } from "../../types/dashboard";
 import { BsSearch } from "react-icons/bs";
 import { EventItem } from "./EventItem";
 import { useDashboard } from "../../context/DashboardContext";
