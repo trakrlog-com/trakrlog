@@ -29,8 +29,6 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/unauthorized" element={<Unauthorized />} />
             <Route path="/not-found" element={<NotFound />} />
             <Route path="/login" element={<Login />} />
-
-            {/* Dashboard routes - nested structure */}
             <Route
               path="/dashboard"
               element={
