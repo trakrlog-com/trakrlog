@@ -45,3 +45,7 @@ coverage
 *.log
 .vscode
 apps/backend/backend-app
+
+# Go workspace file
+go.work
+go.work.sum
