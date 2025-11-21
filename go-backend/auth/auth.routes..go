@@ -6,7 +6,7 @@ import (
 )
 
 func Routes(route *gin.Engine) {
-	h := NewAuthHandler(container.App.Config)
+	h := NewHandler(container.App.Config)
 
 	auth := route.Group("/auth")
 	{
@@ -14,7 +14,5 @@ func Routes(route *gin.Engine) {
 		auth.GET("google/callback", h.HandleGoogleAuth)
 		auth.GET("is-auth", h.GetAuthUser)
 		auth.GET("login/failed", h.HandleUnauthorized)
-
 	}
-
 }

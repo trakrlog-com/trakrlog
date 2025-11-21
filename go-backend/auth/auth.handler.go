@@ -8,15 +8,15 @@ import (
 	"trakrlog.com/go-backend/config"
 )
 
-type AuthHandler struct {
+type Handler struct {
 	cfg *config.Config
 }
 
-func NewAuthHandler(cfg *config.Config) *AuthHandler {
-	return &AuthHandler{cfg: cfg}
+func NewHandler(cfg *config.Config) *Handler {
+	return &Handler{cfg: cfg}
 }
 
-func (h *AuthHandler) SignupWithGoogle(ctx *gin.Context) {
+func (h *Handler) SignupWithGoogle(ctx *gin.Context) {
 	query := ctx.Request.URL.Query()
 	query.Add("provider", "google")
 	ctx.Request.URL.RawQuery = query.Encode()
@@ -24,7 +24,7 @@ func (h *AuthHandler) SignupWithGoogle(ctx *gin.Context) {
 	gothic.BeginAuthHandler(ctx.Writer, ctx.Request)
 }
 
-func (h *AuthHandler) HandleGoogleAuth(ctx *gin.Context) {
+func (h *Handler) HandleGoogleAuth(ctx *gin.Context) {
 	query := ctx.Request.URL.Query()
 	query.Add("provider", "google")
 	ctx.Request.URL.RawQuery = query.Encode()
@@ -68,7 +68,7 @@ func (h *AuthHandler) HandleGoogleAuth(ctx *gin.Context) {
 	ctx.Redirect(http.StatusTemporaryRedirect, "/dashboard")
 }
 
-func (h *AuthHandler) GetAuthUser(ctx *gin.Context) {
+func (h *Handler) GetAuthUser(ctx *gin.Context) {
 	// Retrieve the session
 	session, err := gothic.Store.Get(ctx.Request, h.cfg.SessionSecret)
 	if err != nil {
@@ -98,7 +98,7 @@ func (h *AuthHandler) GetAuthUser(ctx *gin.Context) {
 	})
 }
 
-func (h *AuthHandler) HandleUnauthorized(ctx *gin.Context) {
+func (h *Handler) HandleUnauthorized(ctx *gin.Context) {
 	ctx.JSON(http.StatusUnauthorized, gin.H{
 		"success": false,
 		"message": "Unauthorized access",
