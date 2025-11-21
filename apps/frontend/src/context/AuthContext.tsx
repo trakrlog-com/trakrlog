@@ -61,7 +61,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({ childre
             onSuccess: (fetchResp: any) => {
                 setUserData({
                     authenticated: fetchResp.success,
-                    userData: fetchResp.user.user,
+                    userData: fetchResp.data,
                 });
             },
             onError: () => {
