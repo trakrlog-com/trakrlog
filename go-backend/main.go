@@ -52,10 +52,17 @@ func main() {
 
 	auth.Routes(router)
 
+	// dashboard should use the RequireAuth middleware
+	dashboard := router.Group("/dashboard")
+	dashboard.Use(auth.RequireAuth())
+	dashboard.GET("/*any", func(c *gin.Context) {
+		c.File("../apps/frontend/dist/index.html")
+	})
+
 	// Serve static files
 	router.Use(static.Serve("/", static.LocalFile("../apps/frontend/dist", true)))
 
-	// Serve React app for client-side routes (SPA fallback)
+	// Serve React app for client-side routes (SPA fallback) - only for non-dashboard routes
 	router.NoRoute(func(c *gin.Context) {
 		c.File("../apps/frontend/dist/index.html")
 	})
