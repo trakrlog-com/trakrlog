@@ -5,15 +5,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/markbates/goth/gothic"
-	"trakrlog.com/go-backend/config"
+	"trakrlog.com/go-backend/handlers"
 )
 
 type Handler struct {
-	cfg *config.Config
+	appHandler *handlers.AppHandler
 }
 
-func NewHandler(cfg *config.Config) *Handler {
-	return &Handler{cfg: cfg}
+func NewHandler(appHandler *handlers.AppHandler) *Handler {
+	return &Handler{appHandler: appHandler}
 }
 
 func (h *Handler) SignupWithGoogle(ctx *gin.Context) {
@@ -40,7 +40,7 @@ func (h *Handler) HandleGoogleAuth(ctx *gin.Context) {
 	}
 
 	// store the user session
-	session, err := gothic.Store.New(ctx.Request, h.cfg.SessionSecret)
+	session, err := gothic.Store.New(ctx.Request, h.appHandler.Config.SessionSecret)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -70,7 +70,7 @@ func (h *Handler) HandleGoogleAuth(ctx *gin.Context) {
 
 func (h *Handler) GetAuthUser(ctx *gin.Context) {
 	// Retrieve the session
-	session, err := gothic.Store.Get(ctx.Request, h.cfg.SessionSecret)
+	session, err := gothic.Store.Get(ctx.Request, h.appHandler.Config.SessionSecret)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"success": false,

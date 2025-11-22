@@ -6,7 +6,7 @@ import (
 )
 
 func Routes(route *gin.Engine, appHandler *handlers.AppHandler) {
-	h := NewHandler(appHandler.Config)
+	h := NewHandler(appHandler)
 
 	auth := route.Group("/auth")
 	{

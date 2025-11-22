@@ -2,15 +2,15 @@ package projects
 
 import (
 	"github.com/gin-gonic/gin"
-	"trakrlog.com/go-backend/config"
+	"trakrlog.com/go-backend/handlers"
 )
 
 type Handler struct {
-	cfg *config.Config
+	appHandler *handlers.AppHandler
 }
 
-func NewHandler(cfg *config.Config) *Handler {
-	return &Handler{cfg: cfg}
+func NewHandler(appHandler *handlers.AppHandler) *Handler {
+	return &Handler{appHandler: appHandler}
 }
 
 func (h *Handler) GetProjects(ctx *gin.Context) {

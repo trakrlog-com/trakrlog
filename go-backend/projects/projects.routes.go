@@ -6,7 +6,7 @@ import (
 )
 
 func Routes(route *gin.Engine, appHandler *handlers.AppHandler) {
-	var projectsHandler = NewHandler(appHandler.Config)
+	var projectsHandler = NewHandler(appHandler)
 	projects := route.Group("/projects")
 	{
 		projects.GET("/", projectsHandler.GetProjects)
