@@ -12,6 +12,7 @@ type Config struct {
 	GoogleClientID     string
 	GoogleClientSecret string
 	CallbackURL        string
+	MongoDBURL         string
 }
 
 // LoadEnv reads .env file and returns a Config object
@@ -26,6 +27,7 @@ func LoadEnv() (*Config, error) {
 		GoogleClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		GoogleClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 		CallbackURL:        os.Getenv("CALLBACK_URL"),
+		MongoDBURL:         os.Getenv("MONGODB_URL"),
 	}
 
 	// Set default callback URL if not provided
@@ -42,6 +44,9 @@ func LoadEnv() (*Config, error) {
 	}
 	if cfg.GoogleClientSecret == "" {
 		return nil, fmt.Errorf("GOOGLE_CLIENT_SECRET is required")
+	}
+	if cfg.MongoDBURL == "" {
+		return nil, fmt.Errorf("MONGODB_URL is required")
 	}
 
 	return cfg, nil

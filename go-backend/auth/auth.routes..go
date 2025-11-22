@@ -2,11 +2,11 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	"trakrlog.com/go-backend/container"
+	"trakrlog.com/go-backend/handlers"
 )
 
-func Routes(route *gin.Engine) {
-	h := NewHandler(container.App.Config)
+func Routes(route *gin.Engine, appHandler *handlers.AppHandler) {
+	h := NewHandler(appHandler.Config)
 
 	auth := route.Group("/auth")
 	{

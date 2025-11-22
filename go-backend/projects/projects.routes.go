@@ -2,12 +2,11 @@ package projects
 
 import (
 	"github.com/gin-gonic/gin"
-	"trakrlog.com/go-backend/container"
+	"trakrlog.com/go-backend/handlers"
 )
 
-func Routes(route *gin.Engine) {
-	var projectsHandler = NewHandler(container.App.Config)
-
+func Routes(route *gin.Engine, appHandler *handlers.AppHandler) {
+	var projectsHandler = NewHandler(appHandler.Config)
 	projects := route.Group("/projects")
 	{
 		projects.GET("/", projectsHandler.GetProjects)

@@ -13,7 +13,8 @@ import (
 	"github.com/markbates/goth/providers/google"
 	"trakrlog.com/go-backend/auth"
 	"trakrlog.com/go-backend/config"
-	"trakrlog.com/go-backend/container"
+	"trakrlog.com/go-backend/db"
+	"trakrlog.com/go-backend/handlers"
 )
 
 func main() {
@@ -25,12 +26,15 @@ func main() {
 	}
 
 	// Initialize dependency container
-	c := container.New(cfg)
+	client, err := db.ConnectMongoDb(cfg.MongoDBURL)
+	if err != nil {
+		log.Fatalf("Failed to connect to MongoDB: %v", err)
+	}
+	appHandler := handlers.NewAppHandler(cfg, client)
 
 	var router *gin.Engine = gin.Default()
 
-	store := sessions.NewCookieStore([]byte(c.Config.SessionSecret))
-
+	store := sessions.NewCookieStore([]byte(appHandler.Config.SessionSecret))
 	// Configure session options
 	store.MaxAge(int(12 * time.Hour / time.Second)) // session expiration time
 	store.Options.Path = "/"
@@ -44,13 +48,13 @@ func main() {
 	// Register Google as an authentication provider
 	goth.UseProviders(
 		google.New(
-			c.Config.GoogleClientID,
-			c.Config.GoogleClientSecret,
-			c.Config.CallbackURL,
+			appHandler.Config.GoogleClientID,
+			appHandler.Config.GoogleClientSecret,
+			appHandler.Config.CallbackURL,
 		),
 	)
 
-	auth.Routes(router)
+	auth.Routes(router, appHandler)
 
 	// dashboard should use the RequireAuth middleware
 	dashboard := router.Group("/dashboard")
