@@ -4,10 +4,12 @@
 all: build test
 
 build:
-	@echo "Building..."
+	@echo "Building frontend..."
 	
-	
+	@npm run build --prefix ./frontend
+	@echo "Building backend..."
 	@go build -o main cmd/api/main.go
+	@echo "Building... done."
 
 # Run the application
 run:
