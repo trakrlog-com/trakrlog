@@ -1,4 +1,4 @@
-import { NotificationType } from '@/context/NotificationContext';
+import { NotificationType } from '../../context/NotificationContext';
 import { Transition } from '@headlessui/react';
 import React, { useState } from 'react';
 import { BsX, BsFillArrowRightCircleFill } from 'react-icons/bs';
