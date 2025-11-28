@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	_ "github.com/joho/godotenv/autoload"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -20,19 +20,22 @@ type service struct {
 	db *mongo.Client
 }
 
-var (
-	host = os.Getenv("BLUEPRINT_DB_HOST")
-	port = os.Getenv("BLUEPRINT_DB_PORT")
-	//database = os.Getenv("BLUEPRINT_DB_DATABASE")
-)
-
 func New() Service {
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s", host, port)))
+
+	if err := godotenv.Load(); err != nil {
+		log.Println("Warning: .env file not found, using system environment variables")
+		//panic(err)
+	}
+
+	dbUrl := os.Getenv("MONGODB_URL")
+
+	fmt.Println("Connecting to MongoDB at", dbUrl)
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(dbUrl))
 
 	if err != nil {
 		log.Fatal(err)
-
 	}
+
 	return &service{
 		db: client,
 	}

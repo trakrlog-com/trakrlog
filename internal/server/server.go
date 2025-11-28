@@ -43,5 +43,8 @@ func NewServer() *http.Server {
 		WriteTimeout: 30 * time.Second,
 	}
 
+	healthRes := NewServer.db.Health()
+	fmt.Printf("Database health check: %v\n", healthRes)
+
 	return server
 }

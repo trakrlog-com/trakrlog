@@ -15,18 +15,17 @@ func mustStartMongoContainer() (func(context.Context, ...testcontainers.Terminat
 		return nil, err
 	}
 
-	dbHost, err := dbContainer.Host(context.Background())
-	if err != nil {
-		return dbContainer.Terminate, err
-	}
+	// dbHost, err := dbContainer.Host(context.Background())
+	// if err != nil {
+	// 	return dbContainer.Terminate, err
+	// }
 
-	dbPort, err := dbContainer.MappedPort(context.Background(), "27017/tcp")
-	if err != nil {
-		return dbContainer.Terminate, err
-	}
+	// dbPort, err := dbContainer.MappedPort(context.Background(), "27017/tcp")
+	// if err != nil {
+	// 	return dbContainer.Terminate, err
+	// }
 
-	host = dbHost
-	port = dbPort.Port()
+	// dbUrl := "mongodb://" + dbHost + ":" + dbPort.Port()
 
 	return dbContainer.Terminate, err
 }
