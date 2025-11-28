@@ -9,9 +9,6 @@ import (
 	"syscall"
 	"time"
 	"trakrlog/internal/server"
-
-	"github.com/gin-contrib/static"
-	"github.com/gin-gonic/gin"
 )
 
 func gracefulShutdown(apiServer *http.Server, done chan bool) {
@@ -52,15 +49,6 @@ func main() {
 	// store.Options.Secure = false                  // set to true in production (HTTPS)
 	// store.Options.SameSite = http.SameSiteLaxMode // helps prevent CSRF
 
-	// Serve static files
-	var router = server.Handler.(*gin.Engine)
-	router.Use(static.Serve("/", static.LocalFile("../apps/frontend/dist", true)))
-
-	// Serve React app for client-side routes (SPA fallback) - only for non-dashboard routes
-	router.NoRoute(func(c *gin.Context) {
-		c.File("../apps/frontend/dist/index.html")
-	})
-
 	// Create a done channel to signal when the shutdown is complete
 	done := make(chan bool, 1)
 
@@ -68,7 +56,6 @@ func main() {
 	go gracefulShutdown(server, done)
 
 	// Start the server
-	log.Println("Starting server on localhost:4000")
 	err := server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
 		panic(fmt.Sprintf("http server error: %s", err))

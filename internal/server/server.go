@@ -2,10 +2,13 @@ package server
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"strconv"
 	"time"
 
-	_ "github.com/joho/godotenv/autoload"
+	"github.com/joho/godotenv"
 
 	"trakrlog/internal/database"
 )
@@ -17,7 +20,13 @@ type Server struct {
 }
 
 func NewServer() *http.Server {
-	port := 4000 // strconv.Atoi(os.Getenv("PORT"))
+	// Load .env file explicitly
+	if err := godotenv.Load(); err != nil {
+		log.Println("Warning: .env file not found, using system environment variables")
+		//panic(err)
+	}
+
+	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	fmt.Printf("Starting server on port %d\n", port)
 	NewServer := &Server{
 		port: port,
