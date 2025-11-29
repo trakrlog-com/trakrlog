@@ -50,22 +50,28 @@ func (s *Server) RegisterRouter() http.Handler {
 		projectHandler := handler.NewProjectHandler(s.projectService)
 		api.GET("/projects", projectHandler.GetProjects)
 		api.POST("/projects", projectHandler.CreateProject)
-		api.GET("/projects/:id", projectHandler.GetProject)
-		api.PATCH("/projects/:id", projectHandler.UpdateProject)
-		api.DELETE("/projects/:id", projectHandler.DeleteProject)
+		api.GET("/projects/:projectId", projectHandler.GetProject)
+		api.PATCH("/projects/:projectId", projectHandler.UpdateProject)
+		api.DELETE("/projects/:projectId", projectHandler.DeleteProject)
+
+		// Channel routes (nested under projects)
+		channelHandler := handler.NewChannelHandler(s.channelService)
+		api.POST("/projects/:projectId/channels", channelHandler.CreateChannel)
+		api.GET("/projects/:projectId/channels", channelHandler.GetProjectChannels)
+		api.GET("/channels/:channelId", channelHandler.GetChannel)
+		api.PATCH("/channels/:channelId", channelHandler.UpdateChannel)
+		api.DELETE("/channels/:channelId", channelHandler.DeleteChannel)
 	}
 
-	// Serve static files from the React app build directory
-	router.Use(static.Serve("/", static.LocalFile("frontend/dist", true)))
-
-	// The dashboard routes
+	// Dashboard routes
 	dashboard := router.Group("/dashboard")
 	dashboard.Use(middleware.RequireAuth(sessionSectret))
 	dashboard.GET("/*any", func(c *gin.Context) {
 		c.File("frontend/dist/index.html")
 	})
 
-	// Serve React app for client-side routes (SPA fallback) - only for non-dashboard routes
+	// Static files and SPA fallback
+	router.Use(static.Serve("/", static.LocalFile("frontend/dist", true)))
 	router.NoRoute(func(c *gin.Context) {
 		c.File("frontend/dist/index.html")
 	})

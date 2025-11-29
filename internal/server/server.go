@@ -20,6 +20,7 @@ type Server struct {
 	db             database.Service
 	userService    *service.UserService
 	projectService *service.ProjectService
+	channelService *service.ChannelService
 }
 
 func New() *http.Server {
@@ -38,16 +39,19 @@ func New() *http.Server {
 	// Initialize repositories
 	userRepo := repository.NewUserRepository(db)
 	projectRepo := repository.NewProjectRepository(db)
+	channelRepo := repository.NewChannelRepository(db)
 
 	// Initialize services
 	userService := service.NewUserService(userRepo)
 	projectService := service.NewProjectService(projectRepo, userRepo)
+	channelService := service.NewChannelService(channelRepo, projectRepo)
 
 	NewServer := &Server{
 		port:           port,
 		db:             db,
 		userService:    userService,
 		projectService: projectService,
+		channelService: channelService,
 	}
 
 	// Declare Server config

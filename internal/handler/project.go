@@ -99,7 +99,7 @@ func (h *ProjectHandler) GetProjects(ctx *gin.Context) {
 	})
 }
 
-// GetProject handles GET /api/projects/:id
+// GetProject handles GET /api/projects/:projectId
 func (h *ProjectHandler) GetProject(ctx *gin.Context) {
 	userID, ok := middleware.GetAuthUserID(ctx)
 	if !ok {
@@ -110,7 +110,7 @@ func (h *ProjectHandler) GetProject(ctx *gin.Context) {
 		return
 	}
 
-	projectID := ctx.Param("id")
+	projectID := ctx.Param("projectId")
 	if projectID == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
@@ -145,7 +145,7 @@ func (h *ProjectHandler) GetProject(ctx *gin.Context) {
 	})
 }
 
-// UpdateProject handles PATCH /api/projects/:id
+// UpdateProject handles PATCH /api/projects/:projectId
 func (h *ProjectHandler) UpdateProject(ctx *gin.Context) {
 	userID, ok := middleware.GetAuthUserID(ctx)
 	if !ok {
@@ -156,7 +156,7 @@ func (h *ProjectHandler) UpdateProject(ctx *gin.Context) {
 		return
 	}
 
-	projectID := ctx.Param("id")
+	projectID := ctx.Param("projectId")
 	if projectID == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
@@ -216,7 +216,7 @@ func (h *ProjectHandler) UpdateProject(ctx *gin.Context) {
 	})
 }
 
-// DeleteProject handles DELETE /api/projects/:id
+// DeleteProject handles DELETE /api/projects/:projectId
 func (h *ProjectHandler) DeleteProject(ctx *gin.Context) {
 	userID, ok := middleware.GetAuthUserID(ctx)
 	if !ok {
@@ -227,7 +227,7 @@ func (h *ProjectHandler) DeleteProject(ctx *gin.Context) {
 		return
 	}
 
-	projectID := ctx.Param("id")
+	projectID := ctx.Param("projectId")
 	if projectID == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
