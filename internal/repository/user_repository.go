@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"trakrlog/internal/database"
-	"trakrlog/internal/models"
+	"trakrlog/internal/model"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -23,7 +23,7 @@ func NewUserRepository(dbService database.Service) UserRepository {
 	}
 }
 
-func (r *userRepository) Create(ctx context.Context, user *models.User) error {
+func (r *userRepository) Create(ctx context.Context, user *model.User) error {
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 
@@ -36,13 +36,13 @@ func (r *userRepository) Create(ctx context.Context, user *models.User) error {
 	return nil
 }
 
-func (r *userRepository) FindByID(ctx context.Context, id string) (*models.User, error) {
+func (r *userRepository) FindByID(ctx context.Context, id string) (*model.User, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
 
-	var user models.User
+	var user model.User
 	err = r.collection.FindOne(ctx, bson.M{"_id": objectID}).Decode(&user)
 	if err != nil {
 		return nil, err
@@ -51,8 +51,8 @@ func (r *userRepository) FindByID(ctx context.Context, id string) (*models.User,
 	return &user, nil
 }
 
-func (r *userRepository) FindByEmail(ctx context.Context, email string) (*models.User, error) {
-	var user models.User
+func (r *userRepository) FindByEmail(ctx context.Context, email string) (*model.User, error) {
+	var user model.User
 	err := r.collection.FindOne(ctx, bson.M{"email": email}).Decode(&user)
 	if err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func (r *userRepository) FindByEmail(ctx context.Context, email string) (*models
 	return &user, nil
 }
 
-func (r *userRepository) Update(ctx context.Context, user *models.User) error {
+func (r *userRepository) Update(ctx context.Context, user *model.User) error {
 	user.UpdatedAt = time.Now()
 
 	update := bson.M{

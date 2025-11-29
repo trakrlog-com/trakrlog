@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"trakrlog/internal/database"
-	"trakrlog/internal/models"
+	"trakrlog/internal/model"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -24,7 +24,7 @@ func NewEventRepository(dbService database.Service) EventRepository {
 	}
 }
 
-func (r *eventRepository) Create(ctx context.Context, event *models.Event) error {
+func (r *eventRepository) Create(ctx context.Context, event *model.Event) error {
 	event.CreatedAt = time.Now()
 
 	result, err := r.collection.InsertOne(ctx, event)
@@ -36,13 +36,13 @@ func (r *eventRepository) Create(ctx context.Context, event *models.Event) error
 	return nil
 }
 
-func (r *eventRepository) FindByID(ctx context.Context, id string) (*models.Event, error) {
+func (r *eventRepository) FindByID(ctx context.Context, id string) (*model.Event, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
 
-	var event models.Event
+	var event model.Event
 	err = r.collection.FindOne(ctx, bson.M{"_id": objectID}).Decode(&event)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (r *eventRepository) FindByID(ctx context.Context, id string) (*models.Even
 	return &event, nil
 }
 
-func (r *eventRepository) FindByChannelID(ctx context.Context, channelID string, limit, offset int64) ([]*models.Event, error) {
+func (r *eventRepository) FindByChannelID(ctx context.Context, channelID string, limit, offset int64) ([]*model.Event, error) {
 	objectID, err := primitive.ObjectIDFromHex(channelID)
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func (r *eventRepository) FindByChannelID(ctx context.Context, channelID string,
 	}
 	defer cursor.Close(ctx)
 
-	var events []*models.Event
+	var events []*model.Event
 	if err = cursor.All(ctx, &events); err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (r *eventRepository) FindByChannelID(ctx context.Context, channelID string,
 	return events, nil
 }
 
-func (r *eventRepository) FindByProjectID(ctx context.Context, projectID string, limit, offset int64) ([]*models.Event, error) {
+func (r *eventRepository) FindByProjectID(ctx context.Context, projectID string, limit, offset int64) ([]*model.Event, error) {
 	objectID, err := primitive.ObjectIDFromHex(projectID)
 	if err != nil {
 		return nil, err
@@ -93,7 +93,7 @@ func (r *eventRepository) FindByProjectID(ctx context.Context, projectID string,
 	}
 	defer cursor.Close(ctx)
 
-	var events []*models.Event
+	var events []*model.Event
 	if err = cursor.All(ctx, &events); err != nil {
 		return nil, err
 	}
@@ -101,7 +101,7 @@ func (r *eventRepository) FindByProjectID(ctx context.Context, projectID string,
 	return events, nil
 }
 
-func (r *eventRepository) Update(ctx context.Context, event *models.Event) error {
+func (r *eventRepository) Update(ctx context.Context, event *model.Event) error {
 	update := bson.M{
 		"$set": bson.M{
 			"title":       event.Title,

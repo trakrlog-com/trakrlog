@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"trakrlog/internal/auth"
+	"trakrlog/internal/handler"
 	"trakrlog/internal/middleware"
 
 	"github.com/gin-contrib/cors"
@@ -40,6 +41,19 @@ func (s *Server) RegisterRouter() http.Handler {
 	authGroup.GET("google/callback", googleHandler.HandleCallback)
 	authGroup.GET("is-auth", googleHandler.GetAuthUser)
 	authGroup.GET("login/failed", googleHandler.HandleUnauthorized)
+
+	// API routes - protected by authentication
+	api := router.Group("/api")
+	api.Use(middleware.RequireAuth(sessionSectret))
+	{
+		// Project routes
+		projectHandler := handler.NewProjectHandler(s.projectService)
+		api.GET("/projects", projectHandler.GetProjects)
+		api.POST("/projects", projectHandler.CreateProject)
+		api.GET("/projects/:id", projectHandler.GetProject)
+		api.PATCH("/projects/:id", projectHandler.UpdateProject)
+		api.DELETE("/projects/:id", projectHandler.DeleteProject)
+	}
 
 	// Serve static files from the React app build directory
 	router.Use(static.Serve("/", static.LocalFile("frontend/dist", true)))

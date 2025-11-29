@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"trakrlog/internal/models"
+	"trakrlog/internal/model"
 	"trakrlog/internal/repository"
 )
 
@@ -19,7 +19,7 @@ func NewUserService(userRepo repository.UserRepository) *UserService {
 }
 
 // CreateUser creates a new user with validation
-func (s *UserService) CreateUser(ctx context.Context, email, name string) (*models.User, error) {
+func (s *UserService) CreateUser(ctx context.Context, email, name string) (*model.User, error) {
 	// Validation
 	if email == "" {
 		return nil, errors.New("email required")
@@ -35,7 +35,7 @@ func (s *UserService) CreateUser(ctx context.Context, email, name string) (*mode
 	}
 
 	// Create user
-	user := &models.User{
+	user := &model.User{
 		Email: email,
 		Name:  name,
 	}
@@ -48,17 +48,17 @@ func (s *UserService) CreateUser(ctx context.Context, email, name string) (*mode
 }
 
 // GetUserByID retrieves a user by ID
-func (s *UserService) GetUserByID(ctx context.Context, id string) (*models.User, error) {
+func (s *UserService) GetUserByID(ctx context.Context, id string) (*model.User, error) {
 	return s.userRepo.FindByID(ctx, id)
 }
 
 // GetUserByEmail retrieves a user by email
-func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
 	return s.userRepo.FindByEmail(ctx, email)
 }
 
 // UpdateUser updates user information
-func (s *UserService) UpdateUser(ctx context.Context, user *models.User) error {
+func (s *UserService) UpdateUser(ctx context.Context, user *model.User) error {
 	if user.ID.IsZero() {
 		return errors.New("user ID required")
 	}

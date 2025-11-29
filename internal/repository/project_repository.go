@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"trakrlog/internal/database"
-	"trakrlog/internal/models"
+	"trakrlog/internal/model"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -23,7 +23,7 @@ func NewProjectRepository(dbService database.Service) ProjectRepository {
 	}
 }
 
-func (r *projectRepository) Create(ctx context.Context, project *models.Project) error {
+func (r *projectRepository) Create(ctx context.Context, project *model.Project) error {
 	project.CreatedAt = time.Now()
 	project.UpdatedAt = time.Now()
 
@@ -36,13 +36,13 @@ func (r *projectRepository) Create(ctx context.Context, project *models.Project)
 	return nil
 }
 
-func (r *projectRepository) FindByID(ctx context.Context, id string) (*models.Project, error) {
+func (r *projectRepository) FindByID(ctx context.Context, id string) (*model.Project, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
 
-	var project models.Project
+	var project model.Project
 	err = r.collection.FindOne(ctx, bson.M{"_id": objectID}).Decode(&project)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (r *projectRepository) FindByID(ctx context.Context, id string) (*models.Pr
 	return &project, nil
 }
 
-func (r *projectRepository) FindByUserID(ctx context.Context, userID string) ([]*models.Project, error) {
+func (r *projectRepository) FindByUserID(ctx context.Context, userID string) ([]*model.Project, error) {
 	objectID, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		return nil, err
@@ -63,7 +63,7 @@ func (r *projectRepository) FindByUserID(ctx context.Context, userID string) ([]
 	}
 	defer cursor.Close(ctx)
 
-	var projects []*models.Project
+	var projects []*model.Project
 	if err = cursor.All(ctx, &projects); err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (r *projectRepository) FindByUserID(ctx context.Context, userID string) ([]
 	return projects, nil
 }
 
-func (r *projectRepository) Update(ctx context.Context, project *models.Project) error {
+func (r *projectRepository) Update(ctx context.Context, project *model.Project) error {
 	project.UpdatedAt = time.Now()
 
 	update := bson.M{
