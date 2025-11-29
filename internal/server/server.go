@@ -23,7 +23,7 @@ func NewServer() *http.Server {
 	// Load .env file explicitly
 	if err := godotenv.Load(); err != nil {
 		log.Println("Warning: .env file not found, using system environment variables")
-		//panic(err)
+		panic(err)
 	}
 
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
