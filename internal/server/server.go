@@ -15,11 +15,10 @@ import (
 
 type Server struct {
 	port int
-
-	db database.Service
+	db   database.Service
 }
 
-func NewServer() *http.Server {
+func New() *http.Server {
 	// Load .env file explicitly
 	if err := godotenv.Load(); err != nil {
 		log.Println("Warning: .env file not found, using system environment variables")
@@ -30,8 +29,7 @@ func NewServer() *http.Server {
 	fmt.Printf("Starting server on port %d\n", port)
 	NewServer := &Server{
 		port: port,
-
-		db: database.New(),
+		db:   database.New(),
 	}
 
 	// Declare Server config

@@ -39,15 +39,7 @@ func gracefulShutdown(apiServer *http.Server, done chan bool) {
 
 func main() {
 
-	server := server.NewServer()
-
-	// store := sessions.NewCookieStore([]byte(appHandler.Config.SessionSecret))
-	// // Configure session options
-	// store.MaxAge(int(12 * time.Hour / time.Second)) // session expiration time
-	// store.Options.Path = "/"
-	// store.Options.HttpOnly = true
-	// store.Options.Secure = false                  // set to true in production (HTTPS)
-	// store.Options.SameSite = http.SameSiteLaxMode // helps prevent CSRF
+	server := server.New()
 
 	// Create a done channel to signal when the shutdown is complete
 	done := make(chan bool, 1)
