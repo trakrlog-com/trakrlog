@@ -46,7 +46,7 @@ func (s *service) Health() map[string]string {
 
 	err := s.db.Ping(ctx, nil)
 	if err != nil {
-		log.Fatalf("db down: %v", err)
+		log.Fatalf("MongoDB is down: %v", err)
 	}
 
 	return map[string]string{
