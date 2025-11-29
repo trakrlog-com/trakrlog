@@ -15,7 +15,7 @@ export const CreateChannelDialog: React.FC<{
 
     const addChannel = async (name: string) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/channels`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/channels`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -126,9 +126,9 @@ export const Dashboard: React.FC = () => {
 
                 const channelId = selectedChannel?._id ?? '';
                 const projectId = selectedProject._id;
-                let url = `${import.meta.env.VITE_BACKEND_URL}/events/project/${projectId}/channel/${channelId}`;
+                let url = `${import.meta.env.VITE_BACKEND_URL}/api/events/project/${projectId}/channel/${channelId}`;
                 if (channelId === '') {
-                    url = `${import.meta.env.VITE_BACKEND_URL}/events/project/${projectId}`;
+                    url = `${import.meta.env.VITE_BACKEND_URL}/api/events/project/${projectId}`;
                 }
 
                 const response = await fetch(url);
@@ -158,18 +158,18 @@ export const Dashboard: React.FC = () => {
     useEffect(() => {
         const fetchProjectsAndChannels = async () => {
             try {
-                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/projects`);
-                const responseChannels = await fetch(`${import.meta.env.VITE_BACKEND_URL}/channels`);
+                const responseProjects = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/projects`);
+                const responseChannels = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/channels`);
 
-                if (!response.ok || !responseChannels.ok) {
+                if (!responseProjects.ok || !responseChannels.ok) {
                     setLoadingProjectsChannels(false);
                     throw new Error('Failed to fetch projects or channels');
                 }
 
-                const { data } = await response.json();
-                const { data: channeldData } = await responseChannels.json();
-                setProjects(data.projects);
-                setChannels(channeldData.channels);
+                const { data: projectsData } = await responseProjects.json();
+                const { data: channelsData } = await responseChannels.json();
+                setProjects(projectsData.projects);
+                setChannels(channelsData.channels);
                 setLoadingProjectsChannels(false);
             } catch (err) {
                 setError('Failed to fetch projects or channels');
