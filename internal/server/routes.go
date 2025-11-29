@@ -65,6 +65,7 @@ func (s *Server) setupGoth(sessionSecret string) {
 			os.Getenv("GOOGLE_CLIENT_ID"),
 			os.Getenv("GOOGLE_CLIENT_SECRET"),
 			os.Getenv("GOOGLE_CALLBACK_URL"),
+			"email", "profile",
 		),
 		// github.New(
 		// 	os.Getenv("GITHUB_CLIENT_ID"),
@@ -73,10 +74,3 @@ func (s *Server) setupGoth(sessionSecret string) {
 		// ),
 	)
 }
-
-// func (s *Server) HelloWorldHandler(c *gin.Context) {
-// 	resp := make(map[string]string)
-// 	resp["message"] = "Hello World"
-
-// 	c.JSON(http.StatusOK, resp)
-// }
