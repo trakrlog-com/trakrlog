@@ -46,7 +46,7 @@ func (h *ProjectHandler) CreateProject(ctx *gin.Context) {
 		return
 	}
 
-	project, err := h.projectService.CreateProject(ctx.Request.Context(), userID, req.Name)
+	project, err := h.projectService.CreateProject(ctx.Request.Context(), userID, req.Name, req.LogoBase64)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,

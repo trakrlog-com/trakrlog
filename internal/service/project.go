@@ -23,7 +23,7 @@ func NewProjectService(projectRepo repository.ProjectRepository, userRepo reposi
 }
 
 // CreateProject creates a new project for a user
-func (s *ProjectService) CreateProject(ctx context.Context, userID, name string) (*model.Project, error) {
+func (s *ProjectService) CreateProject(ctx context.Context, userID, name string, logoBase64 string) (*model.Project, error) {
 	// Validation
 	if name == "" {
 		return nil, errors.New("project name required")
@@ -42,8 +42,9 @@ func (s *ProjectService) CreateProject(ctx context.Context, userID, name string)
 
 	// Create project
 	project := &model.Project{
-		UserID: userOID,
-		Name:   name,
+		UserID:     userOID,
+		Name:       name,
+		LogoBase64: logoBase64,
 	}
 
 	if err := s.projectRepo.Create(ctx, project); err != nil {
