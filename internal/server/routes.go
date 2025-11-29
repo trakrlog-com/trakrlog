@@ -32,7 +32,7 @@ func (s *Server) RegisterRouter() http.Handler {
 
 	s.setupGoth(sessionSectret)
 
-	googleHandler := auth.NewGoogleHandler(sessionSectret)
+	googleHandler := auth.NewGoogleHandler(sessionSectret, s.userService)
 	auth := router.Group("/auth")
 	auth.GET("google", googleHandler.Signup)
 	auth.GET("google/callback", googleHandler.HandleCallback)

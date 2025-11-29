@@ -11,11 +11,14 @@ import (
 	"github.com/joho/godotenv"
 
 	"trakrlog/internal/database"
+	"trakrlog/internal/repository"
+	"trakrlog/internal/service"
 )
 
 type Server struct {
-	port int
-	db   database.Service
+	port        int
+	db          database.Service
+	userService *service.UserService
 }
 
 func New() *http.Server {
@@ -27,9 +30,20 @@ func New() *http.Server {
 
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	log.Printf("Starting server on port %d\n", port)
+
+	// Initialize database
+	db := database.New()
+
+	// Initialize repositories
+	userRepo := repository.NewUserRepository(db)
+
+	// Initialize services
+	userService := service.NewUserService(userRepo)
+
 	NewServer := &Server{
-		port: port,
-		db:   database.New(),
+		port:        port,
+		db:          db,
+		userService: userService,
 	}
 
 	// Declare Server config

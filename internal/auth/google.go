@@ -3,16 +3,22 @@ package auth
 import (
 	"net/http"
 
+	"trakrlog/internal/service"
+
 	"github.com/gin-gonic/gin"
 	"github.com/markbates/goth/gothic"
 )
 
 type GoogleHandler struct {
 	sessionSecret string
+	userService   *service.UserService
 }
 
-func NewGoogleHandler(sessionSecret string) *GoogleHandler {
-	return &GoogleHandler{sessionSecret: sessionSecret}
+func NewGoogleHandler(sessionSecret string, userService *service.UserService) *GoogleHandler {
+	return &GoogleHandler{
+		sessionSecret: sessionSecret,
+		userService:   userService,
+	}
 }
 
 func (h *GoogleHandler) Signup(ctx *gin.Context) {
@@ -50,9 +56,33 @@ func (h *GoogleHandler) HandleCallback(ctx *gin.Context) {
 	}
 
 	// your logic for storing the user in database goes here
-	// TODO
 
-	session.Values["user"] = user
+	// Find or create user in database
+	dbUser, err := h.userService.GetUserByEmail(ctx.Request.Context(), user.Email)
+	if err != nil {
+		// User doesn't exist, create new user
+		dbUser, err = h.userService.CreateUser(ctx.Request.Context(), user.Email, user.Name)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"success": false,
+				"message": "Error creating user",
+				"error":   err.Error(),
+			})
+			return
+		}
+	}
+
+	// Update avatar if changed
+	if dbUser.Avatar != user.AvatarURL {
+		dbUser.Avatar = user.AvatarURL
+		if err := h.userService.UpdateUser(ctx.Request.Context(), dbUser); err != nil {
+			// Log error but don't fail the login
+		}
+	}
+
+	// Store user ID in session (not the whole user object)
+	session.Values["user_id"] = dbUser.ID.Hex()
+	session.Values["user_email"] = dbUser.Email
 
 	// save the user session
 	if err = session.Save(ctx.Request, ctx.Writer); err != nil {
@@ -79,12 +109,23 @@ func (h *GoogleHandler) GetAuthUser(ctx *gin.Context) {
 		return
 	}
 
-	// Get user data from session
-	user := session.Values["user"]
-	if user == nil {
+	// Get user ID from session
+	userID, ok := session.Values["user_id"].(string)
+	if !ok || userID == "" {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"success": false,
 			"message": "No authenticated user found",
+		})
+		return
+	}
+
+	// Fetch user from database
+	user, err := h.userService.GetUserByID(ctx.Request.Context(), userID)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"success": false,
+			"message": "User not found",
+			"error":   err.Error(),
 		})
 		return
 	}

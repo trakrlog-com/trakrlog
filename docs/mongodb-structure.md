@@ -183,13 +183,527 @@ This allows repositories to access collections through the database service.
 
 ## Phase 2: Service Layer & Business Logic
 
-### 4. **Dependency Injection Pattern**
+Implement services one entity at a time, building from least to most dependent.
+
+### Phase 2.1: User Service
+
+**Create `internal/service/user_service.go`:**
 
 ```go
-// internal/server/server.go (your existing Server struct)
+package service
+
+import (
+    "context"
+    "errors"
+    "trakrlog/internal/models"
+    "trakrlog/internal/repository"
+)
+
+type UserService struct {
+    userRepo repository.UserRepository
+}
+
+func NewUserService(userRepo repository.UserRepository) *UserService {
+    return &UserService{
+        userRepo: userRepo,
+    }
+}
+
+// CreateUser creates a new user with validation
+func (s *UserService) CreateUser(ctx context.Context, email, name string) (*models.User, error) {
+    // Validation
+    if email == "" {
+        return nil, errors.New("email required")
+    }
+    if name == "" {
+        return nil, errors.New("name required")
+    }
+    
+    // Check for duplicates
+    existing, _ := s.userRepo.FindByEmail(ctx, email)
+    if existing != nil {
+        return nil, errors.New("user with this email already exists")
+    }
+    
+    // Create user
+    user := &models.User{
+        Email: email,
+        Name:  name,
+    }
+    
+    if err := s.userRepo.Create(ctx, user); err != nil {
+        return nil, err
+    }
+    
+    return user, nil
+}
+
+// GetUserByID retrieves a user by ID
+func (s *UserService) GetUserByID(ctx context.Context, id string) (*models.User, error) {
+    return s.userRepo.FindByID(ctx, id)
+}
+
+// GetUserByEmail retrieves a user by email
+func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+    return s.userRepo.FindByEmail(ctx, email)
+}
+
+// UpdateUser updates user information
+func (s *UserService) UpdateUser(ctx context.Context, user *models.User) error {
+    if user.ID.IsZero() {
+        return errors.New("user ID required")
+    }
+    
+    // Verify user exists
+    existing, err := s.userRepo.FindByID(ctx, user.ID.Hex())
+    if err != nil {
+        return errors.New("user not found")
+    }
+    
+    // Update fields
+    existing.Name = user.Name
+    existing.Avatar = user.Avatar
+    
+    return s.userRepo.Update(ctx, existing)
+}
+
+// DeleteUser deletes a user
+func (s *UserService) DeleteUser(ctx context.Context, id string) error {
+    // Verify user exists
+    _, err := s.userRepo.FindByID(ctx, id)
+    if err != nil {
+        return errors.New("user not found")
+    }
+    
+    return s.userRepo.Delete(ctx, id)
+}
+```
+
+---
+
+### Phase 2.2: Project Service
+
+**Create `internal/service/project_service.go`:**
+
+```go
+package service
+
+import (
+    "context"
+    "errors"
+    "trakrlog/internal/models"
+    "trakrlog/internal/repository"
+    
+    "go.mongodb.org/mongo-driver/bson/primitive"
+)
+
+type ProjectService struct {
+    projectRepo repository.ProjectRepository
+    userRepo    repository.UserRepository
+}
+
+func NewProjectService(projectRepo repository.ProjectRepository, userRepo repository.UserRepository) *ProjectService {
+    return &ProjectService{
+        projectRepo: projectRepo,
+        userRepo:    userRepo,
+    }
+}
+
+// CreateProject creates a new project for a user
+func (s *ProjectService) CreateProject(ctx context.Context, userID, name string) (*models.Project, error) {
+    // Validation
+    if name == "" {
+        return nil, errors.New("project name required")
+    }
+    
+    // Verify user exists
+    userOID, err := primitive.ObjectIDFromHex(userID)
+    if err != nil {
+        return nil, errors.New("invalid user ID")
+    }
+    
+    _, err = s.userRepo.FindByID(ctx, userID)
+    if err != nil {
+        return nil, errors.New("user not found")
+    }
+    
+    // Create project
+    project := &models.Project{
+        UserID: userOID,
+        Name:   name,
+    }
+    
+    if err := s.projectRepo.Create(ctx, project); err != nil {
+        return nil, err
+    }
+    
+    return project, nil
+}
+
+// GetProjectByID retrieves a project by ID
+func (s *ProjectService) GetProjectByID(ctx context.Context, id string) (*models.Project, error) {
+    return s.projectRepo.FindByID(ctx, id)
+}
+
+// GetUserProjects retrieves all projects for a user
+func (s *ProjectService) GetUserProjects(ctx context.Context, userID string) ([]*models.Project, error) {
+    // Verify user exists
+    _, err := s.userRepo.FindByID(ctx, userID)
+    if err != nil {
+        return nil, errors.New("user not found")
+    }
+    
+    return s.projectRepo.FindByUserID(ctx, userID)
+}
+
+// UpdateProject updates project information
+func (s *ProjectService) UpdateProject(ctx context.Context, userID string, project *models.Project) error {
+    if project.ID.IsZero() {
+        return errors.New("project ID required")
+    }
+    
+    // Verify project exists and belongs to user
+    existing, err := s.projectRepo.FindByID(ctx, project.ID.Hex())
+    if err != nil {
+        return errors.New("project not found")
+    }
+    
+    if existing.UserID.Hex() != userID {
+        return errors.New("unauthorized: project does not belong to user")
+    }
+    
+    // Update fields
+    existing.Name = project.Name
+    existing.LogoBase64 = project.LogoBase64
+    
+    return s.projectRepo.Update(ctx, existing)
+}
+
+// DeleteProject deletes a project (user must own it)
+func (s *ProjectService) DeleteProject(ctx context.Context, userID, projectID string) error {
+    // Verify project exists and belongs to user
+    project, err := s.projectRepo.FindByID(ctx, projectID)
+    if err != nil {
+        return errors.New("project not found")
+    }
+    
+    if project.UserID.Hex() != userID {
+        return errors.New("unauthorized: project does not belong to user")
+    }
+    
+    return s.projectRepo.Delete(ctx, projectID)
+}
+```
+
+---
+
+### Phase 2.3: Channel Service
+
+**Create `internal/service/channel_service.go`:**
+
+```go
+package service
+
+import (
+    "context"
+    "errors"
+    "trakrlog/internal/models"
+    "trakrlog/internal/repository"
+    
+    "go.mongodb.org/mongo-driver/bson/primitive"
+)
+
+type ChannelService struct {
+    channelRepo repository.ChannelRepository
+    projectRepo repository.ProjectRepository
+}
+
+func NewChannelService(channelRepo repository.ChannelRepository, projectRepo repository.ProjectRepository) *ChannelService {
+    return &ChannelService{
+        channelRepo: channelRepo,
+        projectRepo: projectRepo,
+    }
+}
+
+// CreateChannel creates a new channel in a project
+func (s *ChannelService) CreateChannel(ctx context.Context, userID, projectID, name string) (*models.Channel, error) {
+    // Validation
+    if name == "" {
+        return nil, errors.New("channel name required")
+    }
+    
+    // Verify project exists
+    project, err := s.projectRepo.FindByID(ctx, projectID)
+    if err != nil {
+        return nil, errors.New("project not found")
+    }
+    
+    // Verify project belongs to user
+    if project.UserID.Hex() != userID {
+        return nil, errors.New("unauthorized: project does not belong to user")
+    }
+    
+    // Create channel
+    projectOID, _ := primitive.ObjectIDFromHex(projectID)
+    channel := &models.Channel{
+        ProjectID: projectOID,
+        Name:      name,
+    }
+    
+    if err := s.channelRepo.Create(ctx, channel); err != nil {
+        return nil, err
+    }
+    
+    return channel, nil
+}
+
+// GetChannelByID retrieves a channel by ID
+func (s *ChannelService) GetChannelByID(ctx context.Context, id string) (*models.Channel, error) {
+    return s.channelRepo.FindByID(ctx, id)
+}
+
+// GetProjectChannels retrieves all channels for a project
+func (s *ChannelService) GetProjectChannels(ctx context.Context, userID, projectID string) ([]*models.Channel, error) {
+    // Verify project exists and belongs to user
+    project, err := s.projectRepo.FindByID(ctx, projectID)
+    if err != nil {
+        return nil, errors.New("project not found")
+    }
+    
+    if project.UserID.Hex() != userID {
+        return nil, errors.New("unauthorized: project does not belong to user")
+    }
+    
+    return s.channelRepo.FindByProjectID(ctx, projectID)
+}
+
+// UpdateChannel updates channel information
+func (s *ChannelService) UpdateChannel(ctx context.Context, userID string, channel *models.Channel) error {
+    if channel.ID.IsZero() {
+        return errors.New("channel ID required")
+    }
+    
+    // Verify channel exists
+    existing, err := s.channelRepo.FindByID(ctx, channel.ID.Hex())
+    if err != nil {
+        return errors.New("channel not found")
+    }
+    
+    // Verify project belongs to user
+    project, err := s.projectRepo.FindByID(ctx, existing.ProjectID.Hex())
+    if err != nil {
+        return errors.New("project not found")
+    }
+    
+    if project.UserID.Hex() != userID {
+        return errors.New("unauthorized: project does not belong to user")
+    }
+    
+    // Update fields
+    existing.Name = channel.Name
+    
+    return s.channelRepo.Update(ctx, existing)
+}
+
+// DeleteChannel deletes a channel (user must own the project)
+func (s *ChannelService) DeleteChannel(ctx context.Context, userID, channelID string) error {
+    // Verify channel exists
+    channel, err := s.channelRepo.FindByID(ctx, channelID)
+    if err != nil {
+        return errors.New("channel not found")
+    }
+    
+    // Verify project belongs to user
+    project, err := s.projectRepo.FindByID(ctx, channel.ProjectID.Hex())
+    if err != nil {
+        return errors.New("project not found")
+    }
+    
+    if project.UserID.Hex() != userID {
+        return errors.New("unauthorized: project does not belong to user")
+    }
+    
+    return s.channelRepo.Delete(ctx, channelID)
+}
+```
+
+---
+
+### Phase 2.4: Event Service
+
+**Create `internal/service/event_service.go`:**
+
+```go
+package service
+
+import (
+    "context"
+    "errors"
+    "trakrlog/internal/models"
+    "trakrlog/internal/repository"
+    
+    "go.mongodb.org/mongo-driver/bson/primitive"
+)
+
+type EventService struct {
+    eventRepo   repository.EventRepository
+    channelRepo repository.ChannelRepository
+    projectRepo repository.ProjectRepository
+}
+
+func NewEventService(eventRepo repository.EventRepository, channelRepo repository.ChannelRepository, projectRepo repository.ProjectRepository) *EventService {
+    return &EventService{
+        eventRepo:   eventRepo,
+        channelRepo: channelRepo,
+        projectRepo: projectRepo,
+    }
+}
+
+// CreateEvent creates a new event in a channel
+func (s *EventService) CreateEvent(ctx context.Context, userID, channelID, title, description, icon string, tags []string) (*models.Event, error) {
+    // Validation
+    if title == "" {
+        return nil, errors.New("event title required")
+    }
+    
+    // Verify channel exists
+    channel, err := s.channelRepo.FindByID(ctx, channelID)
+    if err != nil {
+        return nil, errors.New("channel not found")
+    }
+    
+    // Verify project belongs to user
+    project, err := s.projectRepo.FindByID(ctx, channel.ProjectID.Hex())
+    if err != nil {
+        return nil, errors.New("project not found")
+    }
+    
+    if project.UserID.Hex() != userID {
+        return nil, errors.New("unauthorized: project does not belong to user")
+    }
+    
+    // Create event
+    channelOID, _ := primitive.ObjectIDFromHex(channelID)
+    event := &models.Event{
+        ChannelID:   channelOID,
+        ProjectID:   channel.ProjectID,
+        Title:       title,
+        Description: description,
+        Icon:        icon,
+        Tags:        tags,
+    }
+    
+    if err := s.eventRepo.Create(ctx, event); err != nil {
+        return nil, err
+    }
+    
+    return event, nil
+}
+
+// GetEventByID retrieves an event by ID
+func (s *EventService) GetEventByID(ctx context.Context, id string) (*models.Event, error) {
+    return s.eventRepo.FindByID(ctx, id)
+}
+
+// GetChannelEvents retrieves paginated events for a channel
+func (s *EventService) GetChannelEvents(ctx context.Context, userID, channelID string, limit, offset int64) ([]*models.Event, error) {
+    // Verify channel exists
+    channel, err := s.channelRepo.FindByID(ctx, channelID)
+    if err != nil {
+        return nil, errors.New("channel not found")
+    }
+    
+    // Verify project belongs to user
+    project, err := s.projectRepo.FindByID(ctx, channel.ProjectID.Hex())
+    if err != nil {
+        return nil, errors.New("project not found")
+    }
+    
+    if project.UserID.Hex() != userID {
+        return nil, errors.New("unauthorized: project does not belong to user")
+    }
+    
+    return s.eventRepo.FindByChannelID(ctx, channelID, limit, offset)
+}
+
+// GetProjectEvents retrieves paginated events for a project
+func (s *EventService) GetProjectEvents(ctx context.Context, userID, projectID string, limit, offset int64) ([]*models.Event, error) {
+    // Verify project exists and belongs to user
+    project, err := s.projectRepo.FindByID(ctx, projectID)
+    if err != nil {
+        return nil, errors.New("project not found")
+    }
+    
+    if project.UserID.Hex() != userID {
+        return nil, errors.New("unauthorized: project does not belong to user")
+    }
+    
+    return s.eventRepo.FindByProjectID(ctx, projectID, limit, offset)
+}
+
+// UpdateEvent updates event information
+func (s *EventService) UpdateEvent(ctx context.Context, userID string, event *models.Event) error {
+    if event.ID.IsZero() {
+        return errors.New("event ID required")
+    }
+    
+    // Verify event exists
+    existing, err := s.eventRepo.FindByID(ctx, event.ID.Hex())
+    if err != nil {
+        return errors.New("event not found")
+    }
+    
+    // Verify project belongs to user
+    project, err := s.projectRepo.FindByID(ctx, existing.ProjectID.Hex())
+    if err != nil {
+        return errors.New("project not found")
+    }
+    
+    if project.UserID.Hex() != userID {
+        return errors.New("unauthorized: project does not belong to user")
+    }
+    
+    // Update fields
+    existing.Title = event.Title
+    existing.Description = event.Description
+    existing.Icon = event.Icon
+    existing.Tags = event.Tags
+    
+    return s.eventRepo.Update(ctx, existing)
+}
+
+// DeleteEvent deletes an event (user must own the project)
+func (s *EventService) DeleteEvent(ctx context.Context, userID, eventID string) error {
+    // Verify event exists
+    event, err := s.eventRepo.FindByID(ctx, eventID)
+    if err != nil {
+        return errors.New("event not found")
+    }
+    
+    // Verify project belongs to user
+    project, err := s.projectRepo.FindByID(ctx, event.ProjectID.Hex())
+    if err != nil {
+        return errors.New("project not found")
+    }
+    
+    if project.UserID.Hex() != userID {
+        return errors.New("unauthorized: project does not belong to user")
+    }
+    
+    return s.eventRepo.Delete(ctx, eventID)
+}
+```
+
+---
+
+### Phase 2.5: Wire Services in Server
+
+**Update `internal/server/server.go`:**
+
+```go
 type Server struct {
     port int
-    db   database.Service  // Your existing database service
+    db   database.Service
     
     // Add services
     userService    *service.UserService
@@ -201,23 +715,20 @@ type Server struct {
 func NewServer() *http.Server {
     port, _ := strconv.Atoi(os.Getenv("PORT"))
     
-    // Initialize DB (your existing code)
+    // Initialize DB
     db := database.New()
     
-    // Get MongoDB database instance
-    mongoDB := db.GetDB()
-    
     // Initialize repositories
-    userRepo := repository.NewUserRepository(mongoDB)
-    projectRepo := repository.NewProjectRepository(mongoDB)
-    channelRepo := repository.NewChannelRepository(mongoDB)
-    eventRepo := repository.NewEventRepository(mongoDB)
+    userRepo := repository.NewUserRepository(db)
+    projectRepo := repository.NewProjectRepository(db)
+    channelRepo := repository.NewChannelRepository(db)
+    eventRepo := repository.NewEventRepository(db)
     
-    // Initialize services
+    // Initialize services (note the dependencies)
     userService := service.NewUserService(userRepo)
-    projectService := service.NewProjectService(projectRepo, channelRepo)
-    channelService := service.NewChannelService(channelRepo, eventRepo)
-    eventService := service.NewEventService(eventRepo)
+    projectService := service.NewProjectService(projectRepo, userRepo)
+    channelService := service.NewChannelService(channelRepo, projectRepo)
+    eventService := service.NewEventService(eventRepo, channelRepo, projectRepo)
     
     server := &Server{
         port: port,
@@ -228,40 +739,10 @@ func NewServer() *http.Server {
         eventService: eventService,
     }
     
-    // Return http.Server as your existing code does
     return &http.Server{
         Addr:    fmt.Sprintf(":%d", server.port),
         Handler: server.RegisterRouter(),
     }
-}
-```
-
-### 5. **Handler Usage**
-
-```go
-// internal/handlers/user_handler.go
-type UserHandler struct {
-    userService *service.UserService
-}
-
-func (h *UserHandler) CreateUser(c *gin.Context) {
-    var req struct {
-        Email string `json:"email"`
-        Name  string `json:"name"`
-    }
-    
-    if err := c.ShouldBindJSON(&req); err != nil {
-        c.JSON(400, gin.H{"error": err.Error()})
-        return
-    }
-    
-    user, err := h.userService.CreateUser(c.Request.Context(), req.Email, req.Name)
-    if err != nil {
-        c.JSON(500, gin.H{"error": err.Error()})
-        return
-    }
-    
-    c.JSON(201, user)
 }
 ```
 
