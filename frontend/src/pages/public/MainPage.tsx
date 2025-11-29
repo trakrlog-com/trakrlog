@@ -5,7 +5,6 @@ import { Features } from '../../components/public/Features';
 import { Footer } from '../../components/public/Footer';
 import { Divider } from '../../components/public/Divider';
 import GetStartedNow from '../../components/public/GetStartedNow';
-import JoinWaitlist from '../../components/public/JoinWaitlist';
 
 export const MainPage: React.FC = () => {
     return (
@@ -13,7 +12,6 @@ export const MainPage: React.FC = () => {
             <Navbar />
             <Hero />
             <Divider/>
-            <JoinWaitlist />
             <Features />
             
             <GetStartedNow />
