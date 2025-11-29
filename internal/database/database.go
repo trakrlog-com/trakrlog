@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -29,7 +28,7 @@ func New() Service {
 
 	dbUrl := os.Getenv("MONGODB_URL")
 
-	fmt.Println("Connecting to MongoDB at", dbUrl)
+	log.Println("Connecting to MongoDB at", dbUrl)
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(dbUrl))
 
 	if err != nil {
