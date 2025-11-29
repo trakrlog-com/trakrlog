@@ -13,6 +13,8 @@ import (
 
 type Service interface {
 	Health() map[string]string
+	GetDB() *mongo.Database
+	GetCollection(name string) *mongo.Collection
 }
 
 type service struct {
@@ -52,4 +54,18 @@ func (s *service) Health() map[string]string {
 	return map[string]string{
 		"message": "It's healthy",
 	}
+}
+
+// GetDB returns the MongoDB database instance
+func (s *service) GetDB() *mongo.Database {
+	dbName := os.Getenv("MONGODB_DATABASE")
+	if dbName == "" {
+		dbName = "trakrlog" // default database name
+	}
+	return s.db.Database(dbName)
+}
+
+// GetCollection returns a specific collection from the database
+func (s *service) GetCollection(name string) *mongo.Collection {
+	return s.GetDB().Collection(name)
 }
