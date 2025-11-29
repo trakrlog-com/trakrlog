@@ -53,7 +53,7 @@ export const Navbar = () => {
             <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
         </div>
-        {import.meta.env.VITE_WAITLISTENABLED === "false" && (
+
         <div className="hidden lg:flex lg:gap-x-12 ">
           {navigation.map((item) => (
             <a
@@ -64,17 +64,16 @@ export const Navbar = () => {
               {item.name}
             </a>
           ))}
-        </div>)}
-        {import.meta.env.VITE_WAITLISTENABLED === "false" ? (
-          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <Button
-              onClick={() => navigate("/login")}
-              className="main-button h-8"
-            >
-              Login
-            </Button>
-          </div>
-        ) : (<div className="hidden lg:flex lg:flex-1 lg:justify-end"></div>) }
+        </div>
+
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+          <Button
+            onClick={() => navigate("/login")}
+            className="main-button h-8"
+          >
+            Login
+          </Button>
+        </div>
       </nav>
       <Dialog
         open={mobileMenuOpen}

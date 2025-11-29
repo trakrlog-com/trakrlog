@@ -20,7 +20,7 @@ trakrlog/
 
 ## Backend (apps/backend)
 - **Framework:** Express 5, TypeScript, MongoDB (Mongoose)
-- **Features:** Modular structure under `src/features/` (auth, projects, channels, events, waitlist)
+- **Features:** Modular structure under `src/features/` (auth, projects, channels, events)
 - **Config:**
   - `src/config/database.ts` — MongoDB connection
   - `src/index.ts` — App entry, middleware, session, CSP, static serving, route mounting
@@ -31,7 +31,7 @@ trakrlog/
   - Input validation (express-validator, custom checks)
 - **Models:**
   - All models extend a `BaseModel` (id, name, key, description, timestamps)
-  - Example: `Project`, `Channel`, `Event`, `Waitlist` (with email validation)
+  - Example: `Project`, `Channel`, `Event`
 - **Code Style:**
   - TypeScript strict mode
   - ESNext modules, ESM imports

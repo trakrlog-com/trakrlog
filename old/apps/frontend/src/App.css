@@ -67,17 +67,7 @@
             after:bg-repeat after:pointer-events-none text-base h-12 gap-0 px-5 font-semibold;
   }
 
-  .waitlist {
-    @apply rounded-2xl ease-in-out
-       text-white border-[2px] border-white/10 backdrop-blur-[25px] 
-       bg-origin-border 
-       bg-[linear-gradient(104deg,rgba(253,253,253,0.05)_5%,rgba(240,240,228,0.1)_100%)] 
-       shadow-sm  
-        not-disabled:hover:text-black 
-        transition-all duration-200 disabled:opacity-30 
-         disabled:text-white/50 focus-visible:ring-4 
-            text-base gap-0 px-5 font-semibold
-  }
+  
 }
 
 

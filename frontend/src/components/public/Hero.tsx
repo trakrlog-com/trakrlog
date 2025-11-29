@@ -1,4 +1,3 @@
-
 export const Hero = () => {
   return (
     <div className="bg-[var(--dark-bg)]">
@@ -62,16 +61,18 @@ export const Hero = () => {
               <b className="font-semibold text-white">TrakrLog</b> captures
               every detail around your game or saas.
             </p>
-            {import.meta.env.VITE_WAITLISTENABLED === "false" && (
-              <div className="mt-10 flex items-center   gap-x-6">
-                <a href="/login" className="main-button p-3">
-                  Get Started for free
-                </a>
-                <a href="https://github.com/trakrlog-com" className="font-semibold leading-6 text-white">
-                  Documentation <span aria-hidden="true">→</span>
-                </a>
-              </div>
-            )}
+
+            <div className="mt-10 flex items-center   gap-x-6">
+              <a href="/login" className="main-button p-3">
+                Get Started for free
+              </a>
+              <a
+                href="https://github.com/trakrlog-com"
+                className="font-semibold leading-6 text-white"
+              >
+                Documentation <span aria-hidden="true">→</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
