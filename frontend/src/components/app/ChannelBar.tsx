@@ -27,28 +27,30 @@ export const ChannelBar: React.FC<ChannelBarProps> = ({ channels }) => {
             <div className="space-y-2 px-4 py-4">
                 <ChannelItem
                     key={"all-channels"}
-                    channel={{ _id: "", name: "all-channels", projectId: selectedProject?._id } as Channel}
-                    isSelected={selectedChannel?._id === ""}
+                    channel={{ id: "", name: "all-channels", projectId: selectedProject?.id } as Channel}
+                    isSelected={selectedChannel?.id === ""}
                     onSelect={() => {
                         if (selectedProject) {
-                            navigate(`/dashboard/projects/${selectedProject._id}/channels/all`);
+                            navigate(`/dashboard/projects/${selectedProject.id}/channels/all`);
                         }
                     }}
                 />
             </div>
+
+          
             
             <ChannelBlock setOpen={setOpen} />
             <div className="space-y-2 px-4">
                 {channels
-                    .filter((channel) => channel.projectId === selectedProject?._id)
+                    .filter((channel) => channel.projectId === selectedProject?.id)
                     .map((channel) => (
                         <ChannelItem
-                            key={channel._id}
+                            key={channel.id}
                             channel={channel}
-                            isSelected={selectedChannel?._id === channel._id}
+                            isSelected={selectedChannel?.id === channel.id}
                             onSelect={(channel) => {
                                 if (selectedProject) {
-                                    navigate(`/dashboard/projects/${selectedProject._id}/channels/${channel._id}`);
+                                    navigate(`/dashboard/projects/${selectedProject.id}/channels/${channel.id}`);
                                 }
                             }}
                         />
@@ -62,7 +64,7 @@ export const ChannelBar: React.FC<ChannelBarProps> = ({ channels }) => {
 const ChannelItem = ({ channel, isSelected, onSelect }:
     { channel: Channel, isSelected: boolean, onSelect: (channel: Channel) => void }) => (
     <div
-        key={channel._id}
+        key={channel.id}
         onClick={() => onSelect(channel)}
         className={`w-full px-3 py-2 text-left rounded-2xl transition-all duration-200 
             ${isSelected

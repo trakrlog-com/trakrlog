@@ -48,7 +48,7 @@ export const ProjectsBar = ({
         <Divider />
         {projects.map((project) => (
           <SideBarIcon
-            key={project._id}
+            key={project.id}
             icon={
               project.logoBase64 ? (
                 <img
@@ -60,11 +60,11 @@ export const ProjectsBar = ({
                 <BsFillSquareFill size="24" />
               )
             }
-            isSelected={selectedProject?._id === project._id}
+            isSelected={selectedProject?.id === project.id}
             text={project.name}
             onClick={() => {
               onProjectSelected?.();
-              navigate(`/dashboard/projects/${project._id}`);
+              navigate(`/dashboard/projects/${project.id}`);
             }}
           />
         ))}

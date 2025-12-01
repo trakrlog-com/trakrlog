@@ -63,7 +63,7 @@ export const EventDetails: React.FC = () => {
                 <dd className="mt-1 text-base   sm:col-span-2 sm:mt-0 text-gray-400 font-mono">
                   {
                     projects.filter(
-                      (project) => project._id === selectedEvent.projectId
+                      (project) => project.id === selectedEvent.projectId
                     )[0]?.name
                   }
                 </dd>
@@ -73,7 +73,7 @@ export const EventDetails: React.FC = () => {
                 <dd className="mt-1 text-base  sm:col-span-2 sm:mt-0 text-gray-400 font-mono">
                   {
                     channels.filter(
-                      (channel) => channel._id === selectedEvent.channelId
+                      (channel) => channel.id === selectedEvent.channelId
                     )[0]?.name
                   }
                 </dd>

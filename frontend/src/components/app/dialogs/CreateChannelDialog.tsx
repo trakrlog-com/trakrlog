@@ -20,7 +20,7 @@ export const CreateChannelDialog: React.FC<{
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name, projectId: selectedProject?._id })
+                body: JSON.stringify({ name, projectId: selectedProject?.id })
             });
 
             if (!response.ok) {

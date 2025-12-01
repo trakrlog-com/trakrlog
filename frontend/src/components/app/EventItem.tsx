@@ -14,14 +14,14 @@ export const EventItem: React.FC<{ eventData: Event }> = ({ eventData }) => {
     const dateTime = DateTime.fromISO(eventData.createdAt);
     const formattedDate = `${dateTime.toRelativeCalendar()} at ${dateTime.toLocaleString(DateTime.TIME_SIMPLE)}`;
 
-    const channelName = channels.find(channel => channel._id === eventData.channelId)?.name || 'Unknown Channel';
+    const channelName = channels.find(channel => channel.id === eventData.channelId)?.name || 'Unknown Channel';
     return (
         <>
             <div className="transition flex space-x-4 rounded-3xl bg-[var(--dark-secondary)] shadow-none 
                                    p-4  w-full"
                 onClick={() => {
                     if (selectedProject) {
-                        navigate(`/dashboard/projects/${selectedProject._id}/channels/${eventData.channelId}/events/${eventData._id}`);
+                        navigate(`/dashboard/projects/${selectedProject.id}/channels/${eventData.channelId}/events/${eventData.id}`);
                     }
                 }}>
                 <span>

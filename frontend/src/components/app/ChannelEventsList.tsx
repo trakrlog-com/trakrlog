@@ -41,7 +41,7 @@ const EventsList = ({ events }: { events: Event[] }) => {
   return (
     <motion.ul className="  justify-center max-w-xl items-center mt-4 px-4  ">
       {events.map((event) => (
-        <AnimatedListItem key={event._id}>
+        <AnimatedListItem key={event.id}>
           <EventItem eventData={event} />
         </AnimatedListItem>
       ))}

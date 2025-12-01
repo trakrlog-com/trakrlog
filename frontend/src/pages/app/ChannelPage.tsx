@@ -20,7 +20,7 @@ export const ChannelPage: React.FC = () => {
             // Special case for "all channels"
             setSelectedChannel({ _id: '', name: 'all-channels', projectId } as any);
         } else {
-            const channel = channels.find(c => c._id === channelId);
+            const channel = channels.find(c => c.id === channelId);
             
             if (channel) {
                 setSelectedChannel(channel);
@@ -43,7 +43,7 @@ export const ChannelPage: React.FC = () => {
                 }
 
                 const actualChannelId = channelId === 'all' ? '' : channelId;
-                let url = `${import.meta.env.VITE_BACKEND_URL}/events/project/${selectedProject._id}`;
+                let url = `${import.meta.env.VITE_BACKEND_URL}/events/project/${selectedProject.id}`;
                 
                 if (actualChannelId) {
                     url += `/channel/${actualChannelId}`;

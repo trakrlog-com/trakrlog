@@ -23,8 +23,8 @@ export const DashboardLayout: React.FC = () => {
 
                 const { data } = await response.json();
                 const { data: channelData } = await responseChannels.json();
-                setProjects(data);
-                setChannels(channelData);
+                setProjects(data ?? []);
+                setChannels(channelData ?? []);
                 setLoadingProjectsChannels(false);
             } catch (err) {
                 setError('Failed to fetch projects or channels');

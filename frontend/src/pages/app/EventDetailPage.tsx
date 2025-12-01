@@ -14,7 +14,7 @@ export const EventDetailPage: React.FC = () => {
     useEffect(() => {
         if (!eventId) return;
 
-        const event = events.find(e => e._id === eventId);
+        const event = events.find(e => e.id === eventId);
         
         if (event) {
             setSelectedEvent(event);
@@ -26,7 +26,7 @@ export const EventDetailPage: React.FC = () => {
     }, [eventId, events, setSelectedEvent, navigate, showNotification, projectId, channelId]);
 
     // Show loading state while event is being loaded
-    if (!selectedEvent || selectedEvent._id !== eventId) {
+    if (!selectedEvent || selectedEvent.id !== eventId) {
         return (
             <div className="flex-1 flex items-center justify-center bg-[var(--dark-bg)]">
                 <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent"></div>
