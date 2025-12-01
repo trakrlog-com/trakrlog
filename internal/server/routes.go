@@ -54,10 +54,11 @@ func (s *Server) RegisterRouter() http.Handler {
 		api.PATCH("/projects/:projectId", projectHandler.UpdateProject)
 		api.DELETE("/projects/:projectId", projectHandler.DeleteProject)
 
-		// Channel routes (nested under projects)
+		// Channel routes
 		channelHandler := handler.NewChannelHandler(s.channelService)
 		api.POST("/projects/:projectId/channels", channelHandler.CreateChannel)
 		api.GET("/projects/:projectId/channels", channelHandler.GetProjectChannels)
+		api.GET("/channels", channelHandler.GetAllChannels)
 		api.GET("/channels/:channelId", channelHandler.GetChannel)
 		api.PATCH("/channels/:channelId", channelHandler.UpdateChannel)
 		api.DELETE("/channels/:channelId", channelHandler.DeleteChannel)

@@ -74,6 +74,26 @@ func (s *ChannelService) GetProjectChannels(ctx context.Context, userID, project
 	return s.channelRepo.FindByProjectID(ctx, projectID)
 }
 
+// GetAllChannels retrieves all channels for all projects of a user
+func (s *ChannelService) GetAllChannels(ctx context.Context, userID string) ([]*model.Channel, error) {
+	// Get all projects for the user
+	projects, err := s.projectRepo.FindByUserID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	var allChannels []*model.Channel
+	for _, project := range projects {
+		channels, err := s.channelRepo.FindByProjectID(ctx, project.ID.Hex())
+		if err != nil {
+			return nil, err
+		}
+		allChannels = append(allChannels, channels...)
+	}
+
+	return allChannels, nil
+}
+
 // UpdateChannel updates channel information
 func (s *ChannelService) UpdateChannel(ctx context.Context, userID string, channel *model.Channel) error {
 	if channel.ID.IsZero() {

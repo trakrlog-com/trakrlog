@@ -122,7 +122,7 @@ func (h *ChannelHandler) GetProjectChannels(ctx *gin.Context) {
 	})
 }
 
-// GetChannel handles GET /api/channels/:id
+// GetChannel handles GET /api/channels/:channelId
 func (h *ChannelHandler) GetChannel(ctx *gin.Context) {
 	userID, ok := middleware.GetAuthUserID(ctx)
 	if !ok {
@@ -133,7 +133,7 @@ func (h *ChannelHandler) GetChannel(ctx *gin.Context) {
 		return
 	}
 
-	channelID := ctx.Param("id")
+	channelID := ctx.Param("channelId")
 	if channelID == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
@@ -164,7 +164,35 @@ func (h *ChannelHandler) GetChannel(ctx *gin.Context) {
 	})
 }
 
-// UpdateChannel handles PATCH /api/channels/:id
+// GetAllChannels handles GET /api/channels
+func (h *ChannelHandler) GetAllChannels(ctx *gin.Context) {
+	userID, ok := middleware.GetAuthUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"success": false,
+			"message": "Unauthorized",
+		})
+		return
+	}
+
+	channels, err := h.channelService.GetAllChannels(ctx.Request.Context(), userID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"message": "Error fetching channels",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "Channels fetched successfully",
+		"data":    channels,
+	})
+}
+
+// UpdateChannel handles PATCH /api/channels/:channelId
 func (h *ChannelHandler) UpdateChannel(ctx *gin.Context) {
 	userID, ok := middleware.GetAuthUserID(ctx)
 	if !ok {
@@ -175,7 +203,7 @@ func (h *ChannelHandler) UpdateChannel(ctx *gin.Context) {
 		return
 	}
 
-	channelID := ctx.Param("id")
+	channelID := ctx.Param("channelId")
 	if channelID == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
@@ -233,7 +261,7 @@ func (h *ChannelHandler) UpdateChannel(ctx *gin.Context) {
 	})
 }
 
-// DeleteChannel handles DELETE /api/channels/:id
+// DeleteChannel handles DELETE /api/channels/:channelId
 func (h *ChannelHandler) DeleteChannel(ctx *gin.Context) {
 	userID, ok := middleware.GetAuthUserID(ctx)
 	if !ok {
@@ -244,7 +272,7 @@ func (h *ChannelHandler) DeleteChannel(ctx *gin.Context) {
 		return
 	}
 
-	channelID := ctx.Param("id")
+	channelID := ctx.Param("channelId")
 	if channelID == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
