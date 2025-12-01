@@ -62,6 +62,15 @@ func (s *Server) RegisterRouter() http.Handler {
 		api.GET("/channels/:channelId", channelHandler.GetChannel)
 		api.PATCH("/channels/:channelId", channelHandler.UpdateChannel)
 		api.DELETE("/channels/:channelId", channelHandler.DeleteChannel)
+
+		// Event routes
+		eventHandler := handler.NewEventHandler(s.eventService)
+		api.POST("/channels/:channelId/events", eventHandler.CreateEvent)
+		api.GET("/channels/:channelId/events", eventHandler.GetChannelEvents)
+		api.GET("/projects/:projectId/events", eventHandler.GetProjectEvents)
+		api.GET("/events/:id", eventHandler.GetEvent)
+		api.PATCH("/events/:id", eventHandler.UpdateEvent)
+		api.DELETE("/events/:id", eventHandler.DeleteEvent)
 	}
 
 	// Dashboard routes

@@ -21,6 +21,7 @@ type Server struct {
 	userService    *service.UserService
 	projectService *service.ProjectService
 	channelService *service.ChannelService
+	eventService   *service.EventService
 }
 
 func New() *http.Server {
@@ -40,11 +41,13 @@ func New() *http.Server {
 	userRepo := repository.NewUserRepository(db)
 	projectRepo := repository.NewProjectRepository(db)
 	channelRepo := repository.NewChannelRepository(db)
+	eventRepo := repository.NewEventRepository(db)
 
 	// Initialize services
 	userService := service.NewUserService(userRepo)
 	projectService := service.NewProjectService(projectRepo, userRepo)
 	channelService := service.NewChannelService(channelRepo, projectRepo)
+	eventService := service.NewEventService(eventRepo, channelRepo, projectRepo)
 
 	NewServer := &Server{
 		port:           port,
@@ -52,6 +55,7 @@ func New() *http.Server {
 		userService:    userService,
 		projectService: projectService,
 		channelService: channelService,
+		eventService:   eventService,
 	}
 
 	// Declare Server config
