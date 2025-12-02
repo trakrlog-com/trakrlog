@@ -12,9 +12,7 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   // create a effect to get the user settings
   useEffect(() => {
     const fetchSettings = async () => {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/settings`
-      );
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/settings`);
       if (response.ok) {
         const data = await response.json();
         setApiKey(data.data.settings.apiKey);
@@ -34,9 +32,7 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
 
       <div className="mt-4">
         <h1 className="text-2xl font-semibold text-white">Settings</h1>
-        <p className="mt-1 text-sm text-gray-400">
-          Manage your settings and API access.
-        </p>
+        <p className="mt-1 text-sm text-gray-400">Manage your settings and API access.</p>
       </div>
 
       <UserProfile />
@@ -56,8 +52,8 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
 
           <span>
             {" "}
-            header in your requests. If you believe your API key has been
-            compromised, regenerate it immediately.
+            header in your requests. If you believe your API key has been compromised, regenerate it
+            immediately.
           </span>
         </p>
 
@@ -96,11 +92,7 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         </div>
       </div>
 
-      <ConfirmApiKeyUpdate
-        open={open}
-        setOpen={setOpen}
-        onSuccessfulUpdate={setApiKey}
-      />
+      <ConfirmApiKeyUpdate open={open} setOpen={setOpen} onSuccessfulUpdate={setApiKey} />
     </div>
   );
 };

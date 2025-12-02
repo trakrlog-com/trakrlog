@@ -7,14 +7,8 @@ import { DateTime } from "luxon";
 import { useNavigate } from "react-router-dom";
 
 export const EventDetails: React.FC = () => {
-  const {
-    selectedEvent,
-    projects,
-    channels,
-    setSelectedEvent,
-    selectedChannel,
-    selectedProject,
-  } = useDashboard();
+  const { selectedEvent, projects, channels, setSelectedEvent, selectedChannel, selectedProject } =
+    useDashboard();
   const navigate = useNavigate();
 
   if (selectedEvent === null) {
@@ -25,13 +19,11 @@ export const EventDetails: React.FC = () => {
     setSelectedEvent(null);
 
     if (selectedChannel?.id && selectedProject?.id) {
-      navigate(
-        `/dashboard/projects/${selectedProject.id}/channels/${selectedChannel.id}`
-      );
+      navigate(`/dashboard/projects/${selectedProject.id}/channels/${selectedChannel.id}`);
     } else if (selectedProject?.id) {
       navigate(`/dashboard/projects/${selectedProject.id}`);
     } else {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   };
 
@@ -58,18 +50,14 @@ export const EventDetails: React.FC = () => {
                                                           outline-[var(--dark-accent)] outline-2
                                                         bg-[var(--dark-accent)]"
                 >
-                  <Twemoji options={{ className: "twemoji" }}>
-                    {selectedEvent.icon}
-                  </Twemoji>
+                  <Twemoji options={{ className: "twemoji" }}>{selectedEvent.icon}</Twemoji>
                 </div>
               )}
             </span>
             <span className="ml-4">
               <h3 className="text-xl text-white mb-2">{selectedEvent.title}</h3>
               {selectedEvent.description && (
-                <p className="text-white mt-2 text-md">
-                  {selectedEvent.description}
-                </p>
+                <p className="text-white mt-2 text-md">{selectedEvent.description}</p>
               )}
             </span>
           </div>
@@ -78,27 +66,17 @@ export const EventDetails: React.FC = () => {
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-base font-medium text-gray-100">Project</dt>
                 <dd className="mt-1 text-base   sm:col-span-2 sm:mt-0 text-gray-400 font-mono">
-                  {
-                    projects.filter(
-                      (project) => project.id === selectedEvent.projectId
-                    )[0]?.name
-                  }
+                  {projects.filter((project) => project.id === selectedEvent.projectId)[0]?.name}
                 </dd>
               </div>
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-base font-medium text-gray-100">Channel</dt>
                 <dd className="mt-1 text-base  sm:col-span-2 sm:mt-0 text-gray-400 font-mono">
-                  {
-                    channels.filter(
-                      (channel) => channel.id === selectedEvent.channelId
-                    )[0]?.name
-                  }
+                  {channels.filter((channel) => channel.id === selectedEvent.channelId)[0]?.name}
                 </dd>
               </div>
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-base font-medium text-gray-100">
-                  Timestamp
-                </dt>
+                <dt className="text-base font-medium text-gray-100">Timestamp</dt>
                 <dd className="mt-1 text-base   sm:col-span-2 sm:mt-0  text-gray-400 font-mono">
                   {formattedDate}
                 </dd>

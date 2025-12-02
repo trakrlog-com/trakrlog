@@ -42,10 +42,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="projects/:projectId" element={<ProjectLayout />}>
                 <Route index element={<ProjectHome />} />
                 <Route path="channels/:channelId" element={<ChannelPage />} />
-                <Route
-                  path="channels/:channelId/events/:eventId"
-                  element={<EventDetailPage />}
-                />
+                <Route path="channels/:channelId/events/:eventId" element={<EventDetailPage />} />
               </Route>
             </Route>
 

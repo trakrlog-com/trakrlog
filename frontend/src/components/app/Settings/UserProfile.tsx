@@ -22,10 +22,7 @@ export const UserProfile: React.FC = () => {
               src={userData.userData?.imageUrl}
               className="size-16 rounded-full dark:outline dark:-outline-offset-1 dark:outline-white/10"
             />
-            <span
-              aria-hidden="true"
-              className="absolute inset-0 rounded-full shadow-inner"
-            />
+            <span aria-hidden="true" className="absolute inset-0 rounded-full shadow-inner" />
           </div>
         </div>
         {/*
@@ -41,7 +38,7 @@ export const UserProfile: React.FC = () => {
           </p>
         </div>
       </div>
-      <div >
+      <div>
         <button type="button" className="main-button" onClick={authContext.logoutClick}>
           Sign out
         </button>

@@ -58,8 +58,8 @@ export const Hero = () => {
             </h1>
             <p className="mt-8 font-medium text-pretty text-gray-400 sm:text-xl/8 max-w-xl  ">
               From critical bugs to users behavior,{" "}
-              <b className="font-semibold text-white">TrakrLog</b> captures
-              every detail around your game or saas.
+              <b className="font-semibold text-white">TrakrLog</b> captures every detail around your
+              game or saas.
             </p>
 
             <div className="mt-10 flex items-center   gap-x-6">

@@ -20,11 +20,7 @@ export const EventDetailPage: React.FC = () => {
   useEffect(() => {
     if (!eventId) return;
 
-    console.log(
-      `Looking for event with ID ${eventId} in events: ${JSON.stringify(
-        events
-      )}`
-    );
+    console.log(`Looking for event with ID ${eventId} in events: ${JSON.stringify(events)}`);
 
     const event = events.find((e) => e.id === eventId);
 
@@ -37,15 +33,7 @@ export const EventDetailPage: React.FC = () => {
         replace: true,
       });
     }
-  }, [
-    eventId,
-    events,
-    setSelectedEvent,
-    navigate,
-    showNotification,
-    projectId,
-    channelId,
-  ]);
+  }, [eventId, events, setSelectedEvent, navigate, showNotification, projectId, channelId]);
 
   // Fetch all events for the project
   useEffect(() => {
@@ -56,9 +44,7 @@ export const EventDetailPage: React.FC = () => {
           return;
         }
 
-        const url = `${
-          import.meta.env.VITE_BACKEND_URL
-        }/api/events/${eventId}`;
+        const url = `${import.meta.env.VITE_BACKEND_URL}/api/events/${eventId}`;
 
         console.log(`Fetching event from URL: ${url}`);
         const response = await fetch(url);
@@ -83,11 +69,11 @@ export const EventDetailPage: React.FC = () => {
 
   // Show loading state while event is being loaded
   if (loadingEvents) {
-      return (
-          <div className="flex-1 flex items-center justify-center bg-[var(--dark-bg)]">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent"></div>
-          </div>
-      );
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[var(--dark-bg)]">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent"></div>
+      </div>
+    );
   }
 
   return <EventDetails />;

@@ -1,9 +1,4 @@
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import React, { useState } from "react";
 import { useNotification } from "../../../context/NotificationContext";
 import { BsPalette } from "react-icons/bs";
@@ -14,19 +9,13 @@ export const CreateProjectDialog: React.FC<{
   setOpen: (open: boolean) => void;
 }> = ({ open, setOpen }) => {
   const [projectName, setProjectName] = useState("");
-  const { setChannelOrProjectUpdateToggle, channelsOrProjectsUpdateToggle } =
-    useDashboard();
-  const [projectLogoBase64, setProjectLogoBase64] = useState<
-    string | ArrayBuffer | null
-  >(null);
+  const { setChannelOrProjectUpdateToggle, channelsOrProjectsUpdateToggle } = useDashboard();
+  const [projectLogoBase64, setProjectLogoBase64] = useState<string | ArrayBuffer | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { showNotification } = useNotification();
 
-  const getBase64 = (
-    file: File,
-    cb: (base64: string | ArrayBuffer | null) => void
-  ) => {
+  const getBase64 = (file: File, cb: (base64: string | ArrayBuffer | null) => void) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = function () {
@@ -53,16 +42,13 @@ export const CreateProjectDialog: React.FC<{
 
   const addProject = async (name: string) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/projects`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name, logoBase64: projectLogoBase64 }),
-        }
-      );
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/projects`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, logoBase64: projectLogoBase64 }),
+      });
 
       if (!response.ok) {
         showNotification("Failed to add project", "error", "Unable to create new project");
@@ -118,16 +104,11 @@ export const CreateProjectDialog: React.FC<{
                                 sm:max-w-sm sm:p-6 data-closed:sm:translate-y-0 
                                 data-closed:sm:scale-95 outline -outline-offset-1 outline-white/10"
           >
-            <DialogTitle className="text-lg font-bold text-white">
-              Add project
-            </DialogTitle>
+            <DialogTitle className="text-lg font-bold text-white">Add project</DialogTitle>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm/6 font-medium text-gray-100"
-                >
+                <label htmlFor="email" className="block text-sm/6 font-medium text-gray-100">
                   Project name
                 </label>
                 <div className="mt-2">
@@ -145,25 +126,17 @@ export const CreateProjectDialog: React.FC<{
                                                 focus:-outline-offset-2 focus:outline-[var(--dark-orange-accent)]"
                     placeholder="Enter project name"
                   />
-                  {error && (
-                    <p className="mt-2 text-sm text-red-500">{error}</p>
-                  )}
+                  {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
                 </div>
               </div>
 
               <div className="col-span-full mt-5">
-                <label
-                  htmlFor="cover-photo"
-                  className="block text-sm/6 font-medium text-white"
-                >
+                <label htmlFor="cover-photo" className="block text-sm/6 font-medium text-white">
                   Project logo
                 </label>
                 <div className="mt-2 flex justify-center rounded-2xl border border-dashed border-white/25 px-6 py-10">
                   <div className="text-center">
-                    <BsPalette
-                      aria-hidden="true"
-                      className="mx-auto size-12 text-gray-600"
-                    />
+                    <BsPalette aria-hidden="true" className="mx-auto size-12 text-gray-600" />
                     <div className="mt-4 flex text-sm/6 text-gray-400">
                       <label
                         htmlFor="file-upload"
@@ -183,9 +156,7 @@ export const CreateProjectDialog: React.FC<{
                         />
                       </label>
                     </div>
-                    <p className="text-xs/5 text-gray-400">
-                      PNG, JPG up to 2MB
-                    </p>
+                    <p className="text-xs/5 text-gray-400">PNG, JPG up to 2MB</p>
                   </div>
                 </div>
               </div>

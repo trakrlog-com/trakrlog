@@ -8,9 +8,7 @@ import AnimatedListItem from "./AnimatedListItem";
 import { motion } from "framer-motion";
 import EmptyState from "./EmptyState";
 
-export const ChannelEventsList: React.FC<{ events: Event[] }> = ({
-  events,
-}) => {
+export const ChannelEventsList: React.FC<{ events: Event[] }> = ({ events }) => {
   const { selectedEvent } = useDashboard();
 
   return (
@@ -50,7 +48,6 @@ const EventsList = ({ events }: { events: Event[] }) => {
 };
 
 const EventsSearch = () => {
-  
   return (
     <div className=" items-center bg-[var(--dark-bg)] max-w-xl">
       <div className="  bg-[var(--dark-secondary)] rounded-2xl  m-4 ">

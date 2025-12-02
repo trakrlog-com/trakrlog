@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;700;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;700;900&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -6,10 +6,14 @@
   --dark-secondary: #242426;
   --dark-active: #3b3b3e;
   --dark-accent: #3d3e40;
-  --dark-element: #3d3e42; 
+  --dark-element: #3d3e42;
   --dark-orange-accent: #ff5724;
-  --dialog-dark-backdrop-bg: color-mix(in oklab, var(--dark-bg) /* oklch(52.7% 0.154 150.069) */ 75%, transparent);
- }
+  --dialog-dark-backdrop-bg: color-mix(
+    in oklab,
+    var(--dark-bg) /* oklch(52.7% 0.154 150.069) */ 75%,
+    transparent
+  );
+}
 
 @layer components {
   html {
@@ -17,7 +21,7 @@
   }
 
   .sidebar-icon {
-    @apply  flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto
+    @apply flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto
        bg-[var(--dark-element)] hover:bg-gray-900
         text-white hover:text-white hover:rounded-xl rounded-lg
         transition-all duration-300 ease-linear cursor-pointer shadow-lg;
@@ -28,7 +32,7 @@
   }
 
   .sidebar-tooltip {
-    @apply  w-auto p-2 m-2 min-w-max left-17 rounded-md 
+    @apply w-auto p-2 m-2 min-w-max left-17 rounded-md 
       shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-left;
   }
 
@@ -39,8 +43,6 @@
   .channel-block {
     @apply flex  items-center h-16 m-0 p-0 ml-4 text-white;
   }
-
-  
 
   .channel-selection-text {
     @apply text-gray-500 font-semibold tracking-wide mr-auto transition duration-300 ease-in-out
@@ -66,10 +68,7 @@
            after:h-[calc(100%+4px)] after:top-[-2px] after:left-[-2px] after:rounded-[1rem] 
             after:bg-repeat after:pointer-events-none text-base h-12 gap-0 px-5 font-semibold;
   }
-
-
 }
-
 
 @layer utilities {
   .scrollbar::-webkit-scrollbar {
@@ -93,7 +92,7 @@
     background: var(--dark-element);
   }
 
-   .no-scrollbar::-webkit-scrollbar {
+  .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
   .no-scrollbar {

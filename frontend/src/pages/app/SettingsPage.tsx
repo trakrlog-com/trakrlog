@@ -1,11 +1,9 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Settings } from '../../components/app/Settings/Settings';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Settings } from "../../components/app/Settings/Settings";
 
 export const SettingsPage: React.FC = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    return (
-        <Settings onBack={() => navigate('/dashboard')} />
-    );
+  return <Settings onBack={() => navigate("/dashboard")} />;
 };

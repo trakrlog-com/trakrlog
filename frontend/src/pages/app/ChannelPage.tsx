@@ -9,8 +9,7 @@ export const ChannelPage: React.FC = () => {
     channelId: string;
     projectId: string;
   }>();
-  const { channels, selectedProject, setSelectedChannel, setEvents, events } =
-    useDashboard();
+  const { channels, selectedProject, setSelectedChannel, setEvents, events } = useDashboard();
   const { showNotification } = useNotification();
   const navigate = useNavigate();
   const [loadingEvents, setLoadingEvents] = useState(true);
@@ -34,14 +33,7 @@ export const ChannelPage: React.FC = () => {
         navigate(`/dashboard/projects/${projectId}`, { replace: true });
       }
     }
-  }, [
-    channelId,
-    projectId,
-    channels,
-    setSelectedChannel,
-    navigate,
-    showNotification,
-  ]);
+  }, [channelId, projectId, channels, setSelectedChannel, navigate, showNotification]);
 
   // Fetch events for this channel
   useEffect(() => {
@@ -55,13 +47,9 @@ export const ChannelPage: React.FC = () => {
 
         let url = "";
         if (channelId && channelId !== undefined) {
-          url = `${
-            import.meta.env.VITE_BACKEND_URL
-          }/api/channels/${channelId}/events`;
+          url = `${import.meta.env.VITE_BACKEND_URL}/api/channels/${channelId}/events`;
         } else {
-          url = `${import.meta.env.VITE_BACKEND_URL}/api/projects/${
-            selectedProject.id
-          }/events`;
+          url = `${import.meta.env.VITE_BACKEND_URL}/api/projects/${selectedProject.id}/events`;
         }
 
         const response = await fetch(url);

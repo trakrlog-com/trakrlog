@@ -36,11 +36,7 @@ export const Navbar = () => {
       >
         <div className="flex lg:flex-1">
           <a href="/" className=" flex items-center mt-1">
-            <img
-              alt="TrakrLog logo"
-              src="/logo-big.png"
-              className="h-8 w-auto"
-            />
+            <img alt="TrakrLog logo" src="/logo-big.png" className="h-8 w-auto" />
           </a>
         </div>
         <div className="flex lg:hidden">
@@ -56,30 +52,19 @@ export const Navbar = () => {
 
         <div className="hidden lg:flex lg:gap-x-12 ">
           {navigation.map((item) => (
-            <a
-              key={item.name}
-              href={item.href}
-              className="text-md font-semibold text-white"
-            >
+            <a key={item.name} href={item.href} className="text-md font-semibold text-white">
               {item.name}
             </a>
           ))}
         </div>
 
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Button
-            onClick={() => navigate("/login")}
-            className="main-button h-8"
-          >
+          <Button onClick={() => navigate("/login")} className="main-button h-8">
             Login
           </Button>
         </div>
       </nav>
-      <Dialog
-        open={mobileMenuOpen}
-        onClose={setMobileMenuOpen}
-        className="lg:hidden"
-      >
+      <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-50" />
         <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gray-900 p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-100/10">
           <div className="flex items-center justify-between">

@@ -32,13 +32,7 @@ export const ProjectsBar = ({
                       border-r border-gray-700"
       >
         <SideBarIcon
-          icon={
-            <img
-              src="/logo.png"
-              alt="LogTrakr"
-              className="w-7 h-7 object-contain"
-            />
-          }
+          icon={<img src="/logo.png" alt="LogTrakr" className="w-7 h-7 object-contain" />}
           text={"Dashboard"}
           onClick={() => {
             onOpenOverview?.();
@@ -98,9 +92,7 @@ const SideBarIcon = ({
 }) => (
   <div
     key={text}
-    className={`sidebar-icon group relative ${
-      isSelected ? "sidebar-icon-selected" : ""
-    }`}
+    className={`sidebar-icon group relative ${isSelected ? "sidebar-icon-selected" : ""}`}
     onClick={onClick}
   >
     {icon}

@@ -1,10 +1,5 @@
 import { useNotification } from "../../../context/NotificationContext";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import React from "react";
 
@@ -17,22 +12,15 @@ export const ConfirmApiKeyUpdate: React.FC<{
 
   const generateApiKey = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/settings/apikey`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/settings/apikey`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
-        showNotification(
-          "Failed to save API key",
-          "error",
-          "Unable to generate new API Key"
-        );
+        showNotification("Failed to save API key", "error", "Unable to generate new API Key");
         return false;
       }
 
@@ -48,11 +36,7 @@ export const ConfirmApiKeyUpdate: React.FC<{
 
       return true;
     } catch (err) {
-      showNotification(
-        "Failed to save API key",
-        "error",
-        "Unable to generate new API Key"
-      );
+      showNotification("Failed to save API key", "error", "Unable to generate new API Key");
       return false;
     }
   };
@@ -93,9 +77,8 @@ export const ConfirmApiKeyUpdate: React.FC<{
                 </DialogTitle>
                 <div className="mt-2">
                   <p className="text-base text-gray-500 dark:text-gray-400">
-                    Are you sure you want to generate a new API Key? This will
-                    invalidate your current key and all existing integrations
-                    forever. This action cannot be undone.
+                    Are you sure you want to generate a new API Key? This will invalidate your
+                    current key and all existing integrations forever. This action cannot be undone.
                   </p>
                 </div>
               </div>
@@ -113,14 +96,12 @@ export const ConfirmApiKeyUpdate: React.FC<{
               </button>
               <button
                 type="button"
-                onClick={generateApiKey} 
+                onClick={generateApiKey}
                 className="inline-flex w-full justify-center main-button"
-              > 
+              >
                 Generate Key
               </button>
             </div>
-
-            
           </DialogPanel>
         </div>
       </div>
