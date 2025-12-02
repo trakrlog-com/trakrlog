@@ -65,7 +65,7 @@ export const Features = () => {
     <div className="bg-(--dark-bg) py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 mt-10 text-center">
         <div className="mx-auto  max-w-4xl ">
-          <span className="text-2xl/7 font-semibold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+          <span className="text-2xl/7 font-semibold bg-linear-to-r from-white to-white/80 bg-clip-text text-transparent">
             Built for developers, powered by data
           </span>
           <p className="mt-4 text-5xl font-bold tracking-tight text-pretty text-white sm:text-5xl lg:text-6xl lg:text-balance">
@@ -96,13 +96,13 @@ export const Features = () => {
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
           <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
             {features.map((feature) => (
-              <div key={feature.name} className="relative pl-20">
+              <div key={feature.name} className="relative pl-20 text-left">
                 <dt className="text-xl/7 font-bold text-white">
                   <div
-                    className="absolute top-0 left-0 flex size-16 items-center justify-center 
-                    rounded-lg bg-gradient-to-r from-white to-white/80"
+                    className="absolute top-0 left-0 flex size-12 items-center justify-center 
+                    rounded-lg bg-linear-to-r from-white to-white/80"
                   >
-                    <feature.icon aria-hidden="true" className="size-10 text-black" />
+                    <feature.icon aria-hidden="true" className="size-8 text-black" />
                   </div>
                   {feature.name}
                 </dt>

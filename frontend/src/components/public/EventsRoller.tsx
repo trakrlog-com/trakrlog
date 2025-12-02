@@ -148,11 +148,11 @@ export const EventsRoller: React.FC = () => {
   }, [visibleEvents.length]);
 
   return (
-    <div className="bg-(--dark-bg) ">
-      <div className="px-6 py-10 sm:py-5 lg:px-8">
-        <div className="mx-auto max-w-md">
-          <div className="space-y-4 h-[420px] min-h-[420px]">
-            <AnimatePresence>
+    <div className="bg-(--dark-bg)">
+      <div className="px-6 py-10 sm:py-5 lg:px-8 h-[400px] md:h-[420px] lg:h-[450px]">
+        <div className="mx-auto max-w-md h-full relative">
+          <div className="space-y-4 flex flex-col flex-1 h-full overflow-hidden">
+            <AnimatePresence mode="popLayout">
               {visibleEvents.map((event) => (
                 <motion.div
                   key={event.id}
@@ -160,24 +160,21 @@ export const EventsRoller: React.FC = () => {
                   initial={{
                     opacity: 0,
                     y: 100,
-                    height: 0,
                   }}
                   animate={{
                     opacity: 1,
                     y: 0,
-                    height: "auto",
                   }}
                   exit={{
                     opacity: 0,
                     y: -100,
-                    height: 0,
                   }}
                   transition={{
                     duration: 0.5,
                     ease: "easeInOut",
                     layout: { duration: 0.3 },
                   }}
-                  className="overflow-hidden"
+                  className="flex-1 min-h-0"
                 >
                   <EventItem
                     eventData={event}
