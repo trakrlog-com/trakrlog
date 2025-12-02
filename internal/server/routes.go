@@ -30,7 +30,7 @@ func (s *Server) RegisterRouter() http.Handler {
 
 	sessionSectret := os.Getenv("SESSION_SECRET")
 	if sessionSectret == "" {
-		panic("SESSION_SECRET environment variable is not set")
+		panic("[⚡️ Server]: SESSION_SECRET environment variable is not set")
 	}
 
 	s.setupGoth(sessionSectret)

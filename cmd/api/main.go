@@ -19,7 +19,7 @@ func gracefulShutdown(apiServer *http.Server, done chan bool) {
 	// Listen for the interrupt signal.
 	<-ctx.Done()
 
-	log.Println("shutting down gracefully, press Ctrl+C again to force")
+	log.Println("[⚡️ Server]: shutting down gracefully, press Ctrl+C again to force")
 	stop() // Allow Ctrl+C to force shutdown
 
 	// The context is used to inform the server it has 5 seconds to finish
@@ -28,10 +28,10 @@ func gracefulShutdown(apiServer *http.Server, done chan bool) {
 	defer cancel()
 
 	if err := apiServer.Shutdown(ctx); err != nil {
-		log.Printf("Server forced to shutdown with error: %v", err)
+		log.Printf("[⚡️ Server]: forced to shutdown with error: %v", err)
 	}
 
-	log.Println("Server exiting")
+	log.Println("[⚡️ Server]: exiting")
 
 	// Notify the main goroutine that the shutdown is complete
 	done <- true
@@ -50,10 +50,10 @@ func main() {
 	// Start the server
 	err := server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
-		panic(fmt.Sprintf("http server error: %s", err))
+		panic(fmt.Sprintf("[⚡️ Server]: http server error: %s", err))
 	}
 
 	// Wait for the graceful shutdown to complete
 	<-done
-	log.Println("Graceful shutdown complete.")
+	log.Println("[⚡️ Server]: Graceful shutdown complete.")
 }

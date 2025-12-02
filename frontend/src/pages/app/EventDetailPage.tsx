@@ -20,8 +20,6 @@ export const EventDetailPage: React.FC = () => {
   useEffect(() => {
     if (!eventId) return;
 
-    console.log(`Looking for event with ID ${eventId} in events: ${JSON.stringify(events)}`);
-
     const event = events.find((e) => e.id === eventId);
 
     if (event) {
@@ -46,7 +44,6 @@ export const EventDetailPage: React.FC = () => {
 
         const url = `${import.meta.env.VITE_BACKEND_URL}/api/events/${eventId}`;
 
-        console.log(`Fetching event from URL: ${url}`);
         const response = await fetch(url);
 
         if (!response.ok) {

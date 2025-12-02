@@ -32,7 +32,7 @@ func New() *http.Server {
 	}
 
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
-	log.Printf("Starting server on port %d\n", port)
+	log.Printf("[⚡️ Server]: Starting server on port %d\n", port)
 
 	// Initialize database
 	db := database.New()
@@ -68,7 +68,7 @@ func New() *http.Server {
 	}
 
 	healthRes := NewServer.db.Health()
-	log.Printf("Database health check: %v\n", healthRes)
+	log.Printf("[⚡️ Server]: Database health check: %v\n", healthRes["message"])
 
 	return server
 }

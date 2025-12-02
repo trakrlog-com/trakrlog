@@ -24,13 +24,13 @@ type service struct {
 func New() Service {
 
 	if err := godotenv.Load(); err != nil {
-		log.Println("Warning: .env file not found, using system environment variables")
+		log.Println("[⚡️ Server]: .env file not found, using system environment variables")
 		panic(err)
 	}
 
 	dbUrl := os.Getenv("MONGODB_URL")
 
-	log.Println("Connecting to MongoDB at", dbUrl)
+	log.Println("[⚡️ Server]:Connecting to MongoDB at", dbUrl)
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(dbUrl))
 
 	if err != nil {
@@ -48,7 +48,7 @@ func (s *service) Health() map[string]string {
 
 	err := s.db.Ping(ctx, nil)
 	if err != nil {
-		log.Fatalf("MongoDB is down: %v", err)
+		log.Fatalf("[⚡️ Server]: MongoDB is down: %v", err)
 	}
 
 	return map[string]string{
