@@ -23,17 +23,15 @@ const HttpExample: React.FC = () => {
   return (
     <div className="bg-[#1a1919] py-8 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
-          <div className="w-full lg:w-2/5 text-center">
+        <div className="flex flex-col  items-center justify-between gap-8 lg:gap-12">
+          <div className="w-full lg:w-4/5 text-center">
             <p
-              className="text-3xl sm:text-4xl font-semibold tracking-tight
+              className="sm:text-5xl lg:text-6xl font-semibold tracking-tight
                                     text-balance text-white"
             >
-              An HTTP request is <br className="hidden sm:inline" /> all you need
+              An HTTP request is all you need
             </p>
-            <div className="flex justify-center mt-4 sm:mt-6">
-              <Underline />
-            </div>
+           
           </div>
           <div className="w-full lg:w-3/5">
             <pre className="rounded-lg bg-black/30 p-4 sm:p-6 shadow-lg overflow-x-auto text-sm sm:text-base">
@@ -41,7 +39,7 @@ const HttpExample: React.FC = () => {
                 <div className="flex items-center gap-x-3 flex-wrap">
                   <span className="text-base sm:text-lg font-semibold text-white">POST</span>
                   <span className="text-base sm:text-lg text-white break-all">
-                    https://api.trakrlog.com/v1/events
+                    https://api.trakrlog.com/track
                   </span>
                 </div>
                 <span className="block text-gray-200 mt-3">{`{
@@ -52,8 +50,8 @@ const HttpExample: React.FC = () => {
         "fps": "20",
         "achievement_id": "f5d386476"
     },
-    "project_id": "Left Stranded",
-    "channel_id": "alerts"
+    "project_id": "ab565wg",
+    "channel_id": "dheud787d"
 }`}</span>
               </code>
             </pre>
