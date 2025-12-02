@@ -14,11 +14,11 @@ export const ChannelPage: React.FC = () => {
 
     // Sync channel from URL to context
     useEffect(() => {
-        if (!channelId || !projectId) return;
+        if (!projectId) return;
 
-        if (channelId === 'all') {
+        if (channelId === '') {
             // Special case for "all channels"
-            setSelectedChannel({ _id: '', name: 'all-channels', projectId } as any);
+            setSelectedChannel({ id: '', name: 'all-channels', projectId } as any);
         } else {
             const channel = channels.find(c => c.id === channelId);
             
@@ -41,12 +41,13 @@ export const ChannelPage: React.FC = () => {
                     setLoadingEvents(false);
                     return;
                 }
-
-                const actualChannelId = channelId === 'all' ? '' : channelId;
-                let url = `${import.meta.env.VITE_BACKEND_URL}/events/project/${selectedProject.id}`;
                 
-                if (actualChannelId) {
-                    url += `/channel/${actualChannelId}`;
+                let url = '';
+                if (channelId) {
+                    url = `${import.meta.env.VITE_BACKEND_URL}/api/channels/${channelId}/events`;
+                }
+                else {
+                    url  = `${import.meta.env.VITE_BACKEND_URL}/api/projects/${selectedProject.id}/events`;
                 }
 
                 const response = await fetch(url);
@@ -57,7 +58,8 @@ export const ChannelPage: React.FC = () => {
                 }
                 
                 const { data } = await response.json();
-                setEvents(data.events);
+                console.log('Fetched events:', data);
+                setEvents(data);
                 setLoadingEvents(false);
             } catch (err) {
                 setError('Failed to fetch events');
