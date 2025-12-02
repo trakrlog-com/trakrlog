@@ -14,8 +14,6 @@ export const ProjectLayout: React.FC = () => {
     useEffect(() => {
         if (!projectId) return;
 
-        console.log('Projects available:', projects);
-
         const project = projects.find(p => p.id === projectId);
         
         if (project) {

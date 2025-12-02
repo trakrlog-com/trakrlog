@@ -58,7 +58,6 @@ export const ChannelPage: React.FC = () => {
                 }
                 
                 const { data } = await response.json();
-                console.log('Fetched events:', data);
                 setEvents(data);
                 setLoadingEvents(false);
             } catch (err) {

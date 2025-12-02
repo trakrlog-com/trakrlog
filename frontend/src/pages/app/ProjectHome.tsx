@@ -11,7 +11,7 @@ export const ProjectHome: React.FC = () => {
     // Set channel to "all channels" view
     useEffect(() => {
         if (selectedProject) {
-            setSelectedChannel({ _id: '', name: 'all-channels', projectId: selectedProject.id } as any);
+            setSelectedChannel({ id: '', name: 'all-channels', projectId: selectedProject.id } as any);
         }
     }, [selectedProject, setSelectedChannel]);
 
@@ -25,7 +25,7 @@ export const ProjectHome: React.FC = () => {
                     return;
                 }
 
-                const url = `${import.meta.env.VITE_BACKEND_URL}/events/project/${selectedProject.id}`;
+                const url = `${import.meta.env.VITE_BACKEND_URL}/api/projects/${selectedProject.id}/events`;
                 const response = await fetch(url);
                 
                 if (!response.ok) {
@@ -34,7 +34,7 @@ export const ProjectHome: React.FC = () => {
                 }
                 
                 const { data } = await response.json();
-                setEvents(data.events);
+                setEvents(data);
                 setLoadingEvents(false);
             } catch (err) {
                 setError('Failed to fetch events');
