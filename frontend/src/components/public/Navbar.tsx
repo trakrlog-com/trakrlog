@@ -27,7 +27,7 @@ export const Navbar = () => {
     <header
       className={`fixed inset-x-0 top-0 z-50 mx-auto backdrop-blur-sm 
         transition-[border] duration-100 ${
-          isScrolled ? "border-b border-white/10 bg-[var(--dark-bg)]/90" : ""
+          isScrolled ? "border-b border-white/10 bg-(--dark-bg)/90" : ""
         } `}
     >
       <nav

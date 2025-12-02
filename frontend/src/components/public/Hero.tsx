@@ -1,6 +1,6 @@
 export const Hero = () => {
   return (
-    <div className="bg-[var(--dark-bg)]">
+    <div className="bg-(--dark-bg)">
       <div className="relative isolate px-6 pt-14 lg:px-8">
         <svg
           aria-hidden="true"

@@ -32,7 +32,7 @@ export const ProjectLayout: React.FC = () => {
   // Don't render until we have a valid project
   if (!selectedProject || selectedProject.id !== projectId) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-[var(--dark-bg)]">
+      <div className="flex-1 flex items-center justify-center bg-(--dark-bg)">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent"></div>
       </div>
     );

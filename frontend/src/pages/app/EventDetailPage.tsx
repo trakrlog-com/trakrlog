@@ -67,7 +67,7 @@ export const EventDetailPage: React.FC = () => {
   // Show loading state while event is being loaded
   if (loadingEvents) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-[var(--dark-bg)]">
+      <div className="flex-1 flex items-center justify-center bg-(--dark-bg)">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent"></div>
       </div>
     );

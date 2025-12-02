@@ -2,7 +2,7 @@ import React from "react";
 
 const Unauthorized: React.FC = () => {
   return (
-    <main className="grid min-h-screen w-full place-items-center  px-6 py-24 sm:py-32 lg:px-8 bg-[var(--dark-bg)]">
+    <main className="grid min-h-screen w-full place-items-center  px-6 py-24 sm:py-32 lg:px-8 bg-(--dark-bg)">
       <div className="text-center">
         <p className="text-base font-semibold text-gray-400">401</p>
         <h1 className="mt-4 text-5xl font-semibold tracking-tight text-balance sm:text-7xl text-white">

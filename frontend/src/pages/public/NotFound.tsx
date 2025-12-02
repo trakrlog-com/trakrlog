@@ -4,7 +4,7 @@ const Unauthorized: React.FC = () => {
   return (
     <main
       className="grid min-h-screen w-full place-items-center  px-6 py-24 sm:py-32 
-          lg:px-8 bg-[var(--dark-bg)]"
+          lg:px-8 bg-(--dark-bg)"
     >
       <div className="text-center">
         <p className="text-base font-semibold text-gray-400">404</p>

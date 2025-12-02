@@ -44,8 +44,8 @@ export const DashboardLayout: React.FC = () => {
   }
 
   return (
-    <div className="fixed inset-0 min-h-screen w-full bg-[var(--dark-bg)]">
-      <div className="h-full mx-auto max-w-4xl bg-[var(--dark-bg)]">
+    <div className="fixed inset-0 min-h-screen w-full bg-(--dark-bg)">
+      <div className="h-full mx-auto max-w-4xl bg-(--dark-bg)">
         <div className="flex h-full">
           <ProjectsBar
             projects={projects}

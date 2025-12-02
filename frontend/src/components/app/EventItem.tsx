@@ -18,7 +18,7 @@ export const EventItem: React.FC<{ eventData: Event }> = ({ eventData }) => {
   return (
     <>
       <div
-        className="transition flex space-x-4 rounded-3xl bg-[var(--dark-secondary)] shadow-none 
+        className="transition flex space-x-4 rounded-3xl bg-(--dark-secondary) shadow-none 
                                    p-4  w-full"
         onClick={() => {
           if (selectedProject) {
@@ -32,8 +32,8 @@ export const EventItem: React.FC<{ eventData: Event }> = ({ eventData }) => {
           {eventData.icon && (
             <div
               className="flex items-center justify-center h-6 w-6 rounded-xl  
-                                  outline-[var(--dark-accent)] outline-2
-                                bg-[var(--dark-accent)]"
+                                  outline-(--dark-accent) outline-2
+                                bg-(--dark-accent)"
             >
               <Twemoji options={{ className: "twemoji h-4 w-4" }}>{eventData.icon}</Twemoji>
             </div>

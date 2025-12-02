@@ -62,7 +62,7 @@ export const Features = () => {
   }, []);
 
   return (
-    <div className="bg-[var(--dark-bg)] py-24 sm:py-32">
+    <div className="bg-(--dark-bg) py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 mt-10">
         <div className="mx-auto  max-w-4xl ">
           <span className="text-2xl/7 font-semibold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">

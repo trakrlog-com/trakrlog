@@ -22,7 +22,7 @@ export const ChannelBar: React.FC<ChannelBarProps> = ({ channels }) => {
   return (
     <div
       className="w-[240px] md:w-[260px] lg:w-[280px] flex-shrink-0   overflow-y-auto
-             bg-[var(--dark-bg)] border-r border-gray-700"
+             bg-(--dark-bg) border-r border-gray-700"
     >
       <ProjectInfo />
 
@@ -77,7 +77,7 @@ const ChannelItem = ({
     className={`w-full px-3 py-2 text-left rounded-2xl transition-all duration-200 
             ${
               isSelected
-                ? "bg-[var(--dark-secondary)] text-white cursor-pointer shadow-sm"
+                ? "bg-(--dark-secondary) text-white cursor-pointer shadow-sm"
                 : "hover:bg-gray-700 text-gray-200 cursor-pointer"
             }`}
   >

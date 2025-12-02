@@ -88,7 +88,7 @@ export const CreateProjectDialog: React.FC<{
     <Dialog open={open} onClose={setOpen} className="relative z-10">
       <DialogBackdrop
         transition
-        className="fixed inset-0 bg-[var(--dialog-dark-backdrop-bg)] transition-opacity 
+        className="fixed inset-0 bg-(--dialog-dark-backdrop-bg) transition-opacity 
                     data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out 
                     data-leave:duration-200 data-leave:ease-in"
       />
@@ -97,7 +97,7 @@ export const CreateProjectDialog: React.FC<{
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
           <DialogPanel
             transition
-            className="relative transform overflow-hidden rounded-3xl bg-[var(--dark-bg)] px-4 pt-5 
+            className="relative transform overflow-hidden rounded-3xl bg-(--dark-bg) px-4 pt-5 
                                 pb-4 text-left shadow-xl transition-all data-closed:translate-y-4 
                                 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out 
                                 data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full 
@@ -123,7 +123,7 @@ export const CreateProjectDialog: React.FC<{
                     className="block w-full rounded-2xl bg-white/5 px-3 py-3 
                                                 text-md text-white outline-1 -outline-offset-1
                                                 outline-white/10 placeholder:text-gray-500 focus:outline-2 
-                                                focus:-outline-offset-2 focus:outline-[var(--dark-orange-accent)]"
+                                                focus:-outline-offset-2 focus:outline-(--dark-orange-accent)"
                     placeholder="Enter project name"
                   />
                   {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
@@ -141,9 +141,9 @@ export const CreateProjectDialog: React.FC<{
                       <label
                         htmlFor="file-upload"
                         className="relative cursor-pointer rounded-md bg-transparent 
-                                                font-semibold text-[var(--dark-orange-accent)] focus-within:outline-2 
-                                                focus-within:outline-offset-2 focus-within:outline-[var(--dark-orange-accent)]
-                                                hover:text-[var(--dark-orange-accent)]/40"
+                                                font-semibold text-(--dark-orange-accent) focus-within:outline-2 
+                                                focus-within:outline-offset-2 focus-within:outline-(--dark-orange-accent)
+                                                hover:text-(--dark-orange-accent)/40"
                       >
                         <span>Click to </span>
                         <span className="pl-1">upload a file</span>

@@ -47,8 +47,8 @@ export const EventDetails: React.FC = () => {
               {selectedEvent.icon && (
                 <div
                   className="flex items-center justify-center h-16 w-16 rounded-xl  
-                                                          outline-[var(--dark-accent)] outline-2
-                                                        bg-[var(--dark-accent)]"
+                                                          outline-(--dark-accent) outline-2
+                                                        bg-(--dark-accent)"
                 >
                   <Twemoji options={{ className: "twemoji" }}>{selectedEvent.icon}</Twemoji>
                 </div>

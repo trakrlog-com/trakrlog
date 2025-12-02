@@ -22,7 +22,7 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   }, []);
 
   return (
-    <div className="flex h-full w-full flex-1 flex-col overflow-y-auto bg-[var(--dark-bg)] p-5">
+    <div className="flex h-full w-full flex-1 flex-col overflow-y-auto bg-(--dark-bg) p-5">
       <button
         onClick={onBack}
         className="text-white/80 hover:text-white transition-colors font-bold cursor-pointer"
@@ -65,7 +65,7 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
             type="text"
             value={apiKey}
             readOnly
-            className="block w-full rounded-2xl bg-white/5 px-3 py-3 pr-12 text-md text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[var(--dark-orange-accent)]"
+            className="block w-full rounded-2xl bg-white/5 px-3 py-3 pr-12 text-md text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-(--dark-orange-accent)"
             placeholder="Generate new API Key"
           />
 

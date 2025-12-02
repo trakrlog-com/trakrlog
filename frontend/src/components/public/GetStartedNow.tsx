@@ -8,7 +8,7 @@ const GetStartedNow: React.FC<GetStartedNowProps> = () => {
     <div className="bg-[#1a1919] pt-16">
       <HttpExample />
 
-      <div className="bg-[var(--dark-bg)]">
+      <div className="bg-(--dark-bg)">
         <div className="px-6 py-24 sm:py-32 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <h2

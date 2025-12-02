@@ -12,7 +12,7 @@ export const AuthenticatedUser: React.FC<{ onOpenSettings: () => void }> = ({ on
   return (
     <div
       className="sidebar-icon rounded-full 
-            focus:outline-none ring-2 ring-[var(--dark-bg)] hover:ring-gray-700"
+            focus:outline-none ring-2 ring-(--dark-bg) hover:ring-gray-700"
     >
       <img
         alt=""

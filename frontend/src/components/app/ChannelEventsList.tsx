@@ -12,7 +12,7 @@ export const ChannelEventsList: React.FC<{ events: Event[] }> = ({ events }) => 
   const { selectedEvent } = useDashboard();
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-[var(--dark-bg)] overflow-x-hidden no-scrollbar">
+    <div className="flex-1 flex flex-col h-full bg-(--dark-bg) overflow-x-hidden no-scrollbar">
       {selectedEvent == null ? (
         <>
           <EventsSearch />
@@ -49,8 +49,8 @@ const EventsList = ({ events }: { events: Event[] }) => {
 
 const EventsSearch = () => {
   return (
-    <div className=" items-center bg-[var(--dark-bg)] max-w-xl">
-      <div className="  bg-[var(--dark-secondary)] rounded-2xl  m-4 ">
+    <div className=" items-center bg-(--dark-bg) max-w-xl">
+      <div className="  bg-(--dark-secondary) rounded-2xl  m-4 ">
         <form action="#" method="GET" className="relative">
           <input
             name="search"
@@ -58,7 +58,7 @@ const EventsSearch = () => {
             aria-label="Search"
             autoComplete="off"
             className="w-full rounded-2xl outline-1 outline-white/10 bg-transparent pl-10 pr-4 py-2 text-md text-white 
-                                           focus:border-[var(--dark-orange-accent)]/50  
+                                           focus:border-(--dark-orange-accent)/50  
                                          placeholder:text-gray-500 placeholder:text-md"
           />
           <BsSearch
