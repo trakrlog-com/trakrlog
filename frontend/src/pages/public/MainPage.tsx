@@ -5,13 +5,14 @@ import { Features } from "../../components/public/Features";
 import { Footer } from "../../components/public/Footer";
 import { Divider } from "../../components/public/Divider";
 import GetStartedNow from "../../components/public/GetStartedNow";
+import { EventsRoller } from "../../components/public/EventsRoller";
 
 export const MainPage: React.FC = () => {
   return (
     <div className="min-h-screen">
       <Navbar />
       <Hero />
-      <Divider />
+      <EventsRoller />
       <Features />
 
       <GetStartedNow />

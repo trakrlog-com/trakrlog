@@ -32,9 +32,10 @@ export const Hero = () => {
             strokeWidth={0}
           />
         </svg>
-        <div className="mx-auto max-w-4xl py-32 sm:py-48 lg:py-56">
-          <div className="">
-            <h1 className="text-5xl font-bold tracking-tight text-balance text-white sm:text-8xl">
+        <div className="mx-auto max-w-4xl py-40 sm:py-12 lg:py-20">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold tracking-tight 
+                  text-balance text-white sm:text-7xl">
               Events tracking
               <br />
               {/* <span className="bg-gradient-to-r from-[var(--dark-orange-accent)]
@@ -56,13 +57,15 @@ export const Hero = () => {
                 </span>
               </span>{" "}
             </h1>
-            <p className="mt-8 font-medium text-pretty text-gray-400 sm:text-xl/8 max-w-xl  ">
-              From critical bugs to users behavior,{" "}
-              <b className="font-semibold text-white">TrakrLog</b> captures every detail around your
-              game or saas.
-            </p>
+            <div className="mx-auto mt-6 max-w-xl">
+              <p className=" mt-8 font-medium text-pretty text-gray-400 sm:text-xl/8 max-w-xl  ">
+                From critical bugs to users behavior,{" "}
+                <b className="font-semibold text-white">TrakrLog</b> captures every detail around
+                your game or saas.
+              </p>
+            </div>
 
-            <div className="mt-10 flex items-center   gap-x-6">
+            <div className="mt-10 flex justify-center items-center   gap-x-6">
               <a href="/login" className="main-button p-3">
                 Get Started for free
               </a>
