@@ -11,7 +11,7 @@ type ChannelBarProps = {
 }
 
 export const ChannelBar: React.FC<ChannelBarProps> = ({ channels }) => {
-    const { selectedProject, selectedChannel, projects } = useDashboard();
+    const { selectedProject, selectedChannel, projects, setSelectedEvent } = useDashboard();
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ export const ChannelBar: React.FC<ChannelBarProps> = ({ channels }) => {
                     isSelected={selectedChannel?.id === ""}
                     onSelect={() => {
                         if (selectedProject) {
-                            navigate(`/dashboard/projects/${selectedProject.id}/channels/all`);
+                            navigate(`/dashboard/projects/${selectedProject.id}`);
                         }
                     }}
                 />
@@ -50,6 +50,7 @@ export const ChannelBar: React.FC<ChannelBarProps> = ({ channels }) => {
                             isSelected={selectedChannel?.id === channel.id}
                             onSelect={(channel) => {
                                 if (selectedProject) {
+                                    setSelectedEvent(null);
                                     navigate(`/dashboard/projects/${selectedProject.id}/channels/${channel.id}`);
                                 }
                             }}

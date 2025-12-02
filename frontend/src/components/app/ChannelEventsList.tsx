@@ -28,7 +28,7 @@ export const ChannelEventsList: React.FC<{ events: Event[] }> = ({
 };
 
 const EventsList = ({ events }: { events: Event[] }) => {
-  if (events.length === 0) {
+  if (events === null || events.length === 0) {
     return (
       <EmptyState
         message="No events found"
