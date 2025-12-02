@@ -4,11 +4,18 @@ import { BsArrowLeft } from "react-icons/bs";
 
 import Twemoji from "react-twemoji";
 import { DateTime } from "luxon";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const EventDetails: React.FC = () => {
-  const { selectedEvent, projects, channels, setSelectedEvent, selectedChannel, selectedProject } = useDashboard();
-   const navigate = useNavigate();
+  const {
+    selectedEvent,
+    projects,
+    channels,
+    setSelectedEvent,
+    selectedChannel,
+    selectedProject,
+  } = useDashboard();
+  const navigate = useNavigate();
 
   if (selectedEvent === null) {
     return null;
@@ -16,8 +23,14 @@ export const EventDetails: React.FC = () => {
 
   const handleBack = () => {
     setSelectedEvent(null);
-    console.log("Navigating back to channel view: ", selectedProject?.id, selectedChannel?.id);
-    navigate(`/dashboard/projects/${selectedProject?.id}/channels/${selectedChannel?.id}`);
+
+    if (selectedChannel?.id !== "") {
+      navigate(
+        `/dashboard/projects/${selectedProject?.id}/channels/${selectedChannel?.id}`
+      );
+    } else {
+      navigate(`/dashboard/projects/${selectedProject?.id}`);
+    }
   };
 
   const dateTime = DateTime.fromISO(selectedEvent.createdAt);
