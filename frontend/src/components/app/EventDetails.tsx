@@ -24,12 +24,14 @@ export const EventDetails: React.FC = () => {
   const handleBack = () => {
     setSelectedEvent(null);
 
-    if (selectedChannel?.id !== "") {
+    if (selectedChannel?.id && selectedProject?.id) {
       navigate(
-        `/dashboard/projects/${selectedProject?.id}/channels/${selectedChannel?.id}`
+        `/dashboard/projects/${selectedProject.id}/channels/${selectedChannel.id}`
       );
+    } else if (selectedProject?.id) {
+      navigate(`/dashboard/projects/${selectedProject.id}`);
     } else {
-      navigate(`/dashboard/projects/${selectedProject?.id}`);
+      navigate('/dashboard');
     }
   };
 
