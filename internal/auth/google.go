@@ -55,8 +55,6 @@ func (h *GoogleHandler) HandleCallback(ctx *gin.Context) {
 		return
 	}
 
-	// your logic for storing the user in database goes here
-
 	// Find or create user in database
 	dbUser, err := h.userService.GetUserByEmail(ctx.Request.Context(), user.Email)
 	if err != nil {

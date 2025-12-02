@@ -6,6 +6,8 @@ import (
 
 	"trakrlog/internal/model"
 	"trakrlog/internal/repository"
+
+	"github.com/google/uuid"
 )
 
 type UserService struct {
@@ -34,10 +36,14 @@ func (s *UserService) CreateUser(ctx context.Context, email, name string) (*mode
 		return nil, errors.New("user with this email already exists")
 	}
 
+	// Create an API Key
+	apiKey := model.APIKey{Key: "tl_" + uuid.New().String()}
+
 	// Create user
 	user := &model.User{
-		Email: email,
-		Name:  name,
+		Email:   email,
+		Name:    name,
+		APIKeys: []model.APIKey{apiKey},
 	}
 
 	if err := s.userRepo.Create(ctx, user); err != nil {
@@ -55,6 +61,11 @@ func (s *UserService) GetUserByID(ctx context.Context, id string) (*model.User, 
 // GetUserByEmail retrieves a user by email
 func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
 	return s.userRepo.FindByEmail(ctx, email)
+}
+
+// FindByAPIKey retrieves a user by API key
+func (s *UserService) FindByAPIKey(ctx context.Context, apiKey string) (*model.User, error) {
+	return s.userRepo.FindByAPIKey(ctx, apiKey)
 }
 
 // UpdateUser updates user information

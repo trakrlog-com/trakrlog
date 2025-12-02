@@ -61,6 +61,16 @@ func (r *userRepository) FindByEmail(ctx context.Context, email string) (*model.
 	return &user, nil
 }
 
+func (r *userRepository) FindByAPIKey(ctx context.Context, apiKey string) (*model.User, error) {
+	var user model.User
+	err := r.collection.FindOne(ctx, bson.M{"api_keys.key": apiKey}).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 func (r *userRepository) Update(ctx context.Context, user *model.User) error {
 	user.UpdatedAt = time.Now()
 

@@ -22,7 +22,7 @@ func NewEventHandler(eventService *service.EventService) *EventHandler {
 	}
 }
 
-// CreateEvent handles POST /api/channels/:channelId/events
+// CreateEvent handles POST /api/track
 func (h *EventHandler) CreateEvent(ctx *gin.Context) {
 	userID, ok := middleware.GetAuthUserID(ctx)
 	if !ok {
@@ -33,20 +33,13 @@ func (h *EventHandler) CreateEvent(ctx *gin.Context) {
 		return
 	}
 
-	channelID := ctx.Param("channelId")
-	if channelID == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "Channel ID required",
-		})
-		return
-	}
-
 	var req struct {
-		Title       string   `json:"title" binding:"required"`
-		Description string   `json:"description"`
-		Icon        string   `json:"icon"`
-		Tags        []string `json:"tags"`
+		ProjectID   string            `json:"project_id" binding:"required"`
+		ChannelID   string            `json:"channel_id" binding:"required"`
+		Title       string            `json:"title" binding:"required"`
+		Description string            `json:"description"`
+		Icon        string            `json:"icon"`
+		Tags        map[string]string `json:"tags"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -58,13 +51,15 @@ func (h *EventHandler) CreateEvent(ctx *gin.Context) {
 		return
 	}
 
-	event, err := h.eventService.CreateEvent(ctx.Request.Context(), userID, channelID, req.Title, req.Description, req.Icon, req.Tags)
+	event, err := h.eventService.CreateEvent(ctx.Request.Context(), userID, req.ProjectID, req.ChannelID, req.Title, req.Description, req.Icon, req.Tags)
 	if err != nil {
 		statusCode := http.StatusInternalServerError
 		if err.Error() == "unauthorized: project does not belong to user" {
 			statusCode = http.StatusForbidden
 		} else if err.Error() == "channel not found" || err.Error() == "project not found" {
 			statusCode = http.StatusNotFound
+		} else if err.Error() == "channel does not belong to the specified project" {
+			statusCode = http.StatusBadRequest
 		}
 
 		ctx.JSON(statusCode, gin.H{
@@ -263,10 +258,10 @@ func (h *EventHandler) UpdateEvent(ctx *gin.Context) {
 	}
 
 	var req struct {
-		Title       string   `json:"title"`
-		Description string   `json:"description"`
-		Icon        string   `json:"icon"`
-		Tags        []string `json:"tags"`
+		Title       string            `json:"title"`
+		Description string            `json:"description"`
+		Icon        string            `json:"icon"`
+		Tags        map[string]string `json:"tags"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {

@@ -13,6 +13,6 @@ type Event struct {
 	Title       string             `bson:"title" json:"title"`
 	Description string             `bson:"description,omitempty" json:"description,omitempty"`
 	Icon        string             `bson:"icon,omitempty" json:"icon,omitempty"`
-	Tags        []string           `bson:"tags,omitempty" json:"tags,omitempty"`
+	Tags        map[string]string  `bson:"tags,omitempty" json:"tags,omitempty"`
 	CreatedAt   time.Time          `bson:"created_at" json:"createdAt"`
 }

@@ -65,12 +65,17 @@ func (s *Server) RegisterRouter() http.Handler {
 
 		// Event routes
 		eventHandler := handler.NewEventHandler(s.eventService)
-		api.POST("/channels/:channelId/events", eventHandler.CreateEvent)
 		api.GET("/channels/:channelId/events", eventHandler.GetChannelEvents)
 		api.GET("/projects/:projectId/events", eventHandler.GetProjectEvents)
 		api.GET("/events/:id", eventHandler.GetEvent)
 		api.PATCH("/events/:id", eventHandler.UpdateEvent)
 		api.DELETE("/events/:id", eventHandler.DeleteEvent)
+	}
+
+	apiTrack := router.Group("/api/track")
+	apiTrack.Use(middleware.RequireAuthApiKey(s.userService))
+	{
+		apiTrack.POST("/", handler.NewEventHandler(s.eventService).CreateEvent)
 	}
 
 	// Dashboard routes

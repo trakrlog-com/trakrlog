@@ -25,26 +25,30 @@ func NewEventService(eventRepo repository.EventRepository, channelRepo repositor
 }
 
 // CreateEvent creates a new event in a channel
-func (s *EventService) CreateEvent(ctx context.Context, userID, channelID, title, description, icon string, tags []string) (*model.Event, error) {
+func (s *EventService) CreateEvent(ctx context.Context, userID, projectID, channelID, title, description, icon string, tags map[string]string) (*model.Event, error) {
 	// Validation
 	if title == "" {
 		return nil, errors.New("event title required")
 	}
 
-	// Verify channel exists
-	channel, err := s.channelRepo.FindByID(ctx, channelID)
-	if err != nil {
-		return nil, errors.New("channel not found")
-	}
-
-	// Verify project belongs to user
-	project, err := s.projectRepo.FindByID(ctx, channel.ProjectID.Hex())
+	// Verify project exists and belongs to user
+	project, err := s.projectRepo.FindByID(ctx, projectID)
 	if err != nil {
 		return nil, errors.New("project not found")
 	}
 
 	if project.UserID.Hex() != userID {
 		return nil, errors.New("unauthorized: project does not belong to user")
+	}
+
+	// Verify channel exists and belongs to the project
+	channel, err := s.channelRepo.FindByID(ctx, channelID)
+	if err != nil {
+		return nil, errors.New("channel not found")
+	}
+
+	if channel.ProjectID.Hex() != projectID {
+		return nil, errors.New("channel does not belong to the specified project")
 	}
 
 	// Create event

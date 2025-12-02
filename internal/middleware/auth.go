@@ -3,6 +3,8 @@ package middleware
 import (
 	"net/http"
 
+	"trakrlog/internal/service"
+
 	"github.com/gin-gonic/gin"
 	"github.com/markbates/goth/gothic"
 )
@@ -32,6 +34,35 @@ func RequireAuth(sessionSecret string) gin.HandlerFunc {
 
 		// Store user_id in context for use in handlers
 		ctx.Set("user_id", userID)
+
+		// Continue to next handler
+		ctx.Next()
+	}
+}
+
+// RequireAuthApiKey is a middleware that checks for a valid API key in the request header
+func RequireAuthApiKey(userService *service.UserService) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		apiKey := ctx.GetHeader("X-API-KEY")
+		if apiKey == "" {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"success": false,
+				"message": "API key required",
+			})
+			return
+		}
+
+		user, err := userService.FindByAPIKey(ctx.Request.Context(), apiKey)
+		if err != nil || user == nil {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"success": false,
+				"message": "Invalid API key",
+			})
+			return
+		}
+
+		// Store user_id in context for use in handlers
+		ctx.Set("user_id", user.ID.Hex())
 
 		// Continue to next handler
 		ctx.Next()
