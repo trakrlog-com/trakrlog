@@ -463,7 +463,6 @@ Contributors are the heart of TrakrLog! We recognize contributions in several wa
 - [README.md](README.md) - Project overview
 - [LOCAL_TESTING.md](LOCAL_TESTING.md) - Local development guide
 - [DEPLOYMENT.md](DEPLOYMENT.md) - Deployment instructions
-- [MongoDB Structure](docs/mongodb-structure.md) - Database schema
 
 ## 🙏 Thank You!
 
