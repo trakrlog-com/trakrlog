@@ -1,78 +1,84 @@
-name: Deploy App to Azure
+name: Build and Push Docker Image
 
 on:
   workflow_dispatch:
   push:
     branches:
       - main
+      - go-backend
     paths:
-      - 'apps/backend/**'
-      - 'apps/frontend/**'
-      - 'packages/**'
+      - 'cmd/**'
+      - 'internal/**'
+      - 'frontend/**'
+      - 'Dockerfile'
+      - 'go.mod'
+      - 'go.sum'
       - '.github/workflows/deploy-app.yaml'
 
 env:
-  AZURE_WEBAPP_NAME: 'trakrlog-app-web'
-  NODE_VERSION: '22.x'
-  NODE_ENV: production
-  VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-deploy:
-    runs-on: 'ubuntu-latest'
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    # --- Setup pnpm and Node.js ---
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v3
-      with:
-        version: 8
-        run_install: false
-    - name: Use Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'pnpm'
-    - name: Install dependencies (including dev dependencies for build)
-      run: 
-        pnpm install --prod=false
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    # --- Setup Bun ---
-    - name: Setup Bun
-      uses: oven-sh/setup-bun@v1
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-    # --- Build the projects with Turbo ---
-    - name: Build with Turbo
-      run: npx turbo run build
+      - name: Extract metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
 
-    # --- Prepare for Deployment ---
-    - name: Prepare backend directory for React build
-      run: |
-        mkdir -p apps/backend/frontend/build
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
 
-    - name: Copy React build to backend folder
-      run: cp -r apps/frontend/dist/* apps/backend/frontend/build/
-
-    # Archive the backend directory, including the compiled Bun executable and copied React build
-    - name: Archive production build for deployment
-      run: |
-        # Change directory to the backend folder before running Bun build and other commands
-        cd apps/backend
-        
-        # Build the Bun backend inside its own directory
-        bun build src/index.ts --compile --outfile backend-app
-        
-        # Now chmod can find the executable
-        chmod +x backend-app
-        
-        # Then, create the zip file from the backend folder
-        zip -r release.zip ./*
-
-    - name: Deploy to Azure Web App
-      id: deploy-to-webapp
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: 'apps/backend/release.zip'
+      - name: Generate deployment summary
+        run: |
+          echo "### Docker Image Built Successfully! 🎉" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Image:** \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tags:**" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Deploy to VPS:" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "# On your Hetzner VPS, run:" >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" >> $GITHUB_STEP_SUMMARY
+          echo "docker compose -f docker-compose.prod.yml up -d" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

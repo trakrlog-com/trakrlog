@@ -19,9 +19,8 @@ services:
 
   # Go Backend + Frontend
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/trakrlog-com/trakrlog:latest
+    pull_policy: always
     restart: unless-stopped
     environment:
       PORT: 4000
