@@ -25,7 +25,6 @@ func New() Service {
 
 	if err := godotenv.Load(); err != nil {
 		log.Println("[⚡️ Server]: .env file not found, using system environment variables")
-		panic(err)
 	}
 
 	dbUrl := os.Getenv("MONGODB_URL")

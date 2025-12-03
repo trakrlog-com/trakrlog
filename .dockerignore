@@ -1,0 +1,57 @@
+# Git
+.git
+.gitignore
+
+# Development files
+.env
+.env.local
+.env.*.local
+
+# Node modules (will be installed in container)
+frontend/node_modules
+node_modules
+
+# Frontend build artifacts (will be built in container)
+frontend/dist
+
+# Go build artifacts
+main
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+tmp/
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+README.md
+docs/
+
+# Docker
+docker-compose.yml
+docker-compose.prod.yml
+Dockerfile
+.dockerignore
+
+# Logs
+*.log
+
+# Test coverage
+coverage.txt
+*.out
+
+# Air (live reload)
+.air.toml

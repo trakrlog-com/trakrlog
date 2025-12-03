@@ -25,10 +25,9 @@ type Server struct {
 }
 
 func New() *http.Server {
-	// Load .env file explicitly
+	// Load .env file explicitly (optional in Docker)
 	if err := godotenv.Load(); err != nil {
 		log.Println("Warning: .env file not found, using system environment variables")
-		panic(err)
 	}
 
 	port, _ := strconv.Atoi(os.Getenv("PORT"))

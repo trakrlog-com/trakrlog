@@ -1,0 +1,79 @@
+# Replace with your domain
+{$DOMAIN:localhost} {
+    # Enable HTTP/3
+    protocols h1 h2 h3
+
+    # Logging
+    log {
+        output file /var/log/caddy/access.log
+        level INFO
+    }
+
+    # Security headers
+    header {
+        # Enable HSTS
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        # Prevent XSS attacks
+        X-XSS-Protection "1; mode=block"
+        # Prevent MIME type sniffing
+        X-Content-Type-Options "nosniff"
+        # Clickjacking protection
+        X-Frame-Options "SAMEORIGIN"
+        # Referrer policy
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # Remove Server header
+        -Server
+    }
+
+    # Health check endpoint (optional, for load balancers)
+    handle /health {
+        respond "OK" 200
+    }
+
+    # API routes - proxy to Go backend
+    handle /api/* {
+        reverse_proxy app:4000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Auth routes - proxy to Go backend
+    handle /auth/* {
+        reverse_proxy app:4000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Dashboard routes - proxy to Go backend (it serves the SPA)
+    handle /dashboard/* {
+        reverse_proxy app:4000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # All other routes - proxy to Go backend (it serves the frontend)
+    handle {
+        reverse_proxy app:4000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Enable gzip compression
+    encode gzip zstd
+
+    # Enable HTTP/2 push for critical resources (optional)
+    # push /assets/main.css
+    # push /assets/main.js
+}
