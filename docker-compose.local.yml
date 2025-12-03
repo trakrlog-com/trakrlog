@@ -1,0 +1,54 @@
+services:
+  # MongoDB Database
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27018:27017"  # Use 27018 externally to avoid conflict with local MongoDB
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD:-localpassword}
+    volumes:
+      - mongo_data_local:/data/db
+    networks:
+      - trakrlog-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Go Backend + Frontend
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "4000:4000"  # Expose app directly for local testing
+    environment:
+      PORT: 4000
+      MONGODB_URL: ${MONGODB_URL:-mongodb://admin:localpassword@mongo:27017}
+      MONGODB_DATABASE: ${MONGODB_DATABASE:-trakrlog}
+      SESSION_SECRET: ${SESSION_SECRET:-local-dev-secret-change-in-production}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL:-http://localhost:4000/auth/google/callback}
+      APP_ENV: development
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - trakrlog-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  mongo_data_local:
+
+networks:
+  trakrlog-network:
+    driver: bridge

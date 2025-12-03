@@ -15,7 +15,6 @@ env:
   AZURE_WEBAPP_NAME: 'trakrlog-app-web'
   NODE_VERSION: '22.x'
   NODE_ENV: production
-  VITE_WAITLISTENABLED: ${{ secrets.VITE_WAITLISTENABLED }}
   VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
 
 jobs:
