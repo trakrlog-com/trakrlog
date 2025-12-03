@@ -42,7 +42,7 @@ export const EventDetailPage: React.FC = () => {
           return;
         }
 
-        const url = `${import.meta.env.VITE_BACKEND_URL}/api/events/${eventId}`;
+        const url = `/api/events/${eventId}`;
 
         const response = await fetch(url);
 

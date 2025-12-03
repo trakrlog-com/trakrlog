@@ -41,11 +41,11 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({ childre
   const { doFetch } = useFetch();
 
   const handleLoginClick = (provider: string): void => {
-    window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/${provider}`, "_self");
+    window.open(`/auth/${provider}`, "_self");
   };
 
   const handleLogoutClick = (): void => {
-    window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, "_self");
+    window.open(`/auth/logout`, "_self");
   };
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({ childre
         });
       },
       onFinally: () => setLoadingInitial(false),
-      url: `${import.meta.env.VITE_BACKEND_URL}/auth/is-auth/`,
+      url: `/auth/is-auth/`,
       method: "GET",
     });
   }, [doFetch]);

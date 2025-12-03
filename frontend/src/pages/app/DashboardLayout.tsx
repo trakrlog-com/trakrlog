@@ -13,8 +13,8 @@ export const DashboardLayout: React.FC = () => {
   useEffect(() => {
     const fetchProjectsAndChannels = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/projects`);
-        const responseChannels = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/channels`);
+        const response = await fetch(`/api/projects`);
+        const responseChannels = await fetch(`/api/channels`);
 
         if (!response.ok || !responseChannels.ok) {
           setLoadingProjectsChannels(false);
