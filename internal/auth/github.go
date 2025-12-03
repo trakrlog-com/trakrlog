@@ -9,29 +9,29 @@ import (
 	"github.com/markbates/goth/gothic"
 )
 
-type GoogleHandler struct {
+type GitHubHandler struct {
 	sessionSecret string
 	userService   *service.UserService
 }
 
-func NewGoogleHandler(sessionSecret string, userService *service.UserService) *GoogleHandler {
-	return &GoogleHandler{
+func NewGitHubHandler(sessionSecret string, userService *service.UserService) *GitHubHandler {
+	return &GitHubHandler{
 		sessionSecret: sessionSecret,
 		userService:   userService,
 	}
 }
 
-func (h *GoogleHandler) Signup(ctx *gin.Context) {
+func (h *GitHubHandler) Signup(ctx *gin.Context) {
 	query := ctx.Request.URL.Query()
-	query.Add("provider", "google")
+	query.Add("provider", "github")
 	ctx.Request.URL.RawQuery = query.Encode()
 
 	gothic.BeginAuthHandler(ctx.Writer, ctx.Request)
 }
 
-func (h *GoogleHandler) HandleCallback(ctx *gin.Context) {
+func (h *GitHubHandler) HandleCallback(ctx *gin.Context) {
 	query := ctx.Request.URL.Query()
-	query.Add("provider", "google")
+	query.Add("provider", "github")
 	ctx.Request.URL.RawQuery = query.Encode()
 
 	gothUser, err := gothic.CompleteUserAuth(ctx.Writer, ctx.Request)
@@ -44,10 +44,10 @@ func (h *GoogleHandler) HandleCallback(ctx *gin.Context) {
 		return
 	}
 
-	// Use new AuthenticateWithProvider method
+	// Use AuthenticateWithProvider method
 	dbUser, err := h.userService.AuthenticateWithProvider(
 		ctx.Request.Context(),
-		"google",
+		"github",
 		gothUser.UserID,
 		gothUser.Email,
 		gothUser.Name,
@@ -58,7 +58,7 @@ func (h *GoogleHandler) HandleCallback(ctx *gin.Context) {
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"success": false,
-			"message": "Error authenticating with Google",
+			"message": "Error authenticating with GitHub",
 			"error":   err.Error(),
 		})
 		return
@@ -88,55 +88,4 @@ func (h *GoogleHandler) HandleCallback(ctx *gin.Context) {
 	}
 
 	ctx.Redirect(http.StatusTemporaryRedirect, "/dashboard")
-}
-
-func (h *GoogleHandler) GetAuthUser(ctx *gin.Context) {
-	// Retrieve the session
-	session, err := gothic.Store.Get(ctx.Request, h.sessionSecret)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"success": false,
-			"message": "Error retrieving user session",
-			"error":   err.Error(),
-		})
-		return
-	}
-
-	// Get user ID from session
-	userID, ok := session.Values["user_id"].(string)
-	if !ok || userID == "" {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"success": false,
-			"message": "No authenticated user found",
-		})
-		return
-	}
-
-	// Fetch user from database
-	user, err := h.userService.GetUserByID(ctx.Request.Context(), userID)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"success": false,
-			"message": "User not found",
-			"error":   err.Error(),
-		})
-		return
-	}
-
-	// Return user info
-	ctx.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"message": "User fetched successfully",
-		"data":    user,
-	})
-}
-
-func (h *GoogleHandler) HandleUnauthorized(ctx *gin.Context) {
-	ctx.JSON(http.StatusUnauthorized, gin.H{
-		"success": false,
-		"message": "Unauthorized access",
-	})
-
-	// redirect to /unauthorized
-	ctx.Redirect(http.StatusTemporaryRedirect, "/unauthorized")
 }

@@ -11,6 +11,10 @@ type UserRepository interface {
 	FindByID(ctx context.Context, id string) (*model.User, error)
 	FindByEmail(ctx context.Context, email string) (*model.User, error)
 	FindByAPIKey(ctx context.Context, apiKey string) (*model.User, error)
+	FindByProvider(ctx context.Context, providerName, providerID string) (*model.User, error)
+	LinkProvider(ctx context.Context, userID string, provider model.Provider) error
+	UnlinkProvider(ctx context.Context, userID, providerName string) error
+	UpdateProvider(ctx context.Context, userID string, provider model.Provider) error
 	Update(ctx context.Context, user *model.User) error
 	Delete(ctx context.Context, id string) error
 }

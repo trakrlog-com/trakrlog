@@ -10,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type userRepository struct {
@@ -94,5 +95,92 @@ func (r *userRepository) Delete(ctx context.Context, id string) error {
 	}
 
 	_, err = r.collection.DeleteOne(ctx, bson.M{"_id": objectID})
+	return err
+}
+
+func (r *userRepository) FindByProvider(ctx context.Context, providerName, providerID string) (*model.User, error) {
+	var user model.User
+	err := r.collection.FindOne(ctx, bson.M{
+		"providers": bson.M{
+			"$elemMatch": bson.M{
+				"name":        providerName,
+				"provider_id": providerID,
+			},
+		},
+	}).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (r *userRepository) LinkProvider(ctx context.Context, userID string, provider model.Provider) error {
+	objectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return err
+	}
+
+	provider.LinkedAt = time.Now()
+	provider.LastUsedAt = time.Now()
+
+	update := bson.M{
+		"$push": bson.M{
+			"providers": provider,
+		},
+		"$set": bson.M{
+			"updated_at": time.Now(),
+		},
+	}
+
+	_, err = r.collection.UpdateOne(ctx, bson.M{"_id": objectID}, update)
+	return err
+}
+
+func (r *userRepository) UnlinkProvider(ctx context.Context, userID, providerName string) error {
+	objectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return err
+	}
+
+	update := bson.M{
+		"$pull": bson.M{
+			"providers": bson.M{
+				"name": providerName,
+			},
+		},
+		"$set": bson.M{
+			"updated_at": time.Now(),
+		},
+	}
+
+	_, err = r.collection.UpdateOne(ctx, bson.M{"_id": objectID}, update)
+	return err
+}
+
+func (r *userRepository) UpdateProvider(ctx context.Context, userID string, provider model.Provider) error {
+	objectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return err
+	}
+
+	provider.LastUsedAt = time.Now()
+
+	update := bson.M{
+		"$set": bson.M{
+			"providers.$[elem].access_token":  provider.AccessToken,
+			"providers.$[elem].refresh_token": provider.RefreshToken,
+			"providers.$[elem].last_used_at":  provider.LastUsedAt,
+			"updated_at":                      time.Now(),
+		},
+	}
+
+	arrayFilters := options.Update().SetArrayFilters(options.ArrayFilters{
+		Filters: []interface{}{
+			bson.M{"elem.name": provider.Name},
+		},
+	})
+
+	_, err = r.collection.UpdateOne(ctx, bson.M{"_id": objectID}, update, arrayFilters)
 	return err
 }
