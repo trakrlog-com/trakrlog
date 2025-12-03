@@ -456,7 +456,7 @@ Contributors are the heart of TrakrLog! We recognize contributions in several wa
 
 - **General questions:** Open a [GitHub Discussion](https://github.com/trakrlog-com/trakrlog/discussions)
 - **Bug reports:** Open a [GitHub Issue](https://github.com/trakrlog-com/trakrlog/issues)
-- **Security issues:** Email security@trakrlog.com (if applicable)
+- **Security issues:** Email hey@trakrlog.com (if applicable)
 
 ## 📚 Additional Resources
 
