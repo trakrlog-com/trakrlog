@@ -13,7 +13,7 @@ import (
 func RequireAuth(sessionSecret string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// Retrieve the session
-		session, err := gothic.Store.Get(ctx.Request, sessionSecret)
+		session, err := gothic.Store.Get(ctx.Request, "trakrlog-session")
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"success": false,

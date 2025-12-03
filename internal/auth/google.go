@@ -65,7 +65,7 @@ func (h *GoogleHandler) HandleCallback(ctx *gin.Context) {
 	}
 
 	// Store user session
-	session, err := gothic.Store.New(ctx.Request, h.sessionSecret)
+	session, err := gothic.Store.New(ctx.Request, "trakrlog-session")
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -92,7 +92,7 @@ func (h *GoogleHandler) HandleCallback(ctx *gin.Context) {
 
 func (h *GoogleHandler) GetAuthUser(ctx *gin.Context) {
 	// Retrieve the session
-	session, err := gothic.Store.Get(ctx.Request, h.sessionSecret)
+	session, err := gothic.Store.Get(ctx.Request, "trakrlog-session")
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"success": false,

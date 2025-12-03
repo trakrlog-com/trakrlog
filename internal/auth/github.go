@@ -65,7 +65,7 @@ func (h *GitHubHandler) HandleCallback(ctx *gin.Context) {
 	}
 
 	// Store user session
-	session, err := gothic.Store.New(ctx.Request, h.sessionSecret)
+	session, err := gothic.Store.New(ctx.Request, "trakrlog-session")
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"success": false,
