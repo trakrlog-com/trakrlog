@@ -27,7 +27,8 @@ docker-down:
 test:
 	@echo "Testing..."
 	@go test ./... -v
-# Integrations Tests for the application
+
+# Integration Tests (requires Docker)
 itest:
 	@echo "Running integration tests..."
 	@go test ./internal/database -v
