@@ -12,7 +12,7 @@ export const ConfirmApiKeyUpdate: React.FC<{
 
   const generateApiKey = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/settings/apikey`, {
+      const response = await fetch(`/settings/apikey`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

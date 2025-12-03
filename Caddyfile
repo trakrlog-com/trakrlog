@@ -1,8 +1,5 @@
 # Replace with your domain
 {$DOMAIN:localhost} {
-    # Enable HTTP/3
-    protocols h1 h2 h3
-
     # Logging
     log {
         output file /var/log/caddy/access.log

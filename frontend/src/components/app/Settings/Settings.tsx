@@ -12,7 +12,7 @@ export const Settings: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   // create a effect to get the user settings
   useEffect(() => {
     const fetchSettings = async () => {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/settings`);
+      const response = await fetch(`/settings`);
       if (response.ok) {
         const data = await response.json();
         setApiKey(data.data.settings.apiKey);

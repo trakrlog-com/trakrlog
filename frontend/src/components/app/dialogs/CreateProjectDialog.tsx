@@ -42,7 +42,7 @@ export const CreateProjectDialog: React.FC<{
 
   const addProject = async (name: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/projects`, {
+      const response = await fetch(`/api/projects`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -25,7 +25,7 @@ export const ProjectHome: React.FC = () => {
           return;
         }
 
-        const url = `${import.meta.env.VITE_BACKEND_URL}/api/projects/${selectedProject.id}/events`;
+        const url = `/api/projects/${selectedProject.id}/events`;
         const response = await fetch(url);
 
         if (!response.ok) {

@@ -47,9 +47,9 @@ export const ChannelPage: React.FC = () => {
 
         let url = "";
         if (channelId && channelId !== undefined) {
-          url = `${import.meta.env.VITE_BACKEND_URL}/api/channels/${channelId}/events`;
+          url = `/api/channels/${channelId}/events`;
         } else {
-          url = `${import.meta.env.VITE_BACKEND_URL}/api/projects/${selectedProject.id}/events`;
+          url = `/api/projects/${selectedProject.id}/events`;
         }
 
         const response = await fetch(url);
