@@ -15,6 +15,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
+	"github.com/markbates/goth/providers/github"
 	"github.com/markbates/goth/providers/google"
 )
 
@@ -36,11 +37,21 @@ func (s *Server) RegisterRouter() http.Handler {
 	s.setupGoth(sessionSectret)
 
 	googleHandler := auth.NewGoogleHandler(sessionSectret, s.userService)
+	githubHandler := auth.NewGitHubHandler(sessionSectret, s.userService)
 	authGroup := router.Group("/auth")
-	authGroup.GET("google", googleHandler.Signup)
-	authGroup.GET("google/callback", googleHandler.HandleCallback)
-	authGroup.GET("is-auth", googleHandler.GetAuthUser)
-	authGroup.GET("login/failed", googleHandler.HandleUnauthorized)
+	{
+		// Google OAuth
+		authGroup.GET("google", googleHandler.Signup)
+		authGroup.GET("google/callback", googleHandler.HandleCallback)
+
+		// GitHub OAuth
+		authGroup.GET("github", githubHandler.Signup)
+		authGroup.GET("github/callback", githubHandler.HandleCallback)
+
+		// Common auth endpoints
+		authGroup.GET("is-auth", googleHandler.GetAuthUser)
+		authGroup.GET("login/failed", googleHandler.HandleUnauthorized)
+	}
 
 	// API routes - protected by authentication
 	api := router.Group("/api")
@@ -116,10 +127,11 @@ func (s *Server) setupGoth(sessionSecret string) {
 			os.Getenv("GOOGLE_CALLBACK_URL"),
 			"email", "profile",
 		),
-		// github.New(
-		// 	os.Getenv("GITHUB_CLIENT_ID"),
-		// 	os.Getenv("GITHUB_CLIENT_SECRET"),
-		// 	os.Getenv("GITHUB_CALLBACK_URL"),
-		// ),
+		github.New(
+			os.Getenv("GITHUB_CLIENT_ID"),
+			os.Getenv("GITHUB_CLIENT_SECRET"),
+			os.Getenv("GITHUB_CALLBACK_URL"),
+			"user:email",
+		),
 	)
 }
