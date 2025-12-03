@@ -8,7 +8,7 @@ on:
 
 env:
   NODE_VERSION: '22.x'
-  NODE_ENV: production
+  GO_VERSION: '1.25.4'
 
 jobs:
   pr-check:
@@ -17,28 +17,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
+      - name: Setup Go
+        uses: actions/setup-go@v5
         with:
-          version: 8
-          run_install: false
-      - name: Use Node.js ${{ env.NODE_VERSION }}
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-      - name: Install dependencies (including dev dependencies for build)
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Build and test with Make
+        run: make all
+
+      - name: Verify build artifacts
         run: |
-          pnpm install --prod=false
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-
-      - name: Build with Turbo
-        run: npx turbo run build
-
-      - name: Run tests with Turbo
-        run: npx turbo run test
+          echo "Checking build artifacts..."
+          test -f main && echo "✓ Backend binary exists" || (echo "✗ Backend binary missing" && exit 1)
+          test -d frontend/dist && echo "✓ Frontend dist exists" || (echo "✗ Frontend dist missing" && exit 1)
+          echo "Build verification complete!"

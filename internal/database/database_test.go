@@ -3,44 +3,59 @@ package database
 import (
 	"context"
 	"log"
+	"os"
 	"testing"
 
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/mongodb"
 )
 
-func mustStartMongoContainer() (func(context.Context, ...testcontainers.TerminateOption) error, error) {
-	dbContainer, err := mongodb.Run(context.Background(), "mongo:latest")
+func mustStartMongoContainer() (func(context.Context, ...testcontainers.TerminateOption) error, string, error) {
+	dbContainer, err := mongodb.Run(context.Background(), "mongo:7")
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
-	// dbHost, err := dbContainer.Host(context.Background())
-	// if err != nil {
-	// 	return dbContainer.Terminate, err
-	// }
+	dbHost, err := dbContainer.Host(context.Background())
+	if err != nil {
+		return dbContainer.Terminate, "", err
+	}
 
-	// dbPort, err := dbContainer.MappedPort(context.Background(), "27017/tcp")
-	// if err != nil {
-	// 	return dbContainer.Terminate, err
-	// }
+	dbPort, err := dbContainer.MappedPort(context.Background(), "27017/tcp")
+	if err != nil {
+		return dbContainer.Terminate, "", err
+	}
 
-	// dbUrl := "mongodb://" + dbHost + ":" + dbPort.Port()
+	dbUrl := "mongodb://" + dbHost + ":" + dbPort.Port()
 
-	return dbContainer.Terminate, err
+	return dbContainer.Terminate, dbUrl, nil
 }
 
 func TestMain(m *testing.M) {
-	teardown, err := mustStartMongoContainer()
+	// Skip tests if running in environment without Docker access
+	if os.Getenv("SKIP_DOCKER_TESTS") != "" {
+		log.Println("Skipping database tests (SKIP_DOCKER_TESTS is set)")
+		os.Exit(0)
+	}
+
+	teardown, mongoURL, err := mustStartMongoContainer()
 	if err != nil {
 		log.Fatalf("could not start mongodb container: %v", err)
 	}
 
-	m.Run()
+	// Set environment variables for tests
+	os.Setenv("MONGODB_URL", mongoURL)
+	os.Setenv("MONGODB_DATABASE", "test_db")
 
-	if teardown != nil && teardown(context.Background()) != nil {
-		log.Fatalf("could not teardown mongodb container: %v", err)
+	exitCode := m.Run()
+
+	if teardown != nil {
+		if err := teardown(context.Background()); err != nil {
+			log.Fatalf("could not teardown mongodb container: %v", err)
+		}
 	}
+
+	os.Exit(exitCode)
 }
 
 func TestNew(t *testing.T) {

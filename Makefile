@@ -15,29 +15,20 @@ build:
 run:
 	@go run cmd/api/main.go 
 
-# Create DB container
+# Run the local containerized application
 docker-run:
-	@if docker compose up --build 2>/dev/null; then \
-		: ; \
-	else \
-		echo "Falling back to Docker Compose V1"; \
-		docker-compose up --build; \
-	fi
+	@sudo docker compose -f docker-compose.local.yml --env-file .env.local up --build
 
-# Shutdown DB container
+# Shutdown the local containerized application
 docker-down:
-	@if docker compose down 2>/dev/null; then \
-		: ; \
-	else \
-		echo "Falling back to Docker Compose V1"; \
-		docker-compose down; \
-	fi
+	@sudo docker compose -f docker-compose.local.yml down
 
 # Test the application
 test:
 	@echo "Testing..."
 	@go test ./... -v
-# Integrations Tests for the application
+
+# Integration Tests (requires Docker)
 itest:
 	@echo "Running integration tests..."
 	@go test ./internal/database -v
