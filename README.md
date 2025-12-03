@@ -196,7 +196,6 @@ npm run test
 - **[Local Testing Guide](LOCAL_TESTING.md)** - Detailed guide for local development
 - **[Deployment Guide](DEPLOYMENT.md)** - Production deployment instructions
 - **[VPS Deployment](VPS_DEPLOYMENT.md)** - Deploy to a VPS
-- **[MongoDB Structure](docs/mongodb-structure.md)** - Database schema documentation
 
 ---
 
