@@ -1,13 +1,6 @@
 <div align="center">
   <h1>🚀 TrakrLog</h1>
   <p><strong>Open Source Event Logging for Indie Game & SaaS Developers</strong></p>
-  <p>
-    <a href="#features">Features</a> •
-    <a href="#quick-start">Quick Start</a> •
-    <a href="#tech-stack">Tech Stack</a> •
-    <a href="#contributing">Contributing</a> •
-    <a href="#documentation">Documentation</a>
-  </p>
 </div>
 
 ---
