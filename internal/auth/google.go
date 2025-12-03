@@ -34,7 +34,7 @@ func (h *GoogleHandler) HandleCallback(ctx *gin.Context) {
 	query.Add("provider", "google")
 	ctx.Request.URL.RawQuery = query.Encode()
 
-	user, err := gothic.CompleteUserAuth(ctx.Writer, ctx.Request)
+	gothUser, err := gothic.CompleteUserAuth(ctx.Writer, ctx.Request)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -44,49 +44,44 @@ func (h *GoogleHandler) HandleCallback(ctx *gin.Context) {
 		return
 	}
 
-	// store the user session
-	session, err := gothic.Store.New(ctx.Request, h.sessionSecret)
+	// Use new AuthenticateWithProvider method
+	dbUser, err := h.userService.AuthenticateWithProvider(
+		ctx.Request.Context(),
+		"google",
+		gothUser.UserID,
+		gothUser.Email,
+		gothUser.Name,
+		gothUser.AvatarURL,
+		gothUser.AccessToken,
+		gothUser.RefreshToken,
+	)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"success": false,
-			"message": "Error stroing user session",
+			"message": "Error authenticating with Google",
 			"error":   err.Error(),
 		})
 		return
 	}
 
-	// Find or create user in database
-	dbUser, err := h.userService.GetUserByEmail(ctx.Request.Context(), user.Email)
+	// Store user session
+	session, err := gothic.Store.New(ctx.Request, h.sessionSecret)
 	if err != nil {
-		// User doesn't exist, create new user
-		dbUser, err = h.userService.CreateUser(ctx.Request.Context(), user.Email, user.Name)
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-				"success": false,
-				"message": "Error creating user",
-				"error":   err.Error(),
-			})
-			return
-		}
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"message": "Error creating session",
+			"error":   err.Error(),
+		})
+		return
 	}
 
-	// Update avatar if changed
-	if dbUser.Avatar != user.AvatarURL {
-		dbUser.Avatar = user.AvatarURL
-		if err := h.userService.UpdateUser(ctx.Request.Context(), dbUser); err != nil {
-			// Log error but don't fail the login
-		}
-	}
-
-	// Store user ID in session (not the whole user object)
 	session.Values["user_id"] = dbUser.ID.Hex()
 	session.Values["user_email"] = dbUser.Email
 
-	// save the user session
 	if err = session.Save(ctx.Request, ctx.Writer); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"success": false,
-			"message": "Error saving user session",
+			"message": "Error saving session",
 			"error":   err.Error(),
 		})
 		return

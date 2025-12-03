@@ -46,6 +46,11 @@ func (s *Server) RegisterRouter() http.Handler {
 	api := router.Group("/api")
 	api.Use(middleware.RequireAuth(sessionSectret))
 	{
+		// User/Profile routes
+		userHandler := handler.NewUserHandler(s.userService)
+		api.GET("/user/providers", userHandler.GetLinkedProviders)
+		api.DELETE("/user/providers/:provider", userHandler.UnlinkProvider)
+
 		// Project routes
 		projectHandler := handler.NewProjectHandler(s.projectService)
 		api.GET("/projects", projectHandler.GetProjects)

@@ -36,9 +36,16 @@ func New() Service {
 		log.Fatal(err)
 	}
 
-	return &service{
+	s := &service{
 		db: client,
 	}
+
+	// Create indexes on startup
+	if err := s.CreateIndexes(); err != nil {
+		log.Printf("Warning: Index creation failed: %v", err)
+	}
+
+	return s
 }
 
 func (s *service) Health() map[string]string {
