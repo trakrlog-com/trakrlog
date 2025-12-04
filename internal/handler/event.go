@@ -34,8 +34,8 @@ func (h *EventHandler) CreateEvent(ctx *gin.Context) {
 	}
 
 	var req struct {
-		ProjectID   string            `json:"project_id" binding:"required"`
-		ChannelID   string            `json:"channel_id" binding:"required"`
+		Project     string            `json:"project" binding:"required"`
+		Channel     string            `json:"channel" binding:"required"`
 		Title       string            `json:"title" binding:"required"`
 		Description string            `json:"description"`
 		Icon        string            `json:"icon"`
@@ -51,15 +51,11 @@ func (h *EventHandler) CreateEvent(ctx *gin.Context) {
 		return
 	}
 
-	event, err := h.eventService.CreateEvent(ctx.Request.Context(), userID, req.ProjectID, req.ChannelID, req.Title, req.Description, req.Icon, req.Tags)
+	event, err := h.eventService.CreateEvent(ctx.Request.Context(), userID, req.Project, req.Channel, req.Title, req.Description, req.Icon, req.Tags)
 	if err != nil {
 		statusCode := http.StatusInternalServerError
-		if err.Error() == "unauthorized: project does not belong to user" {
-			statusCode = http.StatusForbidden
-		} else if err.Error() == "channel not found" || err.Error() == "project not found" {
+		if err.Error() == "channel not found" || err.Error() == "project not found" {
 			statusCode = http.StatusNotFound
-		} else if err.Error() == "channel does not belong to the specified project" {
-			statusCode = http.StatusBadRequest
 		}
 
 		ctx.JSON(statusCode, gin.H{

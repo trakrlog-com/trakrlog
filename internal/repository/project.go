@@ -71,6 +71,24 @@ func (r *projectRepository) FindByUserID(ctx context.Context, userID string) ([]
 	return projects, nil
 }
 
+func (r *projectRepository) FindByUserIDAndName(ctx context.Context, userID, name string) (*model.Project, error) {
+	userObjectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	var project model.Project
+	err = r.collection.FindOne(ctx, bson.M{
+		"user_id": userObjectID,
+		"name":    name,
+	}).Decode(&project)
+	if err != nil {
+		return nil, err
+	}
+
+	return &project, nil
+}
+
 func (r *projectRepository) Update(ctx context.Context, project *model.Project) error {
 	project.UpdatedAt = time.Now()
 

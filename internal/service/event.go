@@ -6,8 +6,6 @@ import (
 
 	"trakrlog/internal/model"
 	"trakrlog/internal/repository"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type EventService struct {
@@ -25,37 +23,28 @@ func NewEventService(eventRepo repository.EventRepository, channelRepo repositor
 }
 
 // CreateEvent creates a new event in a channel
-func (s *EventService) CreateEvent(ctx context.Context, userID, projectID, channelID, title, description, icon string, tags map[string]string) (*model.Event, error) {
+func (s *EventService) CreateEvent(ctx context.Context, userID, projectName, channelName, title, description, icon string, tags map[string]string) (*model.Event, error) {
 	// Validation
 	if title == "" {
 		return nil, errors.New("event title required")
 	}
 
-	// Verify project exists and belongs to user
-	project, err := s.projectRepo.FindByID(ctx, projectID)
+	// Find project by user ID and name
+	project, err := s.projectRepo.FindByUserIDAndName(ctx, userID, projectName)
 	if err != nil {
 		return nil, errors.New("project not found")
 	}
 
-	if project.UserID.Hex() != userID {
-		return nil, errors.New("unauthorized: project does not belong to user")
-	}
-
-	// Verify channel exists and belongs to the project
-	channel, err := s.channelRepo.FindByID(ctx, channelID)
+	// Find channel by project ID and name
+	channel, err := s.channelRepo.FindByProjectIDAndName(ctx, project.ID.Hex(), channelName)
 	if err != nil {
 		return nil, errors.New("channel not found")
 	}
 
-	if channel.ProjectID.Hex() != projectID {
-		return nil, errors.New("channel does not belong to the specified project")
-	}
-
 	// Create event
-	channelOID, _ := primitive.ObjectIDFromHex(channelID)
 	event := &model.Event{
-		ChannelID:   channelOID,
-		ProjectID:   channel.ProjectID,
+		ChannelID:   channel.ID,
+		ProjectID:   project.ID,
 		Title:       title,
 		Description: description,
 		Icon:        icon,

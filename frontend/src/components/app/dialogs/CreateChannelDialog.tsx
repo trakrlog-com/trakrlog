@@ -28,15 +28,17 @@ export const CreateChannelDialog: React.FC<{
       );
 
       if (!response.ok) {
-        showNotification("Failed to add channel", "error", "Unable to create new channel");
-        return false;
+        const errorData = await response.json();
+        const errorMessage = errorData.error || errorData.message || "Unable to create new channel";
+        throw new Error(errorMessage);
       }
 
       showNotification(`Channel ${name} added successfully!`, "success", "Channel created");
       setChannelOrProjectUpdateToggle(!channelsOrProjectsUpdateToggle);
       return true;
     } catch (err) {
-      showNotification("Failed to add channel", "error", "Unable to create new channel");
+      const errorMessage = err instanceof Error ? err.message : "Unable to create new channel";
+      showNotification("Failed to add channel", "error", errorMessage);
       return false;
     }
   };
@@ -47,18 +49,22 @@ export const CreateChannelDialog: React.FC<{
       return;
     }
 
+    // Validate channel name: only allow alphanumeric, hyphens, and underscores (no spaces)
+    const validNamePattern = /^[a-zA-Z0-9_-]+$/;
+    if (!validNamePattern.test(channelName.trim())) {
+      setError("Channel name can only contain letters, numbers, hyphens (-) and underscores (_)");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
-    try {
-      await addChannel(channelName.trim());
+    const success = await addChannel(channelName.trim());
+    if (success) {
       setChannelName("");
       setOpen(false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create channel");
-    } finally {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   return (
