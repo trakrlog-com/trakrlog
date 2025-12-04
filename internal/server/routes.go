@@ -88,19 +88,12 @@ func (s *Server) RegisterRouter() http.Handler {
 		api.DELETE("/events/:id", eventHandler.DeleteEvent)
 	}
 
-	// Track endpoint - supports both /track and /api/track for backwards compatibility
-	track := router.Group("/track")
-	track.Use(middleware.RequireAuthApiKey(s.userService))
-	{
-		track.POST("/", handler.NewEventHandler(s.eventService).CreateEvent)
-	}
+	// Track endpoint - direct route to avoid trailing slash redirects
+	trackEventHandler := handler.NewEventHandler(s.eventService)
+	router.POST("/track", middleware.RequireAuthApiKey(s.userService), trackEventHandler.CreateEvent)
 
 	// Legacy endpoint - keeping for backwards compatibility
-	apiTrack := router.Group("/api/track")
-	apiTrack.Use(middleware.RequireAuthApiKey(s.userService))
-	{
-		apiTrack.POST("/", handler.NewEventHandler(s.eventService).CreateEvent)
-	}
+	router.POST("/api/track", middleware.RequireAuthApiKey(s.userService), trackEventHandler.CreateEvent)
 
 	// Dashboard routes
 	dashboard := router.Group("/dashboard")
