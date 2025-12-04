@@ -51,15 +51,40 @@ nano .env
 
 Update the following variables:
 - `DOMAIN`: Your domain name (e.g., `trakrlog.com` or `api.trakrlog.com`)
-- `MONGODB_URL`: MongoDB connection string (e.g., `mongodb://admin:your_password@mongo:27017`)
+- `MONGODB_URL`: MongoDB connection string
+  - For local container: `mongodb://admin:your_password@mongo:27017`
+  - For MongoDB Atlas: `mongodb+srv://user:pass@cluster.mongodb.net/`
+  - For other external MongoDB: Use your provider's connection string
 - `MONGODB_DATABASE`: Database name (default: `trakrlog`)
-- `MONGODB_PASSWORD`: MongoDB password (must match the password in MONGODB_URL)
+- `MONGODB_PASSWORD`: MongoDB root password (only needed for local container)
 - `SESSION_SECRET`: Generate with `openssl rand -hex 32`
 - `GOOGLE_CLIENT_ID`: Your Google OAuth client ID
 - `GOOGLE_CLIENT_SECRET`: Your Google OAuth client secret
 - `GOOGLE_CALLBACK_URL`: `https://yourdomain.com/auth/google/callback`
 
-### 4. Configure Google OAuth
+### 4. Choose MongoDB Deployment Option
+
+**Option A: Use MongoDB Atlas (Recommended for Production)**
+
+1. Create a free account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+2. Create a new cluster
+3. Get your connection string (looks like `mongodb+srv://...`)
+4. Set `MONGODB_URL` to your Atlas connection string in `.env`
+5. Deploy without local MongoDB:
+   ```bash
+   docker compose -f docker-compose.prod.yml up -d
+   ```
+
+**Option B: Use Local MongoDB Container**
+
+1. Set `MONGODB_URL=mongodb://admin:yourpassword@mongo:27017` in `.env`
+2. Set `MONGODB_PASSWORD=yourpassword` in `.env`
+3. Deploy with local MongoDB:
+   ```bash
+   docker compose -f docker-compose.prod.yml --profile local-db up -d
+   ```
+
+### 5. Configure Google OAuth
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Create a new project or select an existing one
@@ -69,11 +94,14 @@ Update the following variables:
    - `https://yourdomain.com/auth/google/callback` (production)
    - `http://localhost:4000/auth/google/callback` (local development)
 
-### 5. Build and deploy
+### 6. Build and deploy
 
 ```bash
-# Build and start all services
+# Build and start all services (with external MongoDB like Atlas)
 docker compose -f docker-compose.prod.yml up -d --build
+
+# OR: Build and start with local MongoDB container
+docker compose -f docker-compose.prod.yml --profile local-db up -d --build
 
 # View logs
 docker compose -f docker-compose.prod.yml logs -f
@@ -82,14 +110,28 @@ docker compose -f docker-compose.prod.yml logs -f
 docker compose -f docker-compose.prod.yml ps
 ```
 
-### 6. Verify deployment
+### 7. Verify deployment
 
 - Visit `https://yourdomain.com` - should show your frontend
-- Visit `https://yourdomain.com/api/health` - should return health status
-- Try logging in with Google OAuth
-
 ## Architecture
 
+**With External MongoDB (e.g., Atlas):**
+```
+┌─────────────────┐
+│   Internet      │
+└────────┬────────┘
+         │
+    ┌────▼────┐
+    │  Caddy  │ :80, :443 (Reverse Proxy + SSL)
+    └────┬────┘
+         │
+    ┌────▼────┐                    ┌──────────────┐
+    │   App   │ :4000 ────────────►│ MongoDB Atlas│
+    └─────────┘                    │  (External)  │
+                                   └──────────────┘
+```
+
+**With Local MongoDB Container:**
 ```
 ┌─────────────────┐
 │   Internet      │
@@ -110,7 +152,11 @@ docker compose -f docker-compose.prod.yml ps
 
 ## Services
 
-### MongoDB
+### MongoDB (Optional - use --profile local-db)
+- Internal port: 27017 (when using local container)
+- Data persisted in Docker volume: `mongo_data`
+- Credentials configured via environment variables
+- **Alternative**: Use MongoDB Atlas or any external MongoDB service
 - Internal port: 27017
 - Data persisted in Docker volume: `mongo_data`
 - Credentials configured via environment variables
