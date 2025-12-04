@@ -1,8 +1,10 @@
 services:
-  # MongoDB Database
+  # MongoDB Database (optional - enable with --profile local-db)
   mongo:
     image: mongo:7
     restart: unless-stopped
+    profiles:
+      - local-db  # Only starts if 'local-db' profile is enabled
     ports:
       - "27018:27017"  # Use 27018 externally to avoid conflict with local MongoDB
     environment:
@@ -35,9 +37,11 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL:-http://localhost:4000/auth/google/callback}
       APP_ENV: development
-    depends_on:
-      mongo:
-        condition: service_healthy
+    # Note: depends_on removed by default - set MONGODB_URL to external DB or use --profile local-db
+    # If using local mongo profile, uncomment the depends_on section below
+    # depends_on:
+    #   mongo:
+    #     condition: service_healthy
     networks:
       - trakrlog-network
     healthcheck:

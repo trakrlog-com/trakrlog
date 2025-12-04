@@ -1,8 +1,10 @@
 services:
-  # MongoDB Database
+  # MongoDB Database (optional - only used if not connecting to external MongoDB like Atlas)
   mongo:
     image: mongo:7
     restart: unless-stopped
+    profiles:
+      - local-db  # Only starts if 'local-db' profile is enabled
     environment:
       # Extract password from MONGODB_URL (format: mongodb://user:pass@host:port)
       MONGO_INITDB_ROOT_USERNAME: admin
@@ -24,6 +26,8 @@ services:
     restart: unless-stopped
     environment:
       PORT: 4000
+      # Use external MongoDB by default (e.g., Atlas)
+      # For local MongoDB container, use: MONGODB_URL=mongodb://admin:yourpassword@mongo:27017
       MONGODB_URL: ${MONGODB_URL}
       MONGODB_DATABASE: ${MONGODB_DATABASE}
       SESSION_SECRET: ${SESSION_SECRET}
@@ -31,9 +35,6 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
       APP_ENV: production
-    depends_on:
-      mongo:
-        condition: service_healthy
     networks:
       - trakrlog-network
     healthcheck:
