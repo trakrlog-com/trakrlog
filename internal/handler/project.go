@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"regexp"
 
 	"trakrlog/internal/middleware"
 	"trakrlog/internal/model"
@@ -42,6 +43,17 @@ func (h *ProjectHandler) CreateProject(ctx *gin.Context) {
 			"success": false,
 			"message": "Invalid request",
 			"error":   err.Error(),
+		})
+		return
+	}
+
+	// Validate project name: only allow alphanumeric, hyphens, and underscores
+	validNamePattern := regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
+	if !validNamePattern.MatchString(req.Name) {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"message": "Invalid project name",
+			"error":   "Project name can only contain letters, numbers, hyphens (-) and underscores (_)",
 		})
 		return
 	}

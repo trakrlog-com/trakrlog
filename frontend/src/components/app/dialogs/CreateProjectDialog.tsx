@@ -51,15 +51,17 @@ export const CreateProjectDialog: React.FC<{
       });
 
       if (!response.ok) {
-        showNotification("Failed to add project", "error", "Unable to create new project");
-        return false;
+        const errorData = await response.json();
+        const errorMessage = errorData.error || errorData.message || "Unable to create new project";
+        throw new Error(errorMessage);
       }
 
       showNotification(`${name} added successfully!`, "success", "Project created");
       setChannelOrProjectUpdateToggle(!channelsOrProjectsUpdateToggle);
       return true;
     } catch (err) {
-      showNotification("Failed to add project", "error", "Unable to create new project");
+      const errorMessage = err instanceof Error ? err.message : "Unable to create new project";
+      showNotification("Failed to add project", "error", errorMessage);
       return false;
     }
   };
@@ -70,18 +72,23 @@ export const CreateProjectDialog: React.FC<{
       return;
     }
 
+    // Validate project name: only allow alphanumeric, hyphens, and underscores (no spaces)
+    const validNamePattern = /^[a-zA-Z0-9_-]+$/;
+    if (!validNamePattern.test(projectName.trim())) {
+      setError("Project name can only contain letters, numbers, hyphens (-) and underscores (_)");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
-    try {
-      await addProject(projectName.trim());
+    const success = await addProject(projectName.trim());
+    if (success) {
       setProjectName("");
+      setProjectLogoBase64(null);
       setOpen(false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create project");
-    } finally {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   return (

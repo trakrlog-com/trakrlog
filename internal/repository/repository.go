@@ -24,6 +24,7 @@ type ProjectRepository interface {
 	Create(ctx context.Context, project *model.Project) error
 	FindByID(ctx context.Context, id string) (*model.Project, error)
 	FindByUserID(ctx context.Context, userID string) ([]*model.Project, error)
+	FindByUserIDAndName(ctx context.Context, userID, name string) (*model.Project, error)
 	Update(ctx context.Context, project *model.Project) error
 	Delete(ctx context.Context, id string) error
 }
@@ -33,6 +34,7 @@ type ChannelRepository interface {
 	Create(ctx context.Context, channel *model.Channel) error
 	FindByID(ctx context.Context, id string) (*model.Channel, error)
 	FindByProjectID(ctx context.Context, projectID string) ([]*model.Channel, error)
+	FindByProjectIDAndName(ctx context.Context, projectID, name string) (*model.Channel, error)
 	Update(ctx context.Context, channel *model.Channel) error
 	Delete(ctx context.Context, id string) error
 }

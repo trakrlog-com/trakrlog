@@ -71,6 +71,24 @@ func (r *channelRepository) FindByProjectID(ctx context.Context, projectID strin
 	return channels, nil
 }
 
+func (r *channelRepository) FindByProjectIDAndName(ctx context.Context, projectID, name string) (*model.Channel, error) {
+	projectObjectID, err := primitive.ObjectIDFromHex(projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	var channel model.Channel
+	err = r.collection.FindOne(ctx, bson.M{
+		"project_id": projectObjectID,
+		"name":       name,
+	}).Decode(&channel)
+	if err != nil {
+		return nil, err
+	}
+
+	return &channel, nil
+}
+
 func (r *channelRepository) Update(ctx context.Context, channel *model.Channel) error {
 	channel.UpdatedAt = time.Now()
 
