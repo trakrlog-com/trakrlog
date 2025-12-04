@@ -23,9 +23,9 @@ func (s *Server) RegisterRouter() http.Handler {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:4000", "https://trakrlog.com", "https://www.trakrlog.com"}, // Add your frontend URL
+		AllowOrigins:     []string{"http://localhost:4000", "https://trakrlog.com", "https://www.trakrlog.com", "https://api.trakrlog.com"}, // Add your frontend URL
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
-		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type"},
+		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type", "X-API-KEY"},
 		AllowCredentials: true, // Enable cookies/auth
 	}))
 
@@ -88,6 +88,14 @@ func (s *Server) RegisterRouter() http.Handler {
 		api.DELETE("/events/:id", eventHandler.DeleteEvent)
 	}
 
+	// Track endpoint - supports both /track and /api/track for backwards compatibility
+	track := router.Group("/track")
+	track.Use(middleware.RequireAuthApiKey(s.userService))
+	{
+		track.POST("/", handler.NewEventHandler(s.eventService).CreateEvent)
+	}
+
+	// Legacy endpoint - keeping for backwards compatibility
 	apiTrack := router.Group("/api/track")
 	apiTrack.Use(middleware.RequireAuthApiKey(s.userService))
 	{

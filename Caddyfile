@@ -1,4 +1,74 @@
-# Replace with your domain
+# API Subdomain - handles tracking and API routes
+{$API_DOMAIN:api.localhost} {
+    # Logging
+    log {
+        output file /var/log/caddy/api-access.log
+        level INFO
+    }
+
+    # Security headers
+    header {
+        # Enable HSTS
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        # Prevent XSS attacks
+        X-XSS-Protection "1; mode=block"
+        # Prevent MIME type sniffing
+        X-Content-Type-Options "nosniff"
+        # Referrer policy
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # Remove Server header
+        -Server
+    }
+
+    # CORS headers for API subdomain
+    @options {
+        method OPTIONS
+    }
+    handle @options {
+        header {
+            Access-Control-Allow-Origin "*"
+            Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+            Access-Control-Allow-Headers "Accept, Authorization, Content-Type, X-Api-Key"
+            Access-Control-Max-Age "3600"
+        }
+        respond 204
+    }
+
+    # Health check endpoint
+    handle /health {
+        reverse_proxy app:4000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Track endpoint - public API
+    handle /track {
+        reverse_proxy app:4000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Authenticated API routes
+    handle /api/* {
+        reverse_proxy app:4000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Enable gzip compression
+    encode gzip zstd
+}
+
+# Main Domain - serves frontend and auth
 {$DOMAIN:localhost} {
     # Logging
     log {
