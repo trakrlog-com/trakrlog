@@ -1,4 +1,21 @@
 services:
+  # MongoDB Database
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD:-changeme}
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - trakrlog-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # Go Backend + Frontend
   app:
     image: ghcr.io/trakrlog-com/trakrlog:latest
@@ -6,10 +23,9 @@ services:
     restart: unless-stopped
     environment:
       PORT: 4000
-      # Use external MongoDB by default (e.g., Atlas)
-      # For local MongoDB container, use: MONGODB_URL=mongodb://admin:yourpassword@mongo:27017
-      MONGODB_URL: ${MONGODB_URL}
-      MONGODB_DATABASE: ${MONGODB_DATABASE}
+      # Using local MongoDB container
+      MONGODB_URL: mongodb://admin:${MONGODB_PASSWORD:-changeme}@mongo:27017
+      MONGODB_DATABASE: ${MONGODB_DATABASE:-trakrlog}
       SESSION_SECRET: ${SESSION_SECRET}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
@@ -17,6 +33,9 @@ services:
       APP_ENV: production
     networks:
       - trakrlog-network
+    depends_on:
+      mongo:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/api/health"]
       interval: 30s
@@ -41,6 +60,7 @@ services:
       - app
 
 volumes:
+  mongo_data:
   caddy_data:
   caddy_config:
 
