@@ -41,26 +41,8 @@ func NewPushService(
 	}
 }
 
-// NotificationPayload represents the data sent in a push notification
-type NotificationPayload struct {
-	Title   string                 `json:"title"`
-	Body    string                 `json:"body"`
-	Icon    string                 `json:"icon,omitempty"`
-	Badge   string                 `json:"badge,omitempty"`
-	Tag     string                 `json:"tag,omitempty"`
-	Data    map[string]interface{} `json:"data,omitempty"`
-	Actions []NotificationAction   `json:"actions,omitempty"`
-}
-
-// NotificationAction represents an action button in the notification
-type NotificationAction struct {
-	Action string `json:"action"`
-	Title  string `json:"title"`
-	Icon   string `json:"icon,omitempty"`
-}
-
 // SendNotification sends a push notification to a specific subscription
-func (s *PushService) SendNotification(ctx context.Context, subscription *model.NotificationSubscription, payload *NotificationPayload) error {
+func (s *PushService) SendNotification(ctx context.Context, subscription *model.NotificationSubscription, payload *model.NotificationPayload) error {
 	// Marshal payload to JSON
 	payloadBytes, err := json.Marshal(payload)
 	if err != nil {
@@ -131,7 +113,7 @@ func (s *PushService) SendNotification(ctx context.Context, subscription *model.
 // SendToUser sends a notification to all active subscriptions for a user
 // A user may have multiple subscriptions (one per device/browser they use)
 // For example: desktop Chrome, mobile Firefox, laptop Edge, etc.
-func (s *PushService) SendToUser(ctx context.Context, userID string, payload *NotificationPayload, eventID string) error {
+func (s *PushService) SendToUser(ctx context.Context, userID string, payload *model.NotificationPayload, eventID string) error {
 	// Get all active subscriptions for the user
 	subscriptions, err := s.subscriptionRepo.FindActiveByUserID(ctx, userID)
 	if err != nil {
