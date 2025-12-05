@@ -1,14 +1,11 @@
 package service
 
 import (
-	"bytes"
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
 	"trakrlog/internal/model"
@@ -52,25 +49,6 @@ func (s *PushService) SendNotification(ctx context.Context, subscription *model.
 		return fmt.Errorf("failed to marshal payload: %w", err)
 	}
 
-	// Log key details for debugging
-	log.Printf("Sending notification to subscription %s", subscription.ID.Hex())
-	log.Printf("  P256dh: %s", subscription.P256dh)
-	log.Printf("  Auth: %s", subscription.Auth)
-	
-	// Try to decode the keys to verify they're valid
-	p256dhBytes, err := decodeSubscriptionKey(subscription.P256dh)
-	if err != nil {
-		log.Printf("  ERROR: Failed to decode P256dh: %v", err)
-		return fmt.Errorf("invalid P256dh key: %w", err)
-	}
-	authBytes, err := decodeSubscriptionKey(subscription.Auth)
-	if err != nil {
-		log.Printf("  ERROR: Failed to decode Auth: %v", err)
-		return fmt.Errorf("invalid Auth key: %w", err)
-	}
-	log.Printf("  Decoded P256dh: %d bytes, first byte: 0x%02x", len(p256dhBytes), p256dhBytes[0])
-	log.Printf("  Decoded Auth: %d bytes", len(authBytes))
-	
 	// Create the Web Push subscription
 	pushSubscription := &webpush.Subscription{
 		Endpoint: subscription.Endpoint,
@@ -92,11 +70,6 @@ func (s *PushService) SendNotification(ctx context.Context, subscription *model.
 		}
 
 		// Send the push notification
-		log.Printf("Sending push with VAPID keys - Public: %s..., Private: %s..., Subject: %s", 
-			safeSubstring(s.vapidPublicKey, 20), 
-			safeSubstring(s.vapidPrivateKey, 20),
-			s.vapidSubject)
-		
 		resp, err := webpush.SendNotification(payloadBytes, pushSubscription, &webpush.Options{
 			Subscriber:      s.vapidSubject,
 			VAPIDPublicKey:  s.vapidPublicKey,
@@ -106,7 +79,6 @@ func (s *PushService) SendNotification(ctx context.Context, subscription *model.
 
 		if err != nil {
 			lastErr = err
-			log.Printf("Push notification error: %v", err)
 			// Don't retry on certain errors
 			if resp != nil && (resp.StatusCode == http.StatusGone || resp.StatusCode == http.StatusNotFound) {
 				break
@@ -201,30 +173,4 @@ func (s *PushService) SendToUser(ctx context.Context, userID string, payload *mo
 // GetNotificationLogs retrieves notification logs for a user with pagination
 func (s *PushService) GetNotificationLogs(ctx context.Context, userID string, limit, offset int64) ([]*model.NotificationLog, error) {
 	return s.logRepo.FindByUserID(ctx, userID, limit, offset)
-}
-
-// safeSubstring returns a substring of the given string, or the full string if it's shorter than the length
-func safeSubstring(s string, length int) string {
-	if len(s) <= length {
-		return s
-	}
-	return s[:length]
-}
-
-// decodeSubscriptionKey decodes a base64 subscription key (copied from webpush-go for debugging)
-func decodeSubscriptionKey(key string) ([]byte, error) {
-	// Add "=" padding
-	buf := bytes.NewBufferString(key)
-	if rem := len(key) % 4; rem != 0 {
-		buf.WriteString(strings.Repeat("=", 4-rem))
-	}
-
-	// Try standard base64 first
-	decoded, err := base64.StdEncoding.DecodeString(buf.String())
-	if err == nil {
-		return decoded, nil
-	}
-
-	// Try URL encoding
-	return base64.URLEncoding.DecodeString(buf.String())
 }
