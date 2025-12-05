@@ -94,6 +94,52 @@ func (s *service) CreateIndexes() error {
 		return err
 	}
 
+	// Notification subscriptions collection indexes
+	subscriptionsCollection := db.Collection("notification_subscriptions")
+	subscriptionIndexes := []mongo.IndexModel{
+		{
+			Keys: bson.D{{Key: "user_id", Value: 1}},
+		},
+		{
+			Keys: bson.D{
+				{Key: "user_id", Value: 1},
+				{Key: "enabled", Value: 1},
+			},
+		},
+		{
+			Keys:    bson.D{{Key: "endpoint", Value: 1}},
+			Options: options.Index().SetUnique(true),
+		},
+	}
+
+	if _, err := subscriptionsCollection.Indexes().CreateMany(ctx, subscriptionIndexes); err != nil {
+		log.Printf("Warning: Failed to create notification subscription indexes: %v", err)
+		return err
+	}
+
+	// Notification logs collection indexes (optional)
+	logsCollection := db.Collection("notification_logs")
+	logIndexes := []mongo.IndexModel{
+		{
+			Keys: bson.D{
+				{Key: "user_id", Value: 1},
+				{Key: "sent_at", Value: -1},
+			},
+		},
+		{
+			Keys: bson.D{{Key: "event_id", Value: 1}},
+		},
+		{
+			Keys:    bson.D{{Key: "sent_at", Value: 1}},
+			Options: options.Index().SetExpireAfterSeconds(604800), // 7 days TTL
+		},
+	}
+
+	if _, err := logsCollection.Indexes().CreateMany(ctx, logIndexes); err != nil {
+		log.Printf("Warning: Failed to create notification log indexes: %v", err)
+		return err
+	}
+
 	log.Println("[⚡️ Database]: All indexes created successfully")
 	return nil
 }
