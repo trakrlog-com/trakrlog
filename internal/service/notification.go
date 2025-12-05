@@ -82,16 +82,11 @@ func (s *NotificationService) buildNotificationPayload(
 	project *model.Project,
 	channel *model.Channel,
 ) *model.NotificationPayload {
-	// Build notification title: Project name
-	title := project.Name
+	// Build notification
+	title := fmt.Sprintf("%s %s", event.Title, event.Icon)
+	body := fmt.Sprintf("  %s", project.Name)
 	if len(title) > 80 {
 		title = title[:77] + "..."
-	}
-
-	// Build notification body: Event title (with emoji) + description
-	body := event.Title
-	if event.Icon != "" {
-		body = fmt.Sprintf("%s %s", event.Icon, event.Title)
 	}
 
 	if len(body) > 160 {
@@ -103,16 +98,8 @@ func (s *NotificationService) buildNotificationPayload(
 
 	// Build the notification data with event metadata
 	data := map[string]any{
-		"eventId":   event.ID.Hex(),
-		"projectId": project.ID.Hex(),
-		"channelId": channel.ID.Hex(),
-		"url":       fmt.Sprintf("/projects/%s/channels/%s/events/%s", project.ID.Hex(), channel.ID.Hex(), event.ID.Hex()),
+		"url":       fmt.Sprintf("https://trakrlog.com/dashboard/projects/%s/channels/%s/events/%s", project.ID.Hex(), channel.ID.Hex(), event.ID.Hex()),
 		"timestamp": event.CreatedAt.Unix(),
-	}
-
-	// Add tags if present
-	if len(event.Tags) > 0 {
-		data["tags"] = event.Tags
 	}
 
 	payload := &model.NotificationPayload{

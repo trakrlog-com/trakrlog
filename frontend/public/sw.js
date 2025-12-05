@@ -15,12 +15,7 @@ self.addEventListener("push", (event) => {
 
   let data;
   try {
-    data = event.data
-      ? event.data.json()
-      : {
-          title: "New Notification",
-          body: "You have a new notification",
-        };
+    data =  event.data.json();
   } catch (e) {
     console.error("[Service Worker] Error parsing push data:", e);
     data = {
