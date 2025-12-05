@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"trakrlog/internal/database"
 	"trakrlog/internal/model"
 
 	"github.com/stretchr/testify/assert"
@@ -57,8 +58,25 @@ func TestMain(m *testing.M) {
 	os.Exit(exitCode)
 }
 
+// testDBService wraps a mongo.Database to implement database.Service for testing
+type testDBService struct {
+	db *mongo.Database
+}
+
+func (t *testDBService) Health() map[string]string {
+	return map[string]string{"message": "healthy"}
+}
+
+func (t *testDBService) GetDB() *mongo.Database {
+	return t.db
+}
+
+func (t *testDBService) GetCollection(name string) *mongo.Collection {
+	return t.db.Collection(name)
+}
+
 // Helper function to setup test database
-func setupTestDB(t *testing.T) *mongo.Database {
+func setupTestDB(t *testing.T) database.Service {
 	ctx := context.Background()
 
 	// Connect to test MongoDB instance using testcontainer URL
@@ -76,7 +94,7 @@ func setupTestDB(t *testing.T) *mongo.Database {
 		assert.NoError(t, err)
 	})
 
-	return db
+	return &testDBService{db: db}
 }
 
 func TestNotificationSubscriptionRepository_Create(t *testing.T) {
