@@ -3,8 +3,9 @@ package mocks
 import (
 	"context"
 
-	"github.com/stretchr/testify/mock"
 	"trakrlog/internal/model"
+
+	"github.com/stretchr/testify/mock"
 )
 
 // MockChannelService is a mock implementation of ChannelServiceInterface
