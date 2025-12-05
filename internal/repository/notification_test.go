@@ -2,6 +2,8 @@ package repository
 
 import (
 	"context"
+	"log"
+	"os"
 	"testing"
 	"time"
 
@@ -9,21 +11,62 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/testcontainers/testcontainers-go/modules/mongodb"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var testMongoURL string
+
+func TestMain(m *testing.M) {
+	// Skip tests if running in environment without Docker access
+	if os.Getenv("SKIP_DOCKER_TESTS") != "" {
+		log.Println("Skipping repository tests (SKIP_DOCKER_TESTS is set)")
+		os.Exit(0)
+	}
+
+	ctx := context.Background()
+	
+	// Start MongoDB container
+	dbContainer, err := mongodb.Run(ctx, "mongo:7")
+	if err != nil {
+		log.Fatalf("could not start mongodb container: %v", err)
+	}
+
+	dbHost, err := dbContainer.Host(ctx)
+	if err != nil {
+		log.Fatalf("could not get container host: %v", err)
+	}
+
+	dbPort, err := dbContainer.MappedPort(ctx, "27017/tcp")
+	if err != nil {
+		log.Fatalf("could not get container port: %v", err)
+	}
+
+	testMongoURL = "mongodb://" + dbHost + ":" + dbPort.Port()
+
+	// Run tests
+	exitCode := m.Run()
+
+	// Cleanup
+	if err := dbContainer.Terminate(ctx); err != nil {
+		log.Fatalf("could not terminate mongodb container: %v", err)
+	}
+
+	os.Exit(exitCode)
+}
+
 // Helper function to setup test database
 func setupTestDB(t *testing.T) *mongo.Database {
 	ctx := context.Background()
 
-	// Connect to test MongoDB instance
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	// Connect to test MongoDB instance using testcontainer URL
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(testMongoURL))
 	require.NoError(t, err)
 
-	// Use a test database
-	db := client.Database("trakrlog_test")
+	// Use a test database with unique name
+	db := client.Database("trakrlog_test_" + primitive.NewObjectID().Hex())
 
 	// Clean up function
 	t.Cleanup(func() {
