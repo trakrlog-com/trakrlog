@@ -15,6 +15,10 @@ build:
 run:
 	@go run cmd/api/main.go 
 
+# Run the application with environment variables from .env.local
+run-local:
+	@export $$(cat .env.local | grep -v '^#' | xargs) && go run cmd/api/main.go
+
 # Run the local containerized application
 docker-run:
 	@sudo docker compose -f docker-compose.local.yml --env-file .env.local up --build
