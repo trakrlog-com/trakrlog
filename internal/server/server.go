@@ -16,13 +16,16 @@ import (
 )
 
 type Server struct {
-	port           int
-	db             database.Service
-	userService    *service.UserService
-	projectService *service.ProjectService
-	channelService *service.ChannelService
-	eventService   *service.EventService
-	vapidConfig    *VapidConfig
+	port                int
+	db                  database.Service
+	userService         *service.UserService
+	projectService      *service.ProjectService
+	channelService      *service.ChannelService
+	eventService        *service.EventService
+	subscriptionService *service.SubscriptionService
+	notificationService *service.NotificationService
+	pushService         *service.PushService
+	vapidConfig         *VapidConfig
 }
 
 func New() *http.Server {
@@ -45,6 +48,8 @@ func New() *http.Server {
 	projectRepo := repository.NewProjectRepository(db)
 	channelRepo := repository.NewChannelRepository(db)
 	eventRepo := repository.NewEventRepository(db)
+	subscriptionRepo := repository.NewNotificationSubscriptionRepository(db)
+	logRepo := repository.NewNotificationLogRepository(db)
 
 	// Initialize services
 	userService := service.NewUserService(userRepo)
@@ -52,16 +57,37 @@ func New() *http.Server {
 	channelService := service.NewChannelService(channelRepo, projectRepo)
 	eventService := service.NewEventService(eventRepo, channelRepo, projectRepo)
 
-	NewServer := &Server{
-		port:           port,
-		db:             db,
-		userService:    userService,
-		projectService: projectService,
-		channelService: channelService,
-		eventService:   eventService,
-		vapidConfig:    vapidConfig,
-	}
+	// Initialize subscription service
+	subscriptionService := service.NewSubscriptionService(subscriptionRepo)
 
+	// Initialize push notification service
+	pushService := service.NewPushService(
+		subscriptionRepo,
+		logRepo,
+		vapidConfig.PublicKey,
+		vapidConfig.PrivateKey,
+		vapidConfig.Subject,
+	)
+
+	// Initialize notification service
+	notificationService := service.NewNotificationService(
+		pushService,
+		projectService,
+		channelService,
+	)
+
+	NewServer := &Server{
+		port:                port,
+		db:                  db,
+		userService:         userService,
+		projectService:      projectService,
+		channelService:      channelService,
+		eventService:        eventService,
+		subscriptionService: subscriptionService,
+		notificationService: notificationService,
+		pushService:         pushService,
+		vapidConfig:         vapidConfig,
+	}
 	// Declare Server config
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", NewServer.port),

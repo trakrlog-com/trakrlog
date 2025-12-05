@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"trakrlog/internal/database"
 	"trakrlog/internal/model"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -38,16 +39,16 @@ type notificationLogRepository struct {
 }
 
 // NewNotificationSubscriptionRepository creates a new notification subscription repository
-func NewNotificationSubscriptionRepository(db *mongo.Database) NotificationSubscriptionRepository {
+func NewNotificationSubscriptionRepository(dbService database.Service) NotificationSubscriptionRepository {
 	return &notificationSubscriptionRepository{
-		collection: db.Collection("notification_subscriptions"),
+		collection: dbService.GetCollection("notification_subscriptions"),
 	}
 }
 
 // NewNotificationLogRepository creates a new notification log repository
-func NewNotificationLogRepository(db *mongo.Database) NotificationLogRepository {
+func NewNotificationLogRepository(dbService database.Service) NotificationLogRepository {
 	return &notificationLogRepository{
-		collection: db.Collection("notification_logs"),
+		collection: dbService.GetCollection("notification_logs"),
 	}
 }
 

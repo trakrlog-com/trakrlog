@@ -86,6 +86,18 @@ func (s *Server) RegisterRouter() http.Handler {
 		api.GET("/events/:id", eventHandler.GetEvent)
 		api.PATCH("/events/:id", eventHandler.UpdateEvent)
 		api.DELETE("/events/:id", eventHandler.DeleteEvent)
+
+		// Notification routes
+		notificationHandler := handler.NewNotificationHandler(
+			s.subscriptionService,
+			s.notificationService,
+			s.pushService,
+		)
+		api.POST("/notifications/subscriptions", notificationHandler.CreateSubscription)
+		api.GET("/notifications/subscriptions", notificationHandler.GetSubscriptions)
+		api.DELETE("/notifications/subscriptions/:id", notificationHandler.DeleteSubscription)
+		api.PATCH("/notifications/subscriptions/:id", notificationHandler.UpdateSubscription)
+		api.POST("/notifications/test", notificationHandler.SendTestNotification)
 	}
 
 	// Track endpoint - direct route to avoid trailing slash redirects
