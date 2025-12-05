@@ -38,14 +38,14 @@ func GenerateVAPIDKeys() (*VapidKeys, error) {
 	// First byte is 0x04 (indicating uncompressed point), followed by X and Y coordinates
 	publicKeyBytes := make([]byte, 65)
 	publicKeyBytes[0] = 0x04
-	
+
 	xBytes := privateKey.PublicKey.X.Bytes()
 	yBytes := privateKey.PublicKey.Y.Bytes()
-	
+
 	// Ensure X and Y are 32 bytes each (pad with zeros if needed)
 	copy(publicKeyBytes[1+32-len(xBytes):33], xBytes)
 	copy(publicKeyBytes[33+32-len(yBytes):65], yBytes)
-	
+
 	publicKeyEncoded := base64.RawURLEncoding.EncodeToString(publicKeyBytes)
 
 	return &VapidKeys{
