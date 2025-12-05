@@ -55,7 +55,6 @@ func New() *http.Server {
 	userService := service.NewUserService(userRepo)
 	projectService := service.NewProjectService(projectRepo, userRepo)
 	channelService := service.NewChannelService(channelRepo, projectRepo)
-	eventService := service.NewEventService(eventRepo, channelRepo, projectRepo)
 
 	// Initialize subscription service
 	subscriptionService := service.NewSubscriptionService(subscriptionRepo)
@@ -75,6 +74,9 @@ func New() *http.Server {
 		projectService,
 		channelService,
 	)
+
+	// Initialize event service
+	eventService := service.NewEventService(eventRepo, channelRepo, projectRepo, notificationService)
 
 	NewServer := &Server{
 		port:                port,

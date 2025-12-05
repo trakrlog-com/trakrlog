@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"trakrlog/internal/middleware"
@@ -272,5 +273,54 @@ func (h *NotificationHandler) SendTestNotification(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "Test notification sent successfully",
+	})
+}
+
+// GetNotificationLogs handles GET /api/notifications/logs
+func (h *NotificationHandler) GetNotificationLogs(ctx *gin.Context) {
+	userID, ok := middleware.GetAuthUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"success": false,
+			"message": "Unauthorized",
+		})
+		return
+	}
+
+	// Parse pagination parameters
+	limit := int64(50) // Default limit
+	offset := int64(0) // Default offset
+
+	if limitStr := ctx.Query("limit"); limitStr != "" {
+		if parsedLimit, err := strconv.ParseInt(limitStr, 10, 64); err == nil && parsedLimit > 0 {
+			limit = parsedLimit
+			if limit > 100 {
+				limit = 100 // Max limit
+			}
+		}
+	}
+
+	if offsetStr := ctx.Query("offset"); offsetStr != "" {
+		if parsedOffset, err := strconv.ParseInt(offsetStr, 10, 64); err == nil && parsedOffset >= 0 {
+			offset = parsedOffset
+		}
+	}
+
+	// Retrieve logs from push service
+	logs, err := h.pushService.GetNotificationLogs(ctx.Request.Context(), userID, limit, offset)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"message": "Failed to retrieve notification logs",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"logs":    logs,
+		"limit":   limit,
+		"offset":  offset,
 	})
 }

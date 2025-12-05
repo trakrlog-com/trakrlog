@@ -169,3 +169,8 @@ func (s *PushService) SendToUser(ctx context.Context, userID string, payload *mo
 	log.Printf("Successfully sent notification to %d/%d subscriptions for user %s", successCount, len(subscriptions), userID)
 	return nil
 }
+
+// GetNotificationLogs retrieves notification logs for a user with pagination
+func (s *PushService) GetNotificationLogs(ctx context.Context, userID string, limit, offset int64) ([]*model.NotificationLog, error) {
+	return s.logRepo.FindByUserID(ctx, userID, limit, offset)
+}

@@ -3,42 +3,51 @@ package service
 import (
 	"context"
 	"errors"
+	"log"
 
 	"trakrlog/internal/model"
 	"trakrlog/internal/repository"
 )
 
 type EventService struct {
-	eventRepo   repository.EventRepository
-	channelRepo repository.ChannelRepository
-	projectRepo repository.ProjectRepository
+	eventRepo           repository.EventRepository
+	channelRepo         repository.ChannelRepository
+	projectRepo         repository.ProjectRepository
+	notificationService *NotificationService
 }
 
-func NewEventService(eventRepo repository.EventRepository, channelRepo repository.ChannelRepository, projectRepo repository.ProjectRepository) *EventService {
+func NewEventService(
+	eventRepo repository.EventRepository,
+	channelRepo repository.ChannelRepository,
+	projectRepo repository.ProjectRepository,
+	notificationService *NotificationService,
+) *EventService {
 	return &EventService{
-		eventRepo:   eventRepo,
-		channelRepo: channelRepo,
-		projectRepo: projectRepo,
+		eventRepo:           eventRepo,
+		channelRepo:         channelRepo,
+		projectRepo:         projectRepo,
+		notificationService: notificationService,
 	}
 }
 
 // CreateEvent creates a new event in a channel
-func (s *EventService) CreateEvent(ctx context.Context, userID, projectName, channelName, title, description, icon string, tags map[string]string) (*model.Event, error) {
+// Returns the created event and a channel that will receive the notification result
+func (s *EventService) CreateEvent(ctx context.Context, userID, projectName, channelName, title, description, icon string, tags map[string]string) (*model.Event, <-chan error, error) {
 	// Validation
 	if title == "" {
-		return nil, errors.New("event title required")
+		return nil, nil, errors.New("event title required")
 	}
 
 	// Find project by user ID and name
 	project, err := s.projectRepo.FindByUserIDAndName(ctx, userID, projectName)
 	if err != nil {
-		return nil, errors.New("project not found")
+		return nil, nil, errors.New("project not found")
 	}
 
 	// Find channel by project ID and name
 	channel, err := s.channelRepo.FindByProjectIDAndName(ctx, project.ID.Hex(), channelName)
 	if err != nil {
-		return nil, errors.New("channel not found")
+		return nil, nil, errors.New("channel not found")
 	}
 
 	// Create event
@@ -52,10 +61,28 @@ func (s *EventService) CreateEvent(ctx context.Context, userID, projectName, cha
 	}
 
 	if err := s.eventRepo.Create(ctx, event); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return event, nil
+	// Send push notification asynchronously (don't block event creation)
+	// Return a channel that the caller can use to wait for notification completion
+	notificationDone := make(chan error, 1)
+
+	go func() {
+		defer close(notificationDone)
+		if s.notificationService != nil {
+			if err := s.notificationService.ProcessEventNotification(context.Background(), event); err != nil {
+				// Log error but don't fail the event creation
+				log.Printf("Failed to send notification for event %s: %v", event.ID.Hex(), err)
+				notificationDone <- err
+				return
+			}
+			log.Printf("Successfully sent notification for event %s", event.ID.Hex())
+			notificationDone <- nil
+		}
+	}()
+
+	return event, notificationDone, nil
 }
 
 // GetEventByID retrieves an event by ID

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -51,7 +52,7 @@ func (h *EventHandler) CreateEvent(ctx *gin.Context) {
 		return
 	}
 
-	event, err := h.eventService.CreateEvent(ctx.Request.Context(), userID, req.Project, req.Channel, req.Title, req.Description, req.Icon, req.Tags)
+	event, notificationCh, err := h.eventService.CreateEvent(ctx.Request.Context(), userID, req.Project, req.Channel, req.Title, req.Description, req.Icon, req.Tags)
 	if err != nil {
 		statusCode := http.StatusInternalServerError
 		if err.Error() == "channel not found" || err.Error() == "project not found" {
@@ -66,11 +67,21 @@ func (h *EventHandler) CreateEvent(ctx *gin.Context) {
 		return
 	}
 
+	// Respond immediately - don't wait for notification
 	ctx.JSON(http.StatusCreated, gin.H{
 		"success": true,
 		"message": "Event created successfully",
 		"data":    event,
 	})
+
+	// Log notification result in background after response is sent
+	go func() {
+		if notificationErr := <-notificationCh; notificationErr != nil {
+			log.Printf("[Event %s] Notification failed: %v", event.ID.Hex(), notificationErr)
+		} else {
+			log.Printf("[Event %s] Notification sent successfully", event.ID.Hex())
+		}
+	}()
 }
 
 // GetChannelEvents handles GET /api/channels/:channelId/events

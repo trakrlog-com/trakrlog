@@ -141,6 +141,43 @@ curl -X DELETE http://localhost:4000/api/notifications/subscriptions/674f8a1b2c9
 }
 ```
 
+### 6. Get Notification Logs
+
+Retrieve the history of sent notifications with pagination.
+
+```bash
+# Get recent logs (default: 50 items)
+curl http://localhost:4000/api/notifications/logs \
+  -H "Cookie: session=YOUR_SESSION_COOKIE"
+
+# With pagination
+curl "http://localhost:4000/api/notifications/logs?limit=10&offset=0" \
+  -H "Cookie: session=YOUR_SESSION_COOKIE"
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "logs": [
+    {
+      "id": "674f8a1b2c9d3e4f5a6b7c8d",
+      "userId": "674e5f6g7h8i9j0k1l2m3n4o",
+      "eventId": "674f8a1b2c9d3e4f5a6b7c8e",
+      "subscriptionId": "674f8a1b2c9d3e4f5a6b7c8f",
+      "status": "sent",
+      "sentAt": "2025-12-05T10:30:00Z"
+    }
+  ],
+  "limit": 10,
+  "offset": 0
+}
+```
+
+**Query Parameters:**
+- `limit`: Number of logs to return (default: 50, max: 100)
+- `offset`: Number of logs to skip for pagination (default: 0)
+
 ## Testing with Real Browser Subscriptions
 
 For complete end-to-end testing, you need a real browser subscription:
@@ -403,7 +440,60 @@ Run it:
 ## Next Steps
 
 After verifying the endpoints work:
-1. ✅ Step 6 complete
-2. Move to Step 7: Implement test notification endpoint (already done!)
-3. Move to Step 8: Integration with event creation
+1. ✅ Step 6 complete - Subscription management endpoints
+2. ✅ Step 7 complete - Test notification and logs endpoints  
+3. ✅ Step 8 complete - Integration with event creation
 4. Move to Step 9-11: Frontend implementation
+
+## Testing End-to-End Notification Flow
+
+To test that notifications are sent when events are created:
+
+### 1. Create a Real Browser Subscription
+
+Use the test HTML page or your frontend to create a valid subscription with a real browser.
+
+### 2. Create an Event via API
+
+```bash
+# Track an event (this should trigger a notification)
+curl -X POST http://localhost:4000/api/track \
+  -H "Content-Type: application/json" \
+  -H "X-API-KEY: YOUR_API_KEY" \
+  -d '{
+    "project": "my-project",
+    "channel": "errors",
+    "title": "Test Error",
+    "description": "This is a test error that should trigger a notification",
+    "icon": "🔴",
+    "tags": {
+      "severity": "high",
+      "environment": "production"
+    }
+  }'
+```
+
+### 3. Verify Notification Received
+
+- Check your browser for the push notification
+- The notification should appear even if the browser tab is closed (depending on OS)
+
+### 4. Check Notification Logs
+
+```bash
+curl http://localhost:4000/api/notifications/logs \
+  -H "Cookie: session=YOUR_SESSION_COOKIE"
+```
+
+You should see a log entry with:
+- `status: "sent"` (if successful)
+- `status: "failed"` (if there was an error)
+- `eventId` matching the created event
+
+### Key Features Implemented
+
+✅ **Asynchronous Processing**: Notifications are sent in a goroutine so they don't block event creation
+✅ **Error Handling**: If notification fails, the event is still created successfully
+✅ **Logging**: All notification attempts are logged for debugging
+✅ **Automatic**: Every event automatically triggers notifications for the project owner
+
