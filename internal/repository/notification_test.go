@@ -17,14 +17,14 @@ import (
 // Helper function to setup test database
 func setupTestDB(t *testing.T) *mongo.Database {
 	ctx := context.Background()
-	
+
 	// Connect to test MongoDB instance
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
 	require.NoError(t, err)
-	
+
 	// Use a test database
 	db := client.Database("trakrlog_test")
-	
+
 	// Clean up function
 	t.Cleanup(func() {
 		err := db.Drop(ctx)
@@ -32,7 +32,7 @@ func setupTestDB(t *testing.T) *mongo.Database {
 		err = client.Disconnect(ctx)
 		assert.NoError(t, err)
 	})
-	
+
 	return db
 }
 

@@ -22,6 +22,7 @@ type Server struct {
 	projectService *service.ProjectService
 	channelService *service.ChannelService
 	eventService   *service.EventService
+	vapidConfig    *VapidConfig
 }
 
 func New() *http.Server {
@@ -32,6 +33,9 @@ func New() *http.Server {
 
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	log.Printf("[⚡️ Server]: Starting server on port %d\n", port)
+
+	// Load VAPID configuration
+	vapidConfig := LoadVapidConfig()
 
 	// Initialize database
 	db := database.New()
@@ -55,6 +59,7 @@ func New() *http.Server {
 		projectService: projectService,
 		channelService: channelService,
 		eventService:   eventService,
+		vapidConfig:    vapidConfig,
 	}
 
 	// Declare Server config
