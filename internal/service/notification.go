@@ -82,32 +82,27 @@ func (s *NotificationService) buildNotificationPayload(
 	project *model.Project,
 	channel *model.Channel,
 ) *model.NotificationPayload {
-	// Build notification title
-	title := fmt.Sprintf("[%s] %s", project.Name, event.Title)
+	// Build notification title: Project name
+	title := project.Name
 	if len(title) > 80 {
 		title = title[:77] + "..."
 	}
 
-	// Build notification body
-	body := event.Description
-	if body == "" {
-		body = fmt.Sprintf("New event in %s", channel.Name)
-	}
-	if len(body) > 120 {
-		body = body[:117] + "..."
+	// Build notification body: Event title (with emoji) + description
+	body := event.Title
+	if event.Icon != "" {
+		body = fmt.Sprintf("%s %s", event.Icon, event.Title)
 	}
 
-	// Use event icon if available, otherwise use project logo or default
-	icon := event.Icon
-	if icon == "" && project.LogoBase64 != "" {
-		icon = project.LogoBase64
+	if len(body) > 160 {
+		body = body[:157] + "..."
 	}
-	if icon == "" {
-		icon = "/icon.png" // Default app icon
-	}
+
+	// For the notification icon (image), always use the app logo
+	icon := "https://trakrlog.com/logo.png"
 
 	// Build the notification data with event metadata
-	data := map[string]interface{}{
+	data := map[string]any{
 		"eventId":   event.ID.Hex(),
 		"projectId": project.ID.Hex(),
 		"channelId": channel.ID.Hex(),
@@ -120,11 +115,11 @@ func (s *NotificationService) buildNotificationPayload(
 		data["tags"] = event.Tags
 	}
 
-	return &model.NotificationPayload{
+	payload := &model.NotificationPayload{
 		Title: title,
 		Body:  body,
 		Icon:  icon,
-		Badge: "/badge.png",
+		Badge: icon,
 		Tag:   fmt.Sprintf("event-%s", event.ID.Hex()), // Group notifications by event
 		Data:  data,
 		Actions: []model.NotificationAction{
@@ -132,12 +127,10 @@ func (s *NotificationService) buildNotificationPayload(
 				Action: "view",
 				Title:  "View Event",
 			},
-			{
-				Action: "close",
-				Title:  "Dismiss",
-			},
 		},
 	}
+
+	return payload
 }
 
 // SendTestNotification sends a test notification to verify the setup
@@ -145,8 +138,8 @@ func (s *NotificationService) SendTestNotification(ctx context.Context, userID s
 	payload := &model.NotificationPayload{
 		Title: "🔔 Test Notification",
 		Body:  "Your push notifications are working correctly!",
-		Icon:  "/icon.png",
-		Badge: "/badge.png",
+		Icon:  "https://trakrlog.com/logo.png",
+		Badge: "https://trakrlog.com/logo.png",
 		Tag:   "test-notification",
 		Data: map[string]interface{}{
 			"type": "test",
